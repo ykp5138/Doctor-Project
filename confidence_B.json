@@ -1,0 +1,1669 @@
+{
+  "file": "meeting.mp3",
+  "confidence_summary": {
+    "mean": 0.948950979475375,
+    "std_dev": 0.13653718173888188,
+    "flag_threshold": 0.8124137977364931
+  },
+  "words": [
+    {
+      "word": "The",
+      "confidence": 0.7377786636352539,
+      "start_ms": 6539,
+      "end_ms": 7119,
+      "speaker": "C"
+    },
+    {
+      "word": "supplies",
+      "confidence": 0.9910981059074402,
+      "start_ms": 7119,
+      "end_ms": 7700,
+      "speaker": "C"
+    },
+    {
+      "word": "you",
+      "confidence": 0.9892544746398926,
+      "start_ms": 7700,
+      "end_ms": 8080,
+      "speaker": "C"
+    },
+    {
+      "word": "will",
+      "confidence": 0.9796608090400696,
+      "start_ms": 8080,
+      "end_ms": 8220,
+      "speaker": "C"
+    },
+    {
+      "word": "need",
+      "confidence": 0.999173104763031,
+      "start_ms": 8220,
+      "end_ms": 8420,
+      "speaker": "C"
+    },
+    {
+      "word": "for",
+      "confidence": 0.9955698847770691,
+      "start_ms": 8420,
+      "end_ms": 8680,
+      "speaker": "C"
+    },
+    {
+      "word": "this",
+      "confidence": 0.9971256852149963,
+      "start_ms": 8680,
+      "end_ms": 8880,
+      "speaker": "C"
+    },
+    {
+      "word": "task",
+      "confidence": 0.994337260723114,
+      "start_ms": 8880,
+      "end_ms": 9360,
+      "speaker": "C"
+    },
+    {
+      "word": "is",
+      "confidence": 0.9513229727745056,
+      "start_ms": 9360,
+      "end_ms": 10020,
+      "speaker": "C"
+    },
+    {
+      "word": "a",
+      "confidence": 0.9632100462913513,
+      "start_ms": 10020,
+      "end_ms": 10340,
+      "speaker": "C"
+    },
+    {
+      "word": "medication",
+      "confidence": 0.980639636516571,
+      "start_ms": 10340,
+      "end_ms": 10880,
+      "speaker": "C"
+    },
+    {
+      "word": "list.",
+      "confidence": 0.9991374015808105,
+      "start_ms": 10880,
+      "end_ms": 11340,
+      "speaker": "C"
+    },
+    {
+      "word": "You",
+      "confidence": 0.9952810406684875,
+      "start_ms": 12380,
+      "end_ms": 12960,
+      "speaker": "C"
+    },
+    {
+      "word": "will",
+      "confidence": 0.9932799935340881,
+      "start_ms": 12960,
+      "end_ms": 13120,
+      "speaker": "C"
+    },
+    {
+      "word": "also",
+      "confidence": 0.9976932406425476,
+      "start_ms": 13120,
+      "end_ms": 13400,
+      "speaker": "C"
+    },
+    {
+      "word": "be",
+      "confidence": 0.9972988963127136,
+      "start_ms": 13400,
+      "end_ms": 13580,
+      "speaker": "C"
+    },
+    {
+      "word": "able",
+      "confidence": 0.9994463324546814,
+      "start_ms": 13580,
+      "end_ms": 13800,
+      "speaker": "C"
+    },
+    {
+      "word": "to",
+      "confidence": 0.9988003969192505,
+      "start_ms": 13800,
+      "end_ms": 13960,
+      "speaker": "C"
+    },
+    {
+      "word": "use",
+      "confidence": 0.9984128475189209,
+      "start_ms": 13960,
+      "end_ms": 14180,
+      "speaker": "C"
+    },
+    {
+      "word": "your",
+      "confidence": 0.9963250756263733,
+      "start_ms": 14180,
+      "end_ms": 14400,
+      "speaker": "C"
+    },
+    {
+      "word": "script",
+      "confidence": 0.9874212741851807,
+      "start_ms": 14400,
+      "end_ms": 14760,
+      "speaker": "C"
+    },
+    {
+      "word": "which",
+      "confidence": 0.5100353956222534,
+      "start_ms": 14760,
+      "end_ms": 15180,
+      "speaker": "C"
+    },
+    {
+      "word": "I",
+      "confidence": 0.971510112285614,
+      "start_ms": 15180,
+      "end_ms": 15360,
+      "speaker": "C"
+    },
+    {
+      "word": "have",
+      "confidence": 0.9990216493606567,
+      "start_ms": 15360,
+      "end_ms": 15600,
+      "speaker": "C"
+    },
+    {
+      "word": "here",
+      "confidence": 0.9900796413421631,
+      "start_ms": 15600,
+      "end_ms": 15820,
+      "speaker": "C"
+    },
+    {
+      "word": "placed",
+      "confidence": 0.9694280028343201,
+      "start_ms": 15820,
+      "end_ms": 16120,
+      "speaker": "C"
+    },
+    {
+      "word": "at",
+      "confidence": 0.9888294339179993,
+      "start_ms": 16120,
+      "end_ms": 16360,
+      "speaker": "C"
+    },
+    {
+      "word": "my",
+      "confidence": 0.9991280436515808,
+      "start_ms": 16360,
+      "end_ms": 16480,
+      "speaker": "C"
+    },
+    {
+      "word": "phone.",
+      "confidence": 0.9977460503578186,
+      "start_ms": 16480,
+      "end_ms": 16800,
+      "speaker": "C"
+    },
+    {
+      "word": "Thank",
+      "confidence": 0.7504037618637085,
+      "start_ms": 21879,
+      "end_ms": 22459,
+      "speaker": "B"
+    },
+    {
+      "word": "you",
+      "confidence": 0.9959163069725037,
+      "start_ms": 22459,
+      "end_ms": 23040,
+      "speaker": "B"
+    },
+    {
+      "word": "for",
+      "confidence": 0.9981252551078796,
+      "start_ms": 23040,
+      "end_ms": 23160,
+      "speaker": "B"
+    },
+    {
+      "word": "calling",
+      "confidence": 0.9991852641105652,
+      "start_ms": 23160,
+      "end_ms": 23480,
+      "speaker": "B"
+    },
+    {
+      "word": "MTC",
+      "confidence": 0.9718213081359863,
+      "start_ms": 23480,
+      "end_ms": 24060,
+      "speaker": "B"
+    },
+    {
+      "word": "Pharmacy.",
+      "confidence": 0.8624474704265594,
+      "start_ms": 24060,
+      "end_ms": 24680,
+      "speaker": "B"
+    },
+    {
+      "word": "If",
+      "confidence": 0.6438553333282471,
+      "start_ms": 24680,
+      "end_ms": 25120,
+      "speaker": "B"
+    },
+    {
+      "word": "you",
+      "confidence": 0.9983643889427185,
+      "start_ms": 25120,
+      "end_ms": 25480,
+      "speaker": "B"
+    },
+    {
+      "word": "are",
+      "confidence": 0.9833037853240967,
+      "start_ms": 25480,
+      "end_ms": 25600,
+      "speaker": "B"
+    },
+    {
+      "word": "calling",
+      "confidence": 0.9990793466567993,
+      "start_ms": 25600,
+      "end_ms": 25860,
+      "speaker": "B"
+    },
+    {
+      "word": "from",
+      "confidence": 0.9969819188117981,
+      "start_ms": 25860,
+      "end_ms": 26100,
+      "speaker": "B"
+    },
+    {
+      "word": "a",
+      "confidence": 0.9952120780944824,
+      "start_ms": 26100,
+      "end_ms": 26240,
+      "speaker": "B"
+    },
+    {
+      "word": "physician's",
+      "confidence": 0.9774810075759888,
+      "start_ms": 26240,
+      "end_ms": 26720,
+      "speaker": "B"
+    },
+    {
+      "word": "office,",
+      "confidence": 0.9978627562522888,
+      "start_ms": 26720,
+      "end_ms": 26920,
+      "speaker": "B"
+    },
+    {
+      "word": "please",
+      "confidence": 0.9961361289024353,
+      "start_ms": 27180,
+      "end_ms": 27820,
+      "speaker": "B"
+    },
+    {
+      "word": "leave",
+      "confidence": 0.9931367635726929,
+      "start_ms": 27820,
+      "end_ms": 28220,
+      "speaker": "B"
+    },
+    {
+      "word": "your",
+      "confidence": 0.9551226496696472,
+      "start_ms": 28220,
+      "end_ms": 28600,
+      "speaker": "B"
+    },
+    {
+      "word": "name,",
+      "confidence": 0.9938129186630249,
+      "start_ms": 28600,
+      "end_ms": 28940,
+      "speaker": "B"
+    },
+    {
+      "word": "your",
+      "confidence": 0.9942360520362854,
+      "start_ms": 29140,
+      "end_ms": 29780,
+      "speaker": "B"
+    },
+    {
+      "word": "office",
+      "confidence": 0.998448371887207,
+      "start_ms": 29780,
+      "end_ms": 30160,
+      "speaker": "B"
+    },
+    {
+      "word": "phone",
+      "confidence": 0.9872384071350098,
+      "start_ms": 30160,
+      "end_ms": 30400,
+      "speaker": "B"
+    },
+    {
+      "word": "number,",
+      "confidence": 0.9978451728820801,
+      "start_ms": 30400,
+      "end_ms": 30680,
+      "speaker": "B"
+    },
+    {
+      "word": "your",
+      "confidence": 0.9971689581871033,
+      "start_ms": 30820,
+      "end_ms": 31560,
+      "speaker": "B"
+    },
+    {
+      "word": "office",
+      "confidence": 0.9987481832504272,
+      "start_ms": 31560,
+      "end_ms": 31880,
+      "speaker": "B"
+    },
+    {
+      "word": "name,",
+      "confidence": 0.9989221096038818,
+      "start_ms": 31880,
+      "end_ms": 32180,
+      "speaker": "B"
+    },
+    {
+      "word": "physician's",
+      "confidence": 0.9927784204483032,
+      "start_ms": 32439,
+      "end_ms": 33860,
+      "speaker": "B"
+    },
+    {
+      "word": "name,",
+      "confidence": 0.999546468257904,
+      "start_ms": 33860,
+      "end_ms": 34140,
+      "speaker": "B"
+    },
+    {
+      "word": "DEA",
+      "confidence": 0.9971300661563873,
+      "start_ms": 34360,
+      "end_ms": 35460,
+      "speaker": "B"
+    },
+    {
+      "word": "number,",
+      "confidence": 0.997136116027832,
+      "start_ms": 35460,
+      "end_ms": 35820,
+      "speaker": "B"
+    },
+    {
+      "word": "please",
+      "confidence": 0.9872846007347107,
+      "start_ms": 36000,
+      "end_ms": 37680,
+      "speaker": "B"
+    },
+    {
+      "word": "provide",
+      "confidence": 0.9996445178985596,
+      "start_ms": 37680,
+      "end_ms": 37960,
+      "speaker": "B"
+    },
+    {
+      "word": "your",
+      "confidence": 0.9986118078231812,
+      "start_ms": 37960,
+      "end_ms": 38240,
+      "speaker": "B"
+    },
+    {
+      "word": "patient's",
+      "confidence": 0.9972174167633057,
+      "start_ms": 38240,
+      "end_ms": 38660,
+      "speaker": "B"
+    },
+    {
+      "word": "name",
+      "confidence": 0.9992455244064331,
+      "start_ms": 38660,
+      "end_ms": 38920,
+      "speaker": "B"
+    },
+    {
+      "word": "and",
+      "confidence": 0.9973095655441284,
+      "start_ms": 38920,
+      "end_ms": 39380,
+      "speaker": "B"
+    },
+    {
+      "word": "date",
+      "confidence": 0.9986166954040527,
+      "start_ms": 39380,
+      "end_ms": 39600,
+      "speaker": "B"
+    },
+    {
+      "word": "of",
+      "confidence": 0.9997856020927429,
+      "start_ms": 39600,
+      "end_ms": 39720,
+      "speaker": "B"
+    },
+    {
+      "word": "birth,",
+      "confidence": 0.9999046325683594,
+      "start_ms": 39720,
+      "end_ms": 39920,
+      "speaker": "B"
+    },
+    {
+      "word": "medication",
+      "confidence": 0.9945176243782043,
+      "start_ms": 40120,
+      "end_ms": 41160,
+      "speaker": "B"
+    },
+    {
+      "word": "and",
+      "confidence": 0.7512679100036621,
+      "start_ms": 41160,
+      "end_ms": 41760,
+      "speaker": "B"
+    },
+    {
+      "word": "instructions.",
+      "confidence": 0.9943398833274841,
+      "start_ms": 41760,
+      "end_ms": 42200,
+      "speaker": "B"
+    },
+    {
+      "word": "Thank",
+      "confidence": 0.9989338517189026,
+      "start_ms": 43240,
+      "end_ms": 43800,
+      "speaker": "B"
+    },
+    {
+      "word": "you.",
+      "confidence": 0.9981985688209534,
+      "start_ms": 43800,
+      "end_ms": 44000,
+      "speaker": "B"
+    },
+    {
+      "word": "Record",
+      "confidence": 0.9804454445838928,
+      "start_ms": 45180,
+      "end_ms": 45740,
+      "speaker": "A"
+    },
+    {
+      "word": "your",
+      "confidence": 0.9992665648460388,
+      "start_ms": 45740,
+      "end_ms": 46000,
+      "speaker": "A"
+    },
+    {
+      "word": "message",
+      "confidence": 0.9998409748077393,
+      "start_ms": 46000,
+      "end_ms": 46280,
+      "speaker": "A"
+    },
+    {
+      "word": "at",
+      "confidence": 0.9982739686965942,
+      "start_ms": 46280,
+      "end_ms": 46480,
+      "speaker": "A"
+    },
+    {
+      "word": "the",
+      "confidence": 0.9938873648643494,
+      "start_ms": 46480,
+      "end_ms": 46620,
+      "speaker": "A"
+    },
+    {
+      "word": "tone.",
+      "confidence": 0.99517822265625,
+      "start_ms": 46620,
+      "end_ms": 46820,
+      "speaker": "A"
+    },
+    {
+      "word": "When",
+      "confidence": 0.9995126724243164,
+      "start_ms": 47040,
+      "end_ms": 47380,
+      "speaker": "A"
+    },
+    {
+      "word": "you",
+      "confidence": 0.9998989105224609,
+      "start_ms": 47380,
+      "end_ms": 47480,
+      "speaker": "A"
+    },
+    {
+      "word": "are",
+      "confidence": 0.9994813799858093,
+      "start_ms": 47480,
+      "end_ms": 47600,
+      "speaker": "A"
+    },
+    {
+      "word": "finished,",
+      "confidence": 0.9997410178184509,
+      "start_ms": 47600,
+      "end_ms": 47940,
+      "speaker": "A"
+    },
+    {
+      "word": "hang",
+      "confidence": 0.9993922710418701,
+      "start_ms": 48220,
+      "end_ms": 48580,
+      "speaker": "A"
+    },
+    {
+      "word": "up",
+      "confidence": 0.9992203712463379,
+      "start_ms": 48580,
+      "end_ms": 48860,
+      "speaker": "A"
+    },
+    {
+      "word": "or",
+      "confidence": 0.9980400204658508,
+      "start_ms": 48860,
+      "end_ms": 49140,
+      "speaker": "A"
+    },
+    {
+      "word": "press",
+      "confidence": 0.9993457198143005,
+      "start_ms": 49140,
+      "end_ms": 49380,
+      "speaker": "A"
+    },
+    {
+      "word": "pound",
+      "confidence": 0.9642648696899414,
+      "start_ms": 49380,
+      "end_ms": 49740,
+      "speaker": "A"
+    },
+    {
+      "word": "for",
+      "confidence": 0.9997237324714661,
+      "start_ms": 49740,
+      "end_ms": 50020,
+      "speaker": "A"
+    },
+    {
+      "word": "more",
+      "confidence": 0.9999107122421265,
+      "start_ms": 50020,
+      "end_ms": 50240,
+      "speaker": "A"
+    },
+    {
+      "word": "options.",
+      "confidence": 0.9996639490127563,
+      "start_ms": 50240,
+      "end_ms": 50620,
+      "speaker": "A"
+    },
+    {
+      "word": "This",
+      "confidence": 0.9187242984771729,
+      "start_ms": 52260,
+      "end_ms": 52820,
+      "speaker": "C"
+    },
+    {
+      "word": "is",
+      "confidence": 0.9998871088027954,
+      "start_ms": 52820,
+      "end_ms": 53160,
+      "speaker": "C"
+    },
+    {
+      "word": "Sherri",
+      "confidence": 0.6303749531507492,
+      "start_ms": 53160,
+      "end_ms": 53660,
+      "speaker": "C"
+    },
+    {
+      "word": "Dykes.",
+      "confidence": 0.9162262082099915,
+      "start_ms": 53660,
+      "end_ms": 54040,
+      "speaker": "C"
+    },
+    {
+      "word": "This",
+      "confidence": 0.0010041267378255725,
+      "start_ms": 54040,
+      "end_ms": 54200,
+      "speaker": "C"
+    },
+    {
+      "word": "is",
+      "confidence": 0.7704572081565857,
+      "start_ms": 54200,
+      "end_ms": 54200,
+      "speaker": "C"
+    },
+    {
+      "word": "Sherri",
+      "confidence": 0.13611024664714932,
+      "start_ms": 54200,
+      "end_ms": 54200,
+      "speaker": "C"
+    },
+    {
+      "word": "Dykes",
+      "confidence": 0.20462135699926876,
+      "start_ms": 54200,
+      "end_ms": 54200,
+      "speaker": "C"
+    },
+    {
+      "word": "calling",
+      "confidence": 0.8564969301223755,
+      "start_ms": 54200,
+      "end_ms": 54340,
+      "speaker": "C"
+    },
+    {
+      "word": "from",
+      "confidence": 0.9914922118186951,
+      "start_ms": 54340,
+      "end_ms": 54720,
+      "speaker": "C"
+    },
+    {
+      "word": "Dr.",
+      "confidence": 0.9235658049583435,
+      "start_ms": 54720,
+      "end_ms": 54980,
+      "speaker": "C"
+    },
+    {
+      "word": "Ernie",
+      "confidence": 0.9549703001976013,
+      "start_ms": 55160,
+      "end_ms": 55440,
+      "speaker": "C"
+    },
+    {
+      "word": "Burt's",
+      "confidence": 0.8842841784159342,
+      "start_ms": 55440,
+      "end_ms": 55920,
+      "speaker": "C"
+    },
+    {
+      "word": "office.",
+      "confidence": 0.9737921953201294,
+      "start_ms": 55920,
+      "end_ms": 56240,
+      "speaker": "C"
+    },
+    {
+      "word": "Our",
+      "confidence": 0.9854244589805603,
+      "start_ms": 56460,
+      "end_ms": 56940,
+      "speaker": "C"
+    },
+    {
+      "word": "phone",
+      "confidence": 0.9929063320159912,
+      "start_ms": 56940,
+      "end_ms": 57280,
+      "speaker": "C"
+    },
+    {
+      "word": "number",
+      "confidence": 0.9926407933235168,
+      "start_ms": 57280,
+      "end_ms": 57580,
+      "speaker": "C"
+    },
+    {
+      "word": "is",
+      "confidence": 0.9938702583312988,
+      "start_ms": 57580,
+      "end_ms": 57960,
+      "speaker": "C"
+    },
+    {
+      "word": "803",
+      "confidence": 0.8716062009334564,
+      "start_ms": 57960,
+      "end_ms": 59060,
+      "speaker": "C"
+    },
+    {
+      "word": "-555",
+      "confidence": 0.9557257493336996,
+      "start_ms": 59060,
+      "end_ms": 61320,
+      "speaker": "C"
+    },
+    {
+      "word": "-1212.",
+      "confidence": 0.9853047430515289,
+      "start_ms": 61320,
+      "end_ms": 63640,
+      "speaker": "C"
+    },
+    {
+      "word": "Dr.",
+      "confidence": 0.9922502040863037,
+      "start_ms": 63940,
+      "end_ms": 64560,
+      "speaker": "C"
+    },
+    {
+      "word": "Burt's",
+      "confidence": 0.9940204620361328,
+      "start_ms": 64760,
+      "end_ms": 65080,
+      "speaker": "C"
+    },
+    {
+      "word": "DEA",
+      "confidence": 0.9968429803848267,
+      "start_ms": 65080,
+      "end_ms": 65600,
+      "speaker": "C"
+    },
+    {
+      "word": "number",
+      "confidence": 0.9705013632774353,
+      "start_ms": 65600,
+      "end_ms": 65980,
+      "speaker": "C"
+    },
+    {
+      "word": "is",
+      "confidence": 0.9940827488899231,
+      "start_ms": 65980,
+      "end_ms": 66520,
+      "speaker": "C"
+    },
+    {
+      "word": "J",
+      "confidence": 0.7365150451660156,
+      "start_ms": 66520,
+      "end_ms": 66680,
+      "speaker": "C"
+    },
+    {
+      "word": "as",
+      "confidence": 0.9323700666427612,
+      "start_ms": 66680,
+      "end_ms": 66900,
+      "speaker": "C"
+    },
+    {
+      "word": "in",
+      "confidence": 0.9938634634017944,
+      "start_ms": 66900,
+      "end_ms": 67040,
+      "speaker": "C"
+    },
+    {
+      "word": "Jenny,",
+      "confidence": 0.8805739283561707,
+      "start_ms": 67040,
+      "end_ms": 67380,
+      "speaker": "C"
+    },
+    {
+      "word": "J",
+      "confidence": 0.9297341108322144,
+      "start_ms": 67500,
+      "end_ms": 68140,
+      "speaker": "C"
+    },
+    {
+      "word": "as",
+      "confidence": 0.9953511953353882,
+      "start_ms": 68140,
+      "end_ms": 68340,
+      "speaker": "C"
+    },
+    {
+      "word": "in",
+      "confidence": 0.9981168508529663,
+      "start_ms": 68340,
+      "end_ms": 68460,
+      "speaker": "C"
+    },
+    {
+      "word": "Jenny,",
+      "confidence": 0.9831989407539368,
+      "start_ms": 68460,
+      "end_ms": 68820,
+      "speaker": "C"
+    },
+    {
+      "word": "867",
+      "confidence": 0.6116056442260742,
+      "start_ms": 68940,
+      "end_ms": 70580,
+      "speaker": "C"
+    },
+    {
+      "word": "-5309.",
+      "confidence": 0.9623458385467529,
+      "start_ms": 70580,
+      "end_ms": 73740,
+      "speaker": "C"
+    },
+    {
+      "word": "I'm",
+      "confidence": 0.9851233065128326,
+      "start_ms": 73980,
+      "end_ms": 74580,
+      "speaker": "C"
+    },
+    {
+      "word": "calling",
+      "confidence": 0.9992740750312805,
+      "start_ms": 74580,
+      "end_ms": 74820,
+      "speaker": "C"
+    },
+    {
+      "word": "in",
+      "confidence": 0.9793742895126343,
+      "start_ms": 74820,
+      "end_ms": 75060,
+      "speaker": "C"
+    },
+    {
+      "word": "a",
+      "confidence": 0.9952825903892517,
+      "start_ms": 75060,
+      "end_ms": 75120,
+      "speaker": "C"
+    },
+    {
+      "word": "prescription",
+      "confidence": 0.9979761242866516,
+      "start_ms": 75120,
+      "end_ms": 75440,
+      "speaker": "C"
+    },
+    {
+      "word": "today",
+      "confidence": 0.9886189699172974,
+      "start_ms": 75440,
+      "end_ms": 75900,
+      "speaker": "C"
+    },
+    {
+      "word": "for",
+      "confidence": 0.9227649569511414,
+      "start_ms": 75900,
+      "end_ms": 76600,
+      "speaker": "C"
+    },
+    {
+      "word": "Mr.",
+      "confidence": 0.9941746592521667,
+      "start_ms": 76600,
+      "end_ms": 76800,
+      "speaker": "C"
+    },
+    {
+      "word": "Peyton",
+      "confidence": 0.7662160694599152,
+      "start_ms": 76940,
+      "end_ms": 77400,
+      "speaker": "C"
+    },
+    {
+      "word": "Manning,",
+      "confidence": 0.9970442950725555,
+      "start_ms": 77400,
+      "end_ms": 78120,
+      "speaker": "C"
+    },
+    {
+      "word": "date",
+      "confidence": 0.9398707747459412,
+      "start_ms": 78260,
+      "end_ms": 78860,
+      "speaker": "C"
+    },
+    {
+      "word": "of",
+      "confidence": 0.9989953637123108,
+      "start_ms": 78860,
+      "end_ms": 79020,
+      "speaker": "C"
+    },
+    {
+      "word": "birth",
+      "confidence": 0.9991723299026489,
+      "start_ms": 79020,
+      "end_ms": 79200,
+      "speaker": "C"
+    },
+    {
+      "word": "is",
+      "confidence": 0.9951076507568359,
+      "start_ms": 79200,
+      "end_ms": 79440,
+      "speaker": "C"
+    },
+    {
+      "word": "7",
+      "confidence": 0.6871472001075745,
+      "start_ms": 79440,
+      "end_ms": 79740,
+      "speaker": "C"
+    },
+    {
+      "word": "-2",
+      "confidence": 0.5791853293776512,
+      "start_ms": 79740,
+      "end_ms": 80080,
+      "speaker": "C"
+    },
+    {
+      "word": "-1978.",
+      "confidence": 0.9695202112197876,
+      "start_ms": 80080,
+      "end_ms": 81420,
+      "speaker": "C"
+    },
+    {
+      "word": "His",
+      "confidence": 0.9941434264183044,
+      "start_ms": 81940,
+      "end_ms": 82560,
+      "speaker": "C"
+    },
+    {
+      "word": "first",
+      "confidence": 0.9974125027656555,
+      "start_ms": 82560,
+      "end_ms": 82820,
+      "speaker": "C"
+    },
+    {
+      "word": "name",
+      "confidence": 0.9989269375801086,
+      "start_ms": 82820,
+      "end_ms": 83060,
+      "speaker": "C"
+    },
+    {
+      "word": "is",
+      "confidence": 0.9978256821632385,
+      "start_ms": 83060,
+      "end_ms": 83260,
+      "speaker": "C"
+    },
+    {
+      "word": "spelled.",
+      "confidence": 0.985371470451355,
+      "start_ms": 83260,
+      "end_ms": 83600,
+      "speaker": "C"
+    },
+    {
+      "word": "P",
+      "confidence": 0.7155258655548096,
+      "start_ms": 83600,
+      "end_ms": 84260,
+      "speaker": "C"
+    },
+    {
+      "word": "as",
+      "confidence": 0.6352118253707886,
+      "start_ms": 84260,
+      "end_ms": 84560,
+      "speaker": "C"
+    },
+    {
+      "word": "in",
+      "confidence": 0.9889042973518372,
+      "start_ms": 84560,
+      "end_ms": 84700,
+      "speaker": "C"
+    },
+    {
+      "word": "Paul,",
+      "confidence": 0.958524763584137,
+      "start_ms": 84700,
+      "end_ms": 85200,
+      "speaker": "C"
+    },
+    {
+      "word": "E",
+      "confidence": 0.9962891340255737,
+      "start_ms": 85500,
+      "end_ms": 86060,
+      "speaker": "C"
+    },
+    {
+      "word": "as",
+      "confidence": 0.9337978959083557,
+      "start_ms": 86060,
+      "end_ms": 86440,
+      "speaker": "C"
+    },
+    {
+      "word": "in",
+      "confidence": 0.9610570073127747,
+      "start_ms": 86440,
+      "end_ms": 86580,
+      "speaker": "C"
+    },
+    {
+      "word": "Edward,",
+      "confidence": 0.9963889122009277,
+      "start_ms": 86580,
+      "end_ms": 86960,
+      "speaker": "C"
+    },
+    {
+      "word": "Y,",
+      "confidence": 0.9953218102455139,
+      "start_ms": 87180,
+      "end_ms": 87520,
+      "speaker": "C"
+    },
+    {
+      "word": "T",
+      "confidence": 0.9989262223243713,
+      "start_ms": 87820,
+      "end_ms": 88320,
+      "speaker": "C"
+    },
+    {
+      "word": "as",
+      "confidence": 0.9759431481361389,
+      "start_ms": 88320,
+      "end_ms": 88560,
+      "speaker": "C"
+    },
+    {
+      "word": "in",
+      "confidence": 0.9957636594772339,
+      "start_ms": 88560,
+      "end_ms": 88700,
+      "speaker": "C"
+    },
+    {
+      "word": "Tom,",
+      "confidence": 0.9980489015579224,
+      "start_ms": 88700,
+      "end_ms": 89060,
+      "speaker": "C"
+    },
+    {
+      "word": "O,",
+      "confidence": 0.9989456534385681,
+      "start_ms": 89300,
+      "end_ms": 90000,
+      "speaker": "C"
+    },
+    {
+      "word": "N",
+      "confidence": 0.9984862804412842,
+      "start_ms": 90260,
+      "end_ms": 90820,
+      "speaker": "C"
+    },
+    {
+      "word": "as",
+      "confidence": 0.9904493689537048,
+      "start_ms": 90820,
+      "end_ms": 90980,
+      "speaker": "C"
+    },
+    {
+      "word": "in",
+      "confidence": 0.9974324107170105,
+      "start_ms": 90980,
+      "end_ms": 91100,
+      "speaker": "C"
+    },
+    {
+      "word": "Nancy,",
+      "confidence": 0.9972013235092163,
+      "start_ms": 91100,
+      "end_ms": 91480,
+      "speaker": "C"
+    },
+    {
+      "word": "and",
+      "confidence": 0.9552388787269592,
+      "start_ms": 91660,
+      "end_ms": 92120,
+      "speaker": "C"
+    },
+    {
+      "word": "Manning,",
+      "confidence": 0.9853615760803223,
+      "start_ms": 92120,
+      "end_ms": 92620,
+      "speaker": "C"
+    },
+    {
+      "word": "M",
+      "confidence": 0.9988933205604553,
+      "start_ms": 92720,
+      "end_ms": 93220,
+      "speaker": "C"
+    },
+    {
+      "word": "as",
+      "confidence": 0.9932087063789368,
+      "start_ms": 93220,
+      "end_ms": 93360,
+      "speaker": "C"
+    },
+    {
+      "word": "in",
+      "confidence": 0.9989773035049438,
+      "start_ms": 93360,
+      "end_ms": 93500,
+      "speaker": "C"
+    },
+    {
+      "word": "Mary,",
+      "confidence": 0.9990531802177429,
+      "start_ms": 93500,
+      "end_ms": 93760,
+      "speaker": "C"
+    },
+    {
+      "word": "A,",
+      "confidence": 0.9983760118484497,
+      "start_ms": 94020,
+      "end_ms": 94560,
+      "speaker": "C"
+    },
+    {
+      "word": "N",
+      "confidence": 0.9997171759605408,
+      "start_ms": 94860,
+      "end_ms": 95300,
+      "speaker": "C"
+    },
+    {
+      "word": "as",
+      "confidence": 0.9980465173721313,
+      "start_ms": 95300,
+      "end_ms": 95460,
+      "speaker": "C"
+    },
+    {
+      "word": "in",
+      "confidence": 0.9996891021728516,
+      "start_ms": 95460,
+      "end_ms": 95560,
+      "speaker": "C"
+    },
+    {
+      "word": "Nancy,",
+      "confidence": 0.999251663684845,
+      "start_ms": 95560,
+      "end_ms": 96020,
+      "speaker": "C"
+    },
+    {
+      "word": "N",
+      "confidence": 0.9958193302154541,
+      "start_ms": 96200,
+      "end_ms": 96600,
+      "speaker": "C"
+    },
+    {
+      "word": "as",
+      "confidence": 0.9959944486618042,
+      "start_ms": 96600,
+      "end_ms": 96760,
+      "speaker": "C"
+    },
+    {
+      "word": "in",
+      "confidence": 0.9997835755348206,
+      "start_ms": 96760,
+      "end_ms": 96880,
+      "speaker": "C"
+    },
+    {
+      "word": "Nancy,",
+      "confidence": 0.9988781809806824,
+      "start_ms": 96880,
+      "end_ms": 97320,
+      "speaker": "C"
+    },
+    {
+      "word": "I,",
+      "confidence": 0.9989523887634277,
+      "start_ms": 97500,
+      "end_ms": 98000,
+      "speaker": "C"
+    },
+    {
+      "word": "N",
+      "confidence": 0.9985713958740234,
+      "start_ms": 98380,
+      "end_ms": 99060,
+      "speaker": "C"
+    },
+    {
+      "word": "as",
+      "confidence": 0.999455988407135,
+      "start_ms": 99060,
+      "end_ms": 99220,
+      "speaker": "C"
+    },
+    {
+      "word": "in",
+      "confidence": 0.9994276165962219,
+      "start_ms": 99220,
+      "end_ms": 99320,
+      "speaker": "C"
+    },
+    {
+      "word": "Nancy,",
+      "confidence": 0.9990585446357727,
+      "start_ms": 99320,
+      "end_ms": 99640,
+      "speaker": "C"
+    },
+    {
+      "word": "G.",
+      "confidence": 0.9969915151596069,
+      "start_ms": 99820,
+      "end_ms": 100180,
+      "speaker": "C"
+    },
+    {
+      "word": "Mr.",
+      "confidence": 0.9975258708000183,
+      "start_ms": 100840,
+      "end_ms": 101460,
+      "speaker": "C"
+    },
+    {
+      "word": "Manning",
+      "confidence": 0.9996772110462189,
+      "start_ms": 101540,
+      "end_ms": 101940,
+      "speaker": "C"
+    },
+    {
+      "word": "is",
+      "confidence": 0.9994643330574036,
+      "start_ms": 101940,
+      "end_ms": 102100,
+      "speaker": "C"
+    },
+    {
+      "word": "needing",
+      "confidence": 0.9987097978591919,
+      "start_ms": 102100,
+      "end_ms": 102320,
+      "speaker": "C"
+    },
+    {
+      "word": "his",
+      "confidence": 0.9993816614151001,
+      "start_ms": 102320,
+      "end_ms": 102620,
+      "speaker": "C"
+    },
+    {
+      "word": "Diavan",
+      "confidence": 0.7757215797901154,
+      "start_ms": 102620,
+      "end_ms": 103140,
+      "speaker": "C"
+    },
+    {
+      "word": "HCT",
+      "confidence": 0.9921207129955292,
+      "start_ms": 103140,
+      "end_ms": 104020,
+      "speaker": "C"
+    },
+    {
+      "word": "160",
+      "confidence": 0.8971208930015564,
+      "start_ms": 104020,
+      "end_ms": 104960,
+      "speaker": "C"
+    },
+    {
+      "word": "slash",
+      "confidence": 0.6333215236663818,
+      "start_ms": 104960,
+      "end_ms": 105840,
+      "speaker": "C"
+    },
+    {
+      "word": "12",
+      "confidence": 0.9986889958381653,
+      "start_ms": 105840,
+      "end_ms": 106280,
+      "speaker": "C"
+    },
+    {
+      "word": ".5",
+      "confidence": 0.9995810389518738,
+      "start_ms": 106280,
+      "end_ms": 106880,
+      "speaker": "C"
+    },
+    {
+      "word": "milligrams.",
+      "confidence": 0.978996753692627,
+      "start_ms": 106880,
+      "end_ms": 107280,
+      "speaker": "C"
+    },
+    {
+      "word": "He",
+      "confidence": 0.9998414516448975,
+      "start_ms": 107600,
+      "end_ms": 108220,
+      "speaker": "C"
+    },
+    {
+      "word": "will",
+      "confidence": 0.9999052286148071,
+      "start_ms": 108220,
+      "end_ms": 108440,
+      "speaker": "C"
+    },
+    {
+      "word": "take",
+      "confidence": 0.9999207258224487,
+      "start_ms": 108440,
+      "end_ms": 108680,
+      "speaker": "C"
+    },
+    {
+      "word": "that",
+      "confidence": 0.999789297580719,
+      "start_ms": 108680,
+      "end_ms": 108920,
+      "speaker": "C"
+    },
+    {
+      "word": "one",
+      "confidence": 0.9929568767547607,
+      "start_ms": 108920,
+      "end_ms": 109160,
+      "speaker": "C"
+    },
+    {
+      "word": "tablet",
+      "confidence": 0.9997276663780212,
+      "start_ms": 109160,
+      "end_ms": 109620,
+      "speaker": "C"
+    },
+    {
+      "word": "by",
+      "confidence": 0.9965893030166626,
+      "start_ms": 109620,
+      "end_ms": 109900,
+      "speaker": "C"
+    },
+    {
+      "word": "mouth",
+      "confidence": 0.9976803064346313,
+      "start_ms": 109900,
+      "end_ms": 110180,
+      "speaker": "C"
+    },
+    {
+      "word": "daily.",
+      "confidence": 0.9998206496238708,
+      "start_ms": 110180,
+      "end_ms": 110640,
+      "speaker": "C"
+    },
+    {
+      "word": "Number",
+      "confidence": 0.9923254251480103,
+      "start_ms": 110760,
+      "end_ms": 111340,
+      "speaker": "C"
+    },
+    {
+      "word": "90",
+      "confidence": 0.9976485371589661,
+      "start_ms": 111340,
+      "end_ms": 111800,
+      "speaker": "C"
+    },
+    {
+      "word": "with",
+      "confidence": 0.9780068397521973,
+      "start_ms": 111800,
+      "end_ms": 112240,
+      "speaker": "C"
+    },
+    {
+      "word": "three",
+      "confidence": 0.9337435960769653,
+      "start_ms": 112240,
+      "end_ms": 112440,
+      "speaker": "C"
+    },
+    {
+      "word": "additional",
+      "confidence": 0.9998916387557983,
+      "start_ms": 112440,
+      "end_ms": 112820,
+      "speaker": "C"
+    },
+    {
+      "word": "refills.",
+      "confidence": 0.9997548162937164,
+      "start_ms": 112820,
+      "end_ms": 113420,
+      "speaker": "C"
+    },
+    {
+      "word": "Again,",
+      "confidence": 0.9744638800621033,
+      "start_ms": 113600,
+      "end_ms": 114300,
+      "speaker": "C"
+    },
+    {
+      "word": "that",
+      "confidence": 0.9977902173995972,
+      "start_ms": 114460,
+      "end_ms": 114640,
+      "speaker": "C"
+    },
+    {
+      "word": "is",
+      "confidence": 0.9975029826164246,
+      "start_ms": 114640,
+      "end_ms": 114840,
+      "speaker": "C"
+    },
+    {
+      "word": "Diavan",
+      "confidence": 0.7390266358852386,
+      "start_ms": 114840,
+      "end_ms": 115400,
+      "speaker": "C"
+    },
+    {
+      "word": "HCT",
+      "confidence": 0.9916591942310333,
+      "start_ms": 115400,
+      "end_ms": 116360,
+      "speaker": "C"
+    },
+    {
+      "word": "160",
+      "confidence": 0.6957671046257019,
+      "start_ms": 116360,
+      "end_ms": 117460,
+      "speaker": "C"
+    },
+    {
+      "word": "slash",
+      "confidence": 0.23209068179130554,
+      "start_ms": 117460,
+      "end_ms": 118200,
+      "speaker": "C"
+    },
+    {
+      "word": "12",
+      "confidence": 0.9991681575775146,
+      "start_ms": 118200,
+      "end_ms": 118640,
+      "speaker": "C"
+    },
+    {
+      "word": ".5",
+      "confidence": 0.9986089169979095,
+      "start_ms": 118640,
+      "end_ms": 119280,
+      "speaker": "C"
+    },
+    {
+      "word": "milligrams,",
+      "confidence": 0.9579927325248718,
+      "start_ms": 119280,
+      "end_ms": 119680,
+      "speaker": "C"
+    },
+    {
+      "word": "one",
+      "confidence": 0.9184785485267639,
+      "start_ms": 120140,
+      "end_ms": 120620,
+      "speaker": "C"
+    },
+    {
+      "word": "tablet",
+      "confidence": 0.9993494153022766,
+      "start_ms": 120620,
+      "end_ms": 121020,
+      "speaker": "C"
+    },
+    {
+      "word": "by",
+      "confidence": 0.9724903106689453,
+      "start_ms": 121020,
+      "end_ms": 121260,
+      "speaker": "C"
+    },
+    {
+      "word": "mouth",
+      "confidence": 0.9948280453681946,
+      "start_ms": 121260,
+      "end_ms": 121560,
+      "speaker": "C"
+    },
+    {
+      "word": "daily,",
+      "confidence": 0.9993329644203186,
+      "start_ms": 121560,
+      "end_ms": 122040,
+      "speaker": "C"
+    },
+    {
+      "word": "number",
+      "confidence": 0.9955160021781921,
+      "start_ms": 122220,
+      "end_ms": 122720,
+      "speaker": "C"
+    },
+    {
+      "word": "90",
+      "confidence": 0.9994891881942749,
+      "start_ms": 122720,
+      "end_ms": 123240,
+      "speaker": "C"
+    },
+    {
+      "word": "with",
+      "confidence": 0.901870608329773,
+      "start_ms": 123240,
+      "end_ms": 123740,
+      "speaker": "C"
+    },
+    {
+      "word": "three",
+      "confidence": 0.9831002950668335,
+      "start_ms": 123740,
+      "end_ms": 123940,
+      "speaker": "C"
+    },
+    {
+      "word": "additional",
+      "confidence": 0.9999192953109741,
+      "start_ms": 123940,
+      "end_ms": 124360,
+      "speaker": "C"
+    },
+    {
+      "word": "refills.",
+      "confidence": 0.9995368719100952,
+      "start_ms": 124360,
+      "end_ms": 124880,
+      "speaker": "C"
+    },
+    {
+      "word": "Thank",
+      "confidence": 0.9998973608016968,
+      "start_ms": 125020,
+      "end_ms": 125460,
+      "speaker": "C"
+    },
+    {
+      "word": "you.",
+      "confidence": 0.9997797608375549,
+      "start_ms": 125460,
+      "end_ms": 125720,
+      "speaker": "C"
+    }
+  ]
+}

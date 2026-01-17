@@ -1,0 +1,14 @@
+=== FULL TRANSCRIPT ===
+
+The supplies you will need for this task is a medication list. You will also be able to use your script, which I have here placed at my phone. Thank you for calling MTC Pharmacy. If you are calling from a physician's office, please leave your name, your office phone number, your office name, physician's name, DEA number. Please provide your patient's name and date of birth, medication and instructions. Thank you. Record your message at the tone. When you are finished, hang up or press pound for more options. This is Sherry Dykes calling from Dr. Ernie Burt's office. Our phone number is 803-555-1212. Dr. Burt's DEA number is J as in Jenny. J as in Jenny. 867-5309. I'm calling in a prescription today for Mr. Peyton Manning. Date of birth is 7 2, 1978. His first name is spelled P as in Paul, E as in Edward, Y T as in Tom, O, N as in Nancy, in Manning. M as in Mary. A, N as in Nancy. N as in Nancy. I, N as In Nancy. G. Mr. Manning is needing his Diavan HCT160, 12.5 milligrams. He will take that one tablet by mouth daily, number 90, with three additional refills. Again, that is Diavan HCT160,12.5 milligrams. One tablet by mouth daily, number ninety, with three additional refills. Thank you. 
+
+=== CONFIDENCE STATS ===
+Mean: 0.972
+Std Dev: 0.057
+Flag Threshold: 0.915
+
+=== TIMESTAMPED UTTERANCES ===
+
+[7.44s – 17.12s] Speaker A: The supplies you will need for this task is a medication list. You will also be able to use your script, which I have here placed at my phone.
+[22.72s – 50.90s] Speaker B: Thank you for calling MTC Pharmacy. If you are calling from a physician's office, please leave your name, your office phone number, your office name, physician's name, DEA number. Please provide your patient's name and date of birth, medication and instructions. Thank you. Record your message at the tone. When you are finished, hang up or press pound for more options.
+[52.99s – 125.97s] Speaker A: This is Sherry Dykes calling from Dr. Ernie Burt's office. Our phone number is 803-555-1212. Dr. Burt's DEA number is J as in Jenny. J as in Jenny. 867-5309. I'm calling in a prescription today for Mr. Peyton Manning. Date of birth is 7 2, 1978. His first name is spelled P as in Paul, E as in Edward, Y T as in Tom, O, N as in Nancy, in Manning. M as in Mary. A, N as in Nancy. N as in Nancy. I, N as In Nancy. G. Mr. Manning is needing his Diavan HCT160, 12.5 milligrams. He will take that one tablet by mouth daily, number 90, with three additional refills. Again, that is Diavan HCT160,12.5 milligrams. One tablet by mouth daily, number ninety, with three additional refills. Thank you.

@@ -1,0 +1,18 @@
+=== RECONCILED TRANSCRIPT ===
+
+[7.44s – 11.60s] Speaker A: The supplies you will need for this task is a medication list.
+[12.80s – 17.12s] Speaker A: You will also be able to use your [LOW CONFIDENCE (Inferred): script] which I have here placed at my phone.
+[22.72s – 36.10s] Speaker B: Thank you for calling MTC Pharmacy. If you are calling from a physician's office, please leave your name, your office phone number, your office name, physician's name, DEA [LOW CONFIDENCE (Inferred): number]
+[37.54s – 44.26s] Speaker B: Please provide your patient's name and date of birth, medication and instructions. Thank you.
+[45.54s – 50.90s] Speaker B: Record your message at the tone. When you are finished, hang up or press pound for more options.
+[52.99s – 77.47s] Speaker A: This is [LOW CONFIDENCE (Inferred): Sherri] Dykes calling from Dr. Ernie Burt's office. Our phone number is [LOW CONFIDENCE (Inferred): 803-555-1212] Dr. Burt's DEA number is J as in [LOW CONFIDENCE (Inferred): Jenny.] J as in [LOW CONFIDENCE (Inferred): 867-5309] I'm calling in a prescription today for Mr. Peyton
+[77.40s – 78.12s] Speaker C: Manning,
+[78.67s – 81.03s] Speaker A: Date of birth is 7 [LOW CONFIDENCE (Inferred): 7/12]
+[80.08s – 81.42s] Speaker C: -1978.
+[82.57s – 91.85s] Speaker A: His first name is [LOW CONFIDENCE (Inferred): spelled] P as in Paul, E as in Edward, [LOW CONFIDENCE (Inferred): Y] T as in Tom, O, N as in Nancy,
+[91.66s – 92.12s] Speaker C: and
+[92.33s – 93.65s] Speaker A: [LOW CONFIDENCE (Inferred): Manning] M as in
+[93.50s – 93.76s] Speaker C: Mary,
+[94.57s – 96.69s] Speaker A: A, N as in [LOW CONFIDENCE (Inferred): Nancy] [LOW CONFIDENCE (Inferred): N]
+[96.60s – 96.76s] Speaker C: as
+[96.85s – 125.97s] Speaker A: [LOW CONFIDENCE (Inferred): in] [LOW CONFIDENCE (Inferred): N as in] I, N as In [LOW CONFIDENCE (Inferred): Nancy.] G. Mr. Manning is needing his Diavan [LOW CONFIDENCE (Inferred): HCT160, 12.5] milligrams. He will take that one tablet by mouth [LOW CONFIDENCE (Inferred): daily] [LOW CONFIDENCE (Inferred): number] [LOW CONFIDENCE (Inferred): 90] with three additional refills. Again, that is Diavan [LOW CONFIDENCE (Inferred): HCT160,12.5 milligrams] One tablet by mouth daily, number [LOW CONFIDENCE (Inferred): ninety,] with three additional refills. Thank you.
