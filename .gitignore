@@ -32,7 +32,7 @@ __pycache__/
 *.pyc
 
 # Audio + generated outputs
-audio/
+# audio/
 *_transcription.html
 *_transcription.txt
 confidence_*.json
