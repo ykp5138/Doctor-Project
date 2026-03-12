@@ -1,6 +1,6 @@
 import { useState, useRef } from 'react';
-import AudioUploader from './components/AudioUploader';
-import AudioRecorder from './components/AudioRecorder';
+import { AudioUploader } from './components/AudioUploader';
+import { AudioRecorder } from './components/AudioRecorder';
 import TranscriptViewer from './components/TranscriptViewer';
 import SummaryViewer from './components/SummaryViewer';
 import './App.css';
