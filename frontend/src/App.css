@@ -164,6 +164,27 @@
   gap: 0.75rem;
 }
 
+.popup-multi-notice {
+  font-size: 0.75rem;
+  color: #737373;
+  background: #f5f5f5;
+  padding: 0.375rem 0.625rem;
+  border-left: 2px solid #1a1a1a;
+}
+
+.suggestion-row {
+  display: flex;
+  align-items: center;
+  gap: 0.375rem;
+  flex-wrap: wrap;
+}
+
+.suggestion-chip-all {
+  font-size: 0.75rem;
+  opacity: 0.75;
+  border-style: dashed;
+}
+
 .popup-header {
   display: flex;
   align-items: center;

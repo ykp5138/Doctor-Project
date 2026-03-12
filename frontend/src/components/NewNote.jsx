@@ -420,7 +420,7 @@ export default function NewNote() {
                     </button>
                   </div>
 
-                  <div className="bg-white p-8 min-h-[500px] overflow-auto">
+                  <div className="bg-white p-8">
                     {resultTab === "transcript"
                       ? <TranscriptViewer words={result.words} audioFile={file} />
                       : <SummaryViewer summary={result.summary} />
