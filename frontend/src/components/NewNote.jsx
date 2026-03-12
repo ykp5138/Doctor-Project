@@ -1,37 +1,116 @@
-import { useState, useRef } from 'react';
-import { motion } from 'framer-motion';
-import { Upload, Mic, Play, FileAudio, CheckCircle, Loader2, AlertCircle, FileText, ClipboardList } from 'lucide-react';
-import { AudioUploader } from './AudioUploader';
-import { AudioRecorder } from './AudioRecorder';
-import TranscriptViewer from './TranscriptViewer';
-import SummaryViewer from './SummaryViewer';
+import { useState, useRef, useCallback } from "react";
+import { Label } from "./ui/label";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "./ui/select";
+import { Input } from "./ui/input";
+import { Mic, MicOff, Circle, Upload, X } from "lucide-react";
+import { motion, AnimatePresence } from "motion/react";
+import TranscriptViewer from "./TranscriptViewer";
+import SummaryViewer from "./SummaryViewer";
 
 const STEPS = [
-  { id: 1, label: 'WhisperX', desc: 'Transcribing + diarizing audio' },
-  { id: 2, label: 'AssemblyAI', desc: 'Cloud transcription' },
-  { id: 3, label: 'Kevin', desc: 'Merging + generating summary' },
+  { id: 1, label: "WhisperX", desc: "Transcribing + diarizing audio" },
+  { id: 2, label: "AssemblyAI", desc: "Cloud transcription" },
+  { id: 3, label: "Kevin", desc: "Merging + generating summary" },
 ];
 
-const NOTE_TYPES = ['SOAP Note', 'Progress Note', 'Consultation', 'Procedure'];
-
 export default function NewNote() {
+  // Patient info
+  const [patientName, setPatientName] = useState("");
+  const [noteType, setNoteType] = useState("soap");
+
+  // Audio source
+  const [inputTab, setInputTab] = useState("upload");
+
+  // Upload state
   const [file, setFile] = useState(null);
-  const [inputTab, setInputTab] = useState('upload');
-  const [resultTab, setResultTab] = useState('transcript');
-  const [noteType, setNoteType] = useState('SOAP Note');
+  const [isDragging, setIsDragging] = useState(false);
+  const fileInputRef = useRef(null);
+
+  // Recording state
+  const [isRecording, setIsRecording] = useState(false);
+  const [isPaused, setIsPaused] = useState(false);
+  const [recordingTime, setRecordingTime] = useState(0);
+  const mediaRecorderRef = useRef(null);
+  const chunksRef = useRef([]);
+  const intervalRef = useRef(null);
+
+  // Pipeline state
   const [loading, setLoading] = useState(false);
   const [step, setStep] = useState(0);
   const [result, setResult] = useState(null);
   const [error, setError] = useState(null);
+  const [resultTab, setResultTab] = useState("transcript");
   const stepTimer = useRef(null);
 
-  const handleFileSelect = (f) => { setFile(f); setResult(null); setError(null); };
-  const handleRecordingComplete = (blob) => {
-    setFile(new File([blob], 'recording.webm', { type: 'audio/webm' }));
-    setResult(null); setError(null); setInputTab('upload');
+  // ── Upload handlers ──
+  const handleDragOver = (e) => { e.preventDefault(); setIsDragging(true); };
+  const handleDragLeave = (e) => { e.preventDefault(); setIsDragging(false); };
+  const handleDrop = (e) => {
+    e.preventDefault();
+    setIsDragging(false);
+    const f = e.dataTransfer.files?.[0];
+    if (f && f.type.startsWith("audio/")) { setFile(f); setResult(null); setError(null); }
   };
-  const handleClear = () => { setFile(null); setResult(null); setError(null); };
+  const handleFileChange = (e) => {
+    const f = e.target.files?.[0];
+    if (f) { setFile(f); setResult(null); setError(null); }
+  };
+  const formatFileSize = (bytes) => {
+    if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`;
+    return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
+  };
 
+  // ── Recording handlers ──
+  const startRecording = useCallback(async () => {
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      const mediaRecorder = new MediaRecorder(stream);
+      mediaRecorderRef.current = mediaRecorder;
+      chunksRef.current = [];
+      mediaRecorder.ondataavailable = (e) => { if (e.data.size > 0) chunksRef.current.push(e.data); };
+      mediaRecorder.onstop = () => {
+        const blob = new Blob(chunksRef.current, { type: "audio/webm" });
+        setFile(new File([blob], "recording.webm", { type: "audio/webm" }));
+        stream.getTracks().forEach((t) => t.stop());
+        setIsRecording(false);
+        setIsPaused(false);
+        setInputTab("upload");
+      };
+      mediaRecorder.start();
+      setIsRecording(true);
+      setRecordingTime(0);
+      intervalRef.current = setInterval(() => setRecordingTime((d) => d + 1), 1000);
+    } catch (err) {
+      console.error("Microphone error:", err);
+    }
+  }, []);
+
+  const stopRecording = useCallback(() => {
+    if (mediaRecorderRef.current && isRecording) {
+      mediaRecorderRef.current.stop();
+      clearInterval(intervalRef.current);
+    }
+  }, [isRecording]);
+
+  const togglePause = useCallback(() => {
+    if (!mediaRecorderRef.current) return;
+    if (isPaused) {
+      mediaRecorderRef.current.resume();
+      intervalRef.current = setInterval(() => setRecordingTime((d) => d + 1), 1000);
+    } else {
+      mediaRecorderRef.current.pause();
+      clearInterval(intervalRef.current);
+    }
+    setIsPaused(!isPaused);
+  }, [isPaused]);
+
+  const formatTime = (seconds) => {
+    const m = Math.floor(seconds / 60);
+    const s = seconds % 60;
+    return `${m}:${s.toString().padStart(2, "0")}`;
+  };
+
+  // ── Transcribe ──
   const handleTranscribe = async () => {
     if (!file) return;
     setLoading(true);
@@ -43,22 +122,22 @@ export default function NewNote() {
     const t2 = setTimeout(() => setStep(3), 55000);
 
     const formData = new FormData();
-    formData.append('file', file);
+    formData.append("file", file);
 
     try {
-      const res = await fetch('http://localhost:8000/transcribe', {
-        method: 'POST',
+      const res = await fetch("http://localhost:8000/transcribe", {
+        method: "POST",
         body: formData,
       });
       if (!res.ok) {
         const detail = await res.json().catch(() => ({}));
-        throw new Error(detail.detail || 'Transcription failed');
+        throw new Error(detail.detail || "Transcription failed");
       }
       const data = await res.json();
       setResult(data);
-      setResultTab('transcript');
+      setResultTab("transcript");
     } catch (err) {
-      setError(err.message || 'An error occurred');
+      setError(err.message || "An error occurred");
     } finally {
       clearTimeout(stepTimer.current);
       clearTimeout(t2);
@@ -67,204 +146,293 @@ export default function NewNote() {
     }
   };
 
+  const canTranscribe = file && !loading;
+
   return (
-    <motion.div
-      className="max-w-6xl mx-auto px-6 py-10"
-      initial={{ opacity: 0, y: 12 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.3 }}
-    >
-      {/* Page header */}
-      <div className="mb-8">
-        <h1 className="text-2xl font-bold text-gray-900">New Note</h1>
-        <p className="text-sm text-gray-500 mt-1">Upload or record a patient visit to generate a structured clinical note.</p>
-      </div>
+    <div className="min-h-screen">
+      {/* Header */}
+      <motion.section
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0.8, ease: [0.19, 1.0, 0.22, 1.0] }}
+        className="border-b border-slate-200"
+      >
+        <div className="max-w-[1600px] mx-auto px-12 py-16">
+          <p className="text-xs uppercase tracking-widest text-slate-500 mb-4">New Documentation</p>
+          <h1 className="text-5xl font-light text-slate-900 tracking-tight">Clinical Note</h1>
+        </div>
+      </motion.section>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {/* ── Left panel: Input ── */}
-        <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6 flex flex-col gap-5">
-          {/* Note type selector */}
-          <div>
-            <label className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2 block">Note Type</label>
-            <div className="flex flex-wrap gap-2">
-              {NOTE_TYPES.map(t => (
-                <button
-                  key={t}
-                  onClick={() => setNoteType(t)}
-                  className="px-3 py-1.5 rounded-lg text-sm font-medium border transition-all"
-                  style={noteType === t
-                    ? { background: '#1a5d3a', color: 'white', borderColor: '#1a5d3a' }
-                    : { background: 'transparent', color: '#6b7280', borderColor: '#e5e7eb' }
-                  }
-                >
-                  {t}
-                </button>
-              ))}
+      <div className="max-w-[1600px] mx-auto px-12 py-16">
+        <div className="grid grid-cols-2 gap-px bg-slate-200">
+
+          {/* ── Left Panel: Input ── */}
+          <motion.div
+            initial={{ opacity: 0, x: -20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.8, delay: 0.2, ease: [0.19, 1.0, 0.22, 1.0] }}
+            className="bg-white p-12"
+          >
+            {/* Patient info */}
+            <div className="mb-16 space-y-8">
+              <div>
+                <Label className="text-xs uppercase tracking-widest text-slate-500 mb-3 block">Patient Name</Label>
+                <Input
+                  value={patientName}
+                  onChange={(e) => setPatientName(e.target.value)}
+                  placeholder="Enter name"
+                  className="border-0 border-b border-slate-200 rounded-none px-0 focus:border-slate-900 focus:ring-0 text-lg bg-transparent"
+                />
+              </div>
+              <div>
+                <Label className="text-xs uppercase tracking-widest text-slate-500 mb-3 block">Note Type</Label>
+                <Select value={noteType} onValueChange={setNoteType}>
+                  <SelectTrigger className="border-0 border-b border-slate-200 rounded-none px-0 focus:border-slate-900 focus:ring-0 text-lg bg-transparent h-auto py-2">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="soap">SOAP Note</SelectItem>
+                    <SelectItem value="progress">Progress Note</SelectItem>
+                    <SelectItem value="consultation">Consultation</SelectItem>
+                    <SelectItem value="procedure">Procedure Note</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
             </div>
-          </div>
 
-          {/* Input mode tabs */}
-          <div>
-            <label className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2 block">Audio Source</label>
-            <div className="flex gap-2 p-1 bg-gray-100 rounded-xl">
-              <button
-                onClick={() => setInputTab('upload')}
-                className="flex-1 flex items-center justify-center gap-2 py-2 px-3 rounded-lg text-sm font-medium transition-all"
-                style={inputTab === 'upload'
-                  ? { background: 'white', color: '#1a5d3a', boxShadow: '0 1px 4px rgba(0,0,0,0.08)' }
-                  : { color: '#6b7280' }
-                }
-              >
-                <Upload size={15} />
-                Upload File
-              </button>
-              <button
-                onClick={() => setInputTab('record')}
-                className="flex-1 flex items-center justify-center gap-2 py-2 px-3 rounded-lg text-sm font-medium transition-all"
-                style={inputTab === 'record'
-                  ? { background: 'white', color: '#1a5d3a', boxShadow: '0 1px 4px rgba(0,0,0,0.08)' }
-                  : { color: '#6b7280' }
-                }
-              >
-                <Mic size={15} />
-                Record Audio
-              </button>
+            {/* Audio source toggle */}
+            <div className="mb-8">
+              <div className="flex items-center justify-between mb-4">
+                <span className="text-xs uppercase tracking-widest text-slate-500">Audio Source</span>
+                <div className="flex gap-px bg-slate-200">
+                  <button
+                    onClick={() => setInputTab("upload")}
+                    className={`px-4 py-1.5 text-xs uppercase tracking-widest transition-colors ${inputTab === "upload" ? "bg-slate-900 text-white" : "bg-white text-slate-500 hover:text-slate-900"}`}
+                  >
+                    Upload
+                  </button>
+                  <button
+                    onClick={() => setInputTab("record")}
+                    className={`px-4 py-1.5 text-xs uppercase tracking-widest transition-colors ${inputTab === "record" ? "bg-slate-900 text-white" : "bg-white text-slate-500 hover:text-slate-900"}`}
+                  >
+                    Record
+                  </button>
+                </div>
+              </div>
+
+              {/* Upload zone */}
+              {inputTab === "upload" && (
+                <>
+                  <input ref={fileInputRef} type="file" accept="audio/*" onChange={handleFileChange} className="hidden" />
+                  {!file ? (
+                    <div
+                      onDragOver={handleDragOver}
+                      onDragLeave={handleDragLeave}
+                      onDrop={handleDrop}
+                      onClick={() => fileInputRef.current?.click()}
+                      className={`w-full py-16 border border-dashed cursor-pointer transition-colors flex flex-col items-center gap-4 ${isDragging ? "border-slate-900 bg-slate-50" : "border-slate-200 hover:border-slate-400"}`}
+                    >
+                      <Upload className={`w-6 h-6 transition-colors ${isDragging ? "text-slate-900" : "text-slate-400"}`} />
+                      <span className="text-sm text-slate-500">Drop audio file or click to browse</span>
+                      <span className="text-xs text-slate-400">MP3, WAV, M4A, WebM</span>
+                    </div>
+                  ) : (
+                    <div className="border border-slate-200 px-6 py-4 flex items-center justify-between">
+                      <div>
+                        <p className="text-sm font-medium text-slate-900">{file.name}</p>
+                        <p className="text-xs text-slate-500 mt-0.5">{formatFileSize(file.size)}</p>
+                      </div>
+                      <button
+                        onClick={() => { setFile(null); setResult(null); setError(null); }}
+                        className="text-slate-400 hover:text-slate-900 transition-colors"
+                      >
+                        <X className="w-4 h-4" />
+                      </button>
+                    </div>
+                  )}
+                </>
+              )}
+
+              {/* Record zone */}
+              {inputTab === "record" && (
+                <div>
+                  <div className="flex items-center justify-between mb-4">
+                    <span className="text-xs text-slate-400">Recording</span>
+                    <span className="font-mono text-2xl text-slate-900 tracking-tight">{formatTime(recordingTime)}</span>
+                  </div>
+
+                  <button
+                    onClick={isRecording ? stopRecording : startRecording}
+                    className="w-full py-16 border border-slate-200 hover:border-slate-900 transition-colors group"
+                  >
+                    <div className="flex flex-col items-center gap-6">
+                      <AnimatePresence mode="wait">
+                        {isRecording ? (
+                          <motion.div
+                            key="recording"
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            exit={{ opacity: 0 }}
+                            className="relative"
+                          >
+                            <MicOff className="w-8 h-8 text-slate-900" />
+                            <motion.div
+                              className="absolute -inset-4 border border-slate-900"
+                              animate={{ opacity: [1, 0] }}
+                              transition={{ duration: 1.5, repeat: Infinity }}
+                            />
+                          </motion.div>
+                        ) : (
+                          <motion.div key="idle" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
+                            <Mic className="w-8 h-8 text-slate-400 group-hover:text-slate-900 transition-colors" />
+                          </motion.div>
+                        )}
+                      </AnimatePresence>
+                      <span className="text-sm text-slate-500 group-hover:text-slate-900 transition-colors">
+                        {isRecording ? "Stop Recording" : "Start Recording"}
+                      </span>
+                    </div>
+                  </button>
+
+                  {isRecording && (
+                    <button
+                      onClick={togglePause}
+                      className="w-full mt-px py-3 border border-slate-200 text-xs uppercase tracking-widest text-slate-500 hover:text-slate-900 hover:border-slate-900 transition-colors"
+                    >
+                      {isPaused ? "Resume" : "Pause"}
+                    </button>
+                  )}
+                </div>
+              )}
             </div>
-          </div>
 
-          {/* Upload / Record component */}
-          <div>
-            {inputTab === 'upload'
-              ? <AudioUploader onFileSelect={handleFileSelect} selectedFile={file} onClear={handleClear} />
-              : <AudioRecorder onRecordingComplete={handleRecordingComplete} />
-            }
-          </div>
+            {/* Transcribe button */}
+            {canTranscribe && (
+              <button
+                onClick={handleTranscribe}
+                className="w-full h-14 bg-slate-900 hover:bg-slate-700 text-white text-sm uppercase tracking-widest transition-colors mt-4"
+              >
+                Transcribe Audio
+              </button>
+            )}
 
-          {/* Transcribe button */}
-          {file && !loading && (
-            <button
-              onClick={handleTranscribe}
-              className="w-full flex items-center justify-center gap-2 py-3 rounded-xl text-sm font-semibold text-white transition-all hover:-translate-y-0.5 active:translate-y-0"
-              style={{ background: 'linear-gradient(135deg, #1a5d3a 0%, #2d8a5e 100%)', boxShadow: '0 4px 14px rgba(26,93,58,0.3)' }}
-            >
-              <Play size={16} />
-              Transcribe Audio
-            </button>
-          )}
-
-          {/* Pipeline progress */}
-          {loading && (
-            <div className="border-t border-gray-100 pt-4">
-              <p className="text-xs text-gray-400 text-center mb-4">This may take several minutes on CPU.</p>
-              <div className="flex flex-col gap-2">
-                {STEPS.map(s => (
+            {/* Pipeline progress */}
+            {loading && (
+              <div className="mt-8 space-y-2">
+                <p className="text-xs text-slate-400 mb-4">This may take several minutes on CPU.</p>
+                {STEPS.map((s) => (
                   <div
                     key={s.id}
-                    className="flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all"
-                    style={step === s.id
-                      ? { background: 'rgba(26,93,58,0.06)' }
-                      : step > s.id
-                      ? { opacity: 0.6 }
-                      : { opacity: 0.35 }
-                    }
+                    className="flex items-center gap-4 px-4 py-3 transition-all"
+                    style={step === s.id ? { background: "#f5f5f5" } : { opacity: step > s.id ? 0.5 : 0.3 }}
                   >
                     <div
-                      className="w-7 h-7 rounded-full flex items-center justify-center text-xs font-semibold shrink-0"
+                      className="w-6 h-6 flex items-center justify-center text-xs font-medium shrink-0"
                       style={step > s.id
-                        ? { background: 'rgba(26,93,58,0.15)', color: '#1a5d3a' }
+                        ? { background: "#1a1a1a", color: "white" }
                         : step === s.id
-                        ? { background: '#1a5d3a', color: 'white' }
-                        : { background: '#f3f4f6', color: '#9ca3af' }
+                        ? { background: "#1a1a1a", color: "white" }
+                        : { background: "#e5e5e5", color: "#737373" }
                       }
                     >
-                      {step > s.id
-                        ? <CheckCircle size={14} />
-                        : step === s.id
-                        ? <span className="spinner-sm" />
-                        : s.id
-                      }
+                      {step === s.id ? <span className="spinner-sm" /> : step > s.id ? "✓" : s.id}
                     </div>
-                    <div className="flex flex-col">
-                      <span className="text-sm font-semibold text-gray-800">{s.label}</span>
-                      <span className="text-xs text-gray-500">{s.desc}</span>
+                    <div>
+                      <p className="text-sm font-medium text-slate-900">{s.label}</p>
+                      <p className="text-xs text-slate-500">{s.desc}</p>
                     </div>
                   </div>
                 ))}
               </div>
-            </div>
-          )}
+            )}
 
-          {/* Error */}
-          {error && (
-            <div className="flex items-start gap-3 p-4 bg-red-50 border border-red-100 rounded-xl text-red-600 text-sm">
-              <AlertCircle size={18} className="shrink-0 mt-0.5" />
-              <span>{error}</span>
-            </div>
-          )}
-        </div>
-
-        {/* ── Right panel: Results ── */}
-        <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6 flex flex-col min-h-[420px]">
-          {!result && !loading && (
-            <div className="flex-1 flex flex-col items-center justify-center text-center gap-3 py-12">
-              <div
-                className="w-16 h-16 rounded-2xl flex items-center justify-center mb-2"
-                style={{ background: '#1a5d3a0f' }}
-              >
-                <FileAudio size={28} style={{ color: '#1a5d3a' }} />
+            {/* Error */}
+            {error && (
+              <div className="mt-6 px-4 py-3 border border-red-200 bg-red-50 text-red-700 text-sm">
+                {error}
               </div>
-              <p className="font-semibold text-gray-700">No results yet</p>
-              <p className="text-sm text-gray-400 max-w-[220px]">
-                Upload or record audio on the left, then click <strong>Transcribe Audio</strong> to begin.
-              </p>
-            </div>
-          )}
+            )}
+          </motion.div>
 
-          {loading && !result && (
-            <div className="flex-1 flex flex-col items-center justify-center gap-3 py-12">
-              <Loader2 size={36} className="animate-spin" style={{ color: '#1a5d3a' }} />
-              <p className="text-sm text-gray-500">Processing audio pipeline…</p>
+          {/* ── Right Panel: Output ── */}
+          <motion.div
+            initial={{ opacity: 0, x: 20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.8, delay: 0.3, ease: [0.19, 1.0, 0.22, 1.0] }}
+            className="bg-slate-50 p-12"
+          >
+            <div className="mb-8">
+              <span className="text-xs uppercase tracking-widest text-slate-500">Generated Output</span>
             </div>
-          )}
 
-          {result && (
-            <>
-              {/* Result tabs */}
-              <div className="flex gap-1 p-1 bg-gray-100 rounded-xl mb-5">
-                <button
-                  onClick={() => setResultTab('transcript')}
-                  className="flex-1 flex items-center justify-center gap-2 py-2 px-3 rounded-lg text-sm font-medium transition-all"
-                  style={resultTab === 'transcript'
-                    ? { background: 'white', color: '#1a5d3a', boxShadow: '0 1px 4px rgba(0,0,0,0.08)' }
-                    : { color: '#6b7280' }
-                  }
+            <AnimatePresence mode="wait">
+              {!result && !loading && (
+                <motion.div
+                  key="empty"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  className="flex items-center justify-center h-[600px]"
                 >
-                  <FileText size={15} />
-                  Transcript
-                </button>
-                <button
-                  onClick={() => setResultTab('summary')}
-                  className="flex-1 flex items-center justify-center gap-2 py-2 px-3 rounded-lg text-sm font-medium transition-all"
-                  style={resultTab === 'summary'
-                    ? { background: 'white', color: '#1a5d3a', boxShadow: '0 1px 4px rgba(0,0,0,0.08)' }
-                    : { color: '#6b7280' }
-                  }
-                >
-                  <ClipboardList size={15} />
-                  Clinical Note
-                </button>
-              </div>
+                  <div className="text-center">
+                    <Circle className="w-4 h-4 text-slate-300 mx-auto mb-4" />
+                    <p className="text-sm text-slate-400">Awaiting generation</p>
+                  </div>
+                </motion.div>
+              )}
 
-              <div className="flex-1 overflow-auto">
-                {resultTab === 'transcript'
-                  ? <TranscriptViewer words={result.words} audioFile={file} />
-                  : <SummaryViewer summary={result.summary} />
-                }
-              </div>
-            </>
-          )}
+              {loading && !result && (
+                <motion.div
+                  key="loading"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  className="flex items-center justify-center h-[600px]"
+                >
+                  <div className="text-center">
+                    <div className="w-5 h-5 border-2 border-slate-300 border-t-slate-900 rounded-full animate-spin mx-auto mb-4" />
+                    <p className="text-sm text-slate-400">Processing pipeline…</p>
+                  </div>
+                </motion.div>
+              )}
+
+              {result && (
+                <motion.div
+                  key="result"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  className="space-y-6"
+                >
+                  {/* Result tabs */}
+                  <div className="flex gap-px bg-slate-200">
+                    <button
+                      onClick={() => setResultTab("transcript")}
+                      className={`flex-1 py-2.5 text-xs uppercase tracking-widest transition-colors ${resultTab === "transcript" ? "bg-slate-900 text-white" : "bg-white text-slate-500 hover:text-slate-900"}`}
+                    >
+                      Transcript
+                    </button>
+                    <button
+                      onClick={() => setResultTab("summary")}
+                      className={`flex-1 py-2.5 text-xs uppercase tracking-widest transition-colors ${resultTab === "summary" ? "bg-slate-900 text-white" : "bg-white text-slate-500 hover:text-slate-900"}`}
+                    >
+                      Clinical Note
+                    </button>
+                  </div>
+
+                  <div className="bg-white p-8 min-h-[500px] overflow-auto">
+                    {resultTab === "transcript"
+                      ? <TranscriptViewer words={result.words} audioFile={file} />
+                      : <SummaryViewer summary={result.summary} />
+                    }
+                  </div>
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </motion.div>
+
         </div>
       </div>
-    </motion.div>
+    </div>
   );
 }
