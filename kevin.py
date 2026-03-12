@@ -201,6 +201,17 @@ class TranscriptMerger:
                             best_match = a_word
                             best_idx = i
 
+            # Fallback: timestamps from the two transcribers can drift by several seconds,
+            # making overlap-based matching fail entirely. If no overlap match was found,
+            # use text matching so we still pair the right words across the drift gap.
+            if not best_match:
+                for i in range(search_start_idx, search_end_idx):
+                    a_word = assembly_words[i]
+                    if self.are_words_effectively_equal(w_word['text'], a_word['text']):
+                        best_match = a_word
+                        best_idx = i
+                        break
+
             # Advance past the matched word to prevent the same assembly word
             # being reused and causing duplicates (e.g. "is is" instead of "is a")
             if best_match:
