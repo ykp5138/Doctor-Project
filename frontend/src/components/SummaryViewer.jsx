@@ -1,9 +1,17 @@
-import { useRef, useCallback } from 'react';
+import { useRef, useCallback, useState } from 'react';
+
+const PlayIcon = () => (
+  <svg width="9" height="9" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+);
+const PauseIcon = () => (
+  <svg width="9" height="9" viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg>
+);
 
 export default function SummaryViewer({ summary, audioFile }) {
   const audioCtxRef = useRef(null);
   const audioBufferRef = useRef(null);
   const sourceRef = useRef(null);
+  const [playingChapter, setPlayingChapter] = useState(null);
 
   const ensureAudio = useCallback(async () => {
     if (!audioFile) return false;
@@ -16,9 +24,20 @@ export default function SummaryViewer({ summary, audioFile }) {
     } catch { return false; }
   }, [audioFile]);
 
-  const playSlice = useCallback(async (start, end) => {
+  const stopPlay = useCallback(() => {
+    if (sourceRef.current) { try { sourceRef.current.stop(); } catch {} sourceRef.current = null; }
+    setPlayingChapter(null);
+  }, []);
+
+  const playChapter = useCallback(async (start, end, idx) => {
+    // If this chapter is already playing, stop it
+    if (playingChapter === idx) {
+      stopPlay();
+      return;
+    }
     const ready = await ensureAudio();
     if (!ready) return;
+    // Stop any currently playing chapter
     if (sourceRef.current) { try { sourceRef.current.stop(); } catch {} sourceRef.current = null; }
     const ctx = audioCtxRef.current;
     const buf = audioBufferRef.current;
@@ -28,9 +47,10 @@ export default function SummaryViewer({ summary, audioFile }) {
     src.buffer = buf;
     src.connect(ctx.destination);
     src.start(0, from, duration);
-    src.onended = () => { sourceRef.current = null; };
+    src.onended = () => { sourceRef.current = null; setPlayingChapter(null); };
     sourceRef.current = src;
-  }, [ensureAudio]);
+    setPlayingChapter(idx);
+  }, [ensureAudio, stopPlay, playingChapter]);
 
   if (!summary) return null;
 
@@ -61,17 +81,18 @@ export default function SummaryViewer({ summary, audioFile }) {
           if (m) {
             const start = tsToSecs(m[1]);
             const end = tsToSecs(m[2]);
+            const isPlaying = playingChapter === i;
             return (
               <div key={i} className="chapter-item">
                 <div className="chapter-ts-row">
                   <span className="chapter-ts">{m[1]} – {m[2]}</span>
                   {audioFile && (
                     <button
-                      className="chapter-play-btn"
-                      onClick={() => playSlice(start, end)}
-                      title="Play this section"
+                      className={`chapter-play-btn ${isPlaying ? 'playing' : ''}`}
+                      onClick={() => playChapter(start, end, i)}
+                      title={isPlaying ? 'Stop' : 'Play this section'}
                     >
-                      <svg width="9" height="9" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+                      {isPlaying ? <PauseIcon /> : <PlayIcon />}
                     </button>
                   )}
                 </div>

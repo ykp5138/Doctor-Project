@@ -155,7 +155,8 @@
   flex-shrink: 0;
 }
 
-.chapter-play-btn:hover {
+.chapter-play-btn:hover,
+.chapter-play-btn.playing {
   background: #1a1a1a;
   border-color: #1a1a1a;
   color: white;
