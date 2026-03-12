@@ -34,6 +34,7 @@ __pycache__/
 *.pyc
 
 # Audio + generated outputs
+outputs/
 # audio/
 *_transcription.html
 *_transcription.txt

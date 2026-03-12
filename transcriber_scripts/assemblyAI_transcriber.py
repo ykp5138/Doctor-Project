@@ -97,6 +97,9 @@ def main():
     )
 
 
+    out_dir = os.path.join(BASE_DIR, "outputs", "assembly")
+    os.makedirs(out_dir, exist_ok=True)
+
     for audio_path in audio_files:
         filename = os.path.basename(audio_path)
         base_name = os.path.splitext(filename)[0]
@@ -131,7 +134,7 @@ def main():
 
 
             # ---------- WRITE TXT (RENAMED) ----------
-            txt_file = "transcript_A.txt"  # Changed from {base_name}_transcription.txt
+            txt_file = os.path.join(out_dir, f"{base_name}_transcript.txt")
             with open(txt_file, "w", encoding="utf-8") as f:
                 f.write("=== FULL TRANSCRIPT ===\n\n")
 
@@ -164,7 +167,7 @@ def main():
 
 
             # ---------- WRITE HTML (RENAMED) ----------
-            html_file = "transcript_A.html"  # Changed from {base_name}_transcription.html
+            html_file = os.path.join(out_dir, f"{base_name}_transcript.html")
             with open(html_file, "w", encoding="utf-8") as f:
                 f.write("<html><body>\n")
                 f.write("<h2>FULL TRANSCRIPT</h2>\n<p>")
@@ -256,7 +259,7 @@ def main():
             }
 
 
-            json_file = "confidence_A.json"  # Changed from {base_name}_word_confidences.json
+            json_file = os.path.join(out_dir, f"{base_name}_confidence.json")
             with open(json_file, "w", encoding="utf-8") as f:
                 json.dump(json_output, f, indent=2)
 
