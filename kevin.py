@@ -173,44 +173,43 @@ class TranscriptMerger:
 
             best_idx = assembly_idx
 
-            # For zero-confidence words, timestamps are unreliable — prefer text match first
-            if w_word.get('score', 1.0) == 0.0:
-                for i in range(search_start_idx, search_end_idx):
-                    a_word = assembly_words[i]
-                    if self.are_words_effectively_equal(w_word['text'], a_word['text']):
-                        best_match = a_word
-                        best_idx = i
-                        break
+            best_text_match = None
+            best_text_idx = -1
+            best_overlap_match = None
+            best_overlap_score = 0
+            best_overlap_idx = assembly_idx
 
-            if not best_match:
-                for i in range(search_start_idx, search_end_idx):
-                    a_word = assembly_words[i]
+            for i in range(search_start_idx, search_end_idx):
+                a_word = assembly_words[i]
+                text_match = self.are_words_effectively_equal(w_word['text'], a_word['text'])
+                overlap = self.get_overlap(w_word, a_word)
 
-                    overlap = self.get_overlap(w_word, a_word)
+                if text_match and overlap > 0:
+                    # Perfect: same word AND same timestamp — can't do better
+                    best_match = a_word
+                    best_idx = i
+                    break
 
-                    if overlap > 0:
-                        # Calculate Match Score
-                        score = overlap
+                if text_match and best_text_match is None:
+                    # Same word but timestamps drifted apart — still a valid match
+                    best_text_match = a_word
+                    best_text_idx = i
 
-                        # Apply Bonus if words are textually similar (The "One Tablet" Fix)
-                        if self.are_words_effectively_equal(w_word['text'], a_word['text']):
-                            score *= 2.0
+                if overlap > 0 and overlap > best_overlap_score:
+                    # Timestamps align but word text differs — last resort
+                    best_overlap_score = overlap
+                    best_overlap_match = a_word
+                    best_overlap_idx = i
 
-                        if score > best_score:
-                            best_score = score
-                            best_match = a_word
-                            best_idx = i
-
-            # Fallback: timestamps from the two transcribers can drift by several seconds,
-            # making overlap-based matching fail entirely. If no overlap match was found,
-            # use text matching so we still pair the right words across the drift gap.
-            if not best_match:
-                for i in range(search_start_idx, search_end_idx):
-                    a_word = assembly_words[i]
-                    if self.are_words_effectively_equal(w_word['text'], a_word['text']):
-                        best_match = a_word
-                        best_idx = i
-                        break
+            if best_match is None:
+                # Prefer text match over overlap-only: timestamp drift is common,
+                # but both transcribers transcribed the correct words
+                if best_text_match is not None:
+                    best_match = best_text_match
+                    best_idx = best_text_idx
+                elif best_overlap_match is not None:
+                    best_match = best_overlap_match
+                    best_idx = best_overlap_idx
 
             # Advance past the matched word to prevent the same assembly word
             # being reused and causing duplicates (e.g. "is is" instead of "is a")
