@@ -1,9 +1,9 @@
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
-import Root from './components/Root';
-import Dashboard from './components/Dashboard';
+import { Root } from './components/Root';
+import { Dashboard } from './components/Dashboard';
 import NewNote from './components/NewNote';
-import PatientList from './components/PatientList';
-import NoteHistory from './components/NoteHistory';
+import { PatientList } from './components/PatientList';
+import { NoteHistory } from './components/NoteHistory';
 import './App.css';
 
 const router = createBrowserRouter([
