@@ -285,7 +285,9 @@ class TranscriptMerger:
             result_word = {
                 "text": w_text,
                 "speaker": w_word['speaker'],
-                "flagged": False
+                "flagged": False,
+                "start": w_word.get('start', 0),
+                "end": w_word.get('end', 0),
             }
 
             if not a_word:
