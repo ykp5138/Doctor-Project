@@ -2,7 +2,7 @@ import { useState, useMemo, useRef, useEffect, useCallback } from 'react';
 
 export default function TranscriptViewer({ words: initialWords, audioFile }) {
   const [words, setWords] = useState(initialWords);
-  const [popup, setPopup] = useState(null); // { wordIndex, word, start, end, position, suggestions, loading, otherValue, playing }
+  const [popup, setPopup] = useState(null);
   const audioCtxRef = useRef(null);
   const audioBufferRef = useRef(null);
   const sourceRef = useRef(null);
@@ -31,9 +31,7 @@ export default function TranscriptViewer({ words: initialWords, audioFile }) {
       const arrayBuffer = await audioFile.arrayBuffer();
       audioBufferRef.current = await audioCtxRef.current.decodeAudioData(arrayBuffer);
       return true;
-    } catch {
-      return false;
-    }
+    } catch { return false; }
   }, [audioFile]);
 
   const playSlice = useCallback(async (start, end) => {
@@ -75,34 +73,57 @@ export default function TranscriptViewer({ words: initialWords, audioFile }) {
 
   const handleWordClick = useCallback((word, index, e) => {
     if (!word.flagged) return;
+    // Count other flagged instances of the same word text
+    const sameWordIndices = words
+      .map((w, i) => ({ w, i }))
+      .filter(({ w, i }) => w.flagged && i !== index && w.text.toLowerCase() === word.text.toLowerCase())
+      .map(({ i }) => i);
+
+    // Use viewport-fixed position so scroll containers don't break it
     const rect = e.currentTarget.getBoundingClientRect();
-    const left = Math.min(rect.left, window.innerWidth - 330);
+    const left = Math.min(rect.left, window.innerWidth - 340);
+    const top = rect.bottom + 6;
+
+    if (sourceRef.current) { try { sourceRef.current.stop(); } catch {} sourceRef.current = null; }
+
     setPopup({
       wordIndex: index,
-      word: word.text,
+      wordText: word.text,          // original text for "fix all" matching
       start: word.start || 0,
       end: word.end || 0,
-      position: { top: rect.bottom + window.scrollY + 6, left: left + window.scrollX },
+      position: { top, left },
       suggestions: [],
       loading: true,
       otherValue: '',
       playing: false,
+      sameWordIndices,              // other indices with the same flagged text
     });
     fetchSuggestions(word, index);
-  }, [fetchSuggestions]);
+  }, [fetchSuggestions, words]);
 
-  const applyWord = useCallback((index, newText) => {
+  // applyAll=false → fix just this word; applyAll=true → fix this + all same-text instances
+  const applyWord = useCallback((newText, applyAll = false) => {
     if (!newText.trim()) return;
-    setWords(ws => ws.map((w, i) => i === index ? { ...w, text: newText.trim(), flagged: false } : w));
+    const { wordIndex, sameWordIndices } = popup;
+    setWords(ws => ws.map((w, i) => {
+      if (i === wordIndex) return { ...w, text: newText.trim(), flagged: false };
+      if (applyAll && sameWordIndices.includes(i)) return { ...w, text: newText.trim(), flagged: false };
+      return w;
+    }));
     setPopup(null);
     if (sourceRef.current) { try { sourceRef.current.stop(); } catch {} sourceRef.current = null; }
-  }, []);
+  }, [popup]);
 
-  const keepWord = useCallback((index) => {
-    setWords(ws => ws.map((w, i) => i === index ? { ...w, flagged: false } : w));
+  const keepWord = useCallback((keepAll = false) => {
+    const { wordIndex, sameWordIndices } = popup;
+    setWords(ws => ws.map((w, i) => {
+      if (i === wordIndex) return { ...w, flagged: false };
+      if (keepAll && sameWordIndices.includes(i)) return { ...w, flagged: false };
+      return w;
+    }));
     setPopup(null);
     if (sourceRef.current) { try { sourceRef.current.stop(); } catch {} sourceRef.current = null; }
-  }, []);
+  }, [popup]);
 
   const speakerBlocks = useMemo(() => {
     const blocks = [];
@@ -124,6 +145,9 @@ export default function TranscriptViewer({ words: initialWords, audioFile }) {
     const m = Math.floor(s / 60);
     return `${m}:${String(Math.floor(s % 60)).padStart(2, '0')}`;
   };
+
+  const hasMany = popup && popup.sameWordIndices.length > 0;
+  const totalCount = popup ? popup.sameWordIndices.length + 1 : 0;
 
   return (
     <div className="transcript-container">
@@ -152,68 +176,98 @@ export default function TranscriptViewer({ words: initialWords, audioFile }) {
         ))}
       </div>
 
-      {/* Word correction popup */}
+      {/* Word correction popup — position: fixed so scroll containers don't break it */}
       {popup && (
         <div
           ref={popupRef}
           className="word-popup"
-          style={{ top: popup.position.top, left: popup.position.left }}
+          style={{ position: 'fixed', top: popup.position.top, left: popup.position.left }}
         >
+          {/* Header: word + audio play */}
           <div className="popup-header">
-            <span className="popup-flagged-word">"{popup.word}"</span>
+            <span className="popup-flagged-word">"{popup.wordText}"</span>
             {audioFile && (
               <button
                 className={`popup-play-btn ${popup.playing ? 'playing' : ''}`}
                 onClick={() => popup.playing ? stopPlay() : playSlice(popup.start, popup.end)}
-                title="Play surrounding audio"
               >
                 {popup.playing
-                  ? <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg>
-                  : <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+                  ? <svg width="11" height="11" viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg>
+                  : <svg width="11" height="11" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>
                 }
                 {popup.playing ? 'Stop' : 'Play clip'}
               </button>
             )}
           </div>
 
+          {/* Multiple instances notice */}
+          {hasMany && (
+            <div className="popup-multi-notice">
+              {totalCount} instances of this word are flagged
+            </div>
+          )}
+
+          {/* Suggestions */}
           <div className="popup-section-label">Suggestions</div>
-          {popup.loading
-            ? <div className="popup-loading">Thinking…</div>
-            : popup.suggestions.length === 0
-            ? <div className="popup-no-suggestions">No alternatives found</div>
-            : (
-              <div className="popup-suggestions">
-                {popup.suggestions.map((s, i) => (
-                  <button key={i} className="suggestion-chip" onClick={() => applyWord(popup.wordIndex, s)}>
+          {popup.loading ? (
+            <div className="popup-loading">Thinking…</div>
+          ) : popup.suggestions.length === 0 ? (
+            <div className="popup-no-suggestions">No alternatives found</div>
+          ) : (
+            <div className="popup-suggestions">
+              {popup.suggestions.map((s, i) => (
+                <div key={i} className="suggestion-row">
+                  <button className="suggestion-chip" onClick={() => applyWord(s, false)}>
                     {s}
                   </button>
-                ))}
-              </div>
-            )
-          }
+                  {hasMany && (
+                    <button className="suggestion-chip suggestion-chip-all" onClick={() => applyWord(s, true)}>
+                      Fix all {totalCount}
+                    </button>
+                  )}
+                </div>
+              ))}
+            </div>
+          )}
 
+          {/* Other / custom */}
           <div className="popup-section-label">Other</div>
           <div className="popup-other">
             <input
               className="popup-input"
-              placeholder="Type your own word…"
+              placeholder="Type your own…"
               value={popup.otherValue}
               onChange={e => setPopup(p => ({ ...p, otherValue: e.target.value }))}
-              onKeyDown={e => e.key === 'Enter' && applyWord(popup.wordIndex, popup.otherValue)}
+              onKeyDown={e => e.key === 'Enter' && applyWord(popup.otherValue, false)}
             />
             <button
               className="popup-apply-btn"
               disabled={!popup.otherValue.trim()}
-              onClick={() => applyWord(popup.wordIndex, popup.otherValue)}
+              onClick={() => applyWord(popup.otherValue, false)}
             >
-              Apply
+              Fix
             </button>
+            {hasMany && (
+              <button
+                className="popup-apply-btn"
+                disabled={!popup.otherValue.trim()}
+                onClick={() => applyWord(popup.otherValue, true)}
+              >
+                Fix all
+              </button>
+            )}
           </div>
 
+          {/* Footer */}
           <div className="popup-footer">
-            <button className="popup-keep-btn" onClick={() => keepWord(popup.wordIndex)}>
-              ✓ Keep "{popup.word}"
+            <button className="popup-keep-btn" onClick={() => keepWord(false)}>
+              ✓ Keep
             </button>
+            {hasMany && (
+              <button className="popup-keep-btn" onClick={() => keepWord(true)}>
+                Keep all {totalCount}
+              </button>
+            )}
             <button className="popup-cancel-btn" onClick={() => setPopup(null)}>
               Cancel
             </button>
