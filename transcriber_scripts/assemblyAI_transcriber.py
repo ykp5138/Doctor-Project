@@ -6,7 +6,7 @@ from dotenv import load_dotenv
 import assemblyai as aai
 
 
-BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 AUDIO_DIR = os.path.join(BASE_DIR, "audio")
 
 
@@ -39,7 +39,7 @@ def extract_audio_from_mov(video_path, wav_path):
 
 
 def main():
-    load_dotenv()
+    load_dotenv(os.path.join(BASE_DIR, ".env.local"))
 
 
     aai.settings.api_key = os.getenv("ASSEMBLYAI_API_KEY")
