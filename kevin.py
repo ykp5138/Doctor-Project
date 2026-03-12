@@ -147,7 +147,7 @@ class TranscriptMerger:
             return True
             
         # Substring/Compound check for length > 1 (Avoid matching "a" to "apple")
-        if len(norm_w) > 1 and len(norm_a) > 1:
+        if len(norm_w) >= 3 and len(norm_a) >= 3:
             if norm_w in norm_a or norm_a in norm_w:
                 return True
                 
