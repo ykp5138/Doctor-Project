@@ -1,0 +1,3263 @@
+{
+  "segments": [
+    {
+      "start": 7.425,
+      "end": 11.546,
+      "text": " The supplies you will need for this task is a medication list.",
+      "words": [
+        {
+          "word": "The",
+          "start": 7.425,
+          "end": 7.525,
+          "score": 0.889,
+          "speaker": "SPEAKER_02"
+        },
+        {
+          "word": "supplies",
+          "start": 7.545,
+          "end": 8.025,
+          "score": 0.861,
+          "speaker": "SPEAKER_02"
+        },
+        {
+          "word": "you",
+          "start": 8.065,
+          "end": 8.145,
+          "score": 0.955,
+          "speaker": "SPEAKER_02"
+        },
+        {
+          "word": "will",
+          "start": 8.185,
+          "end": 8.325,
+          "score": 0.872,
+          "speaker": "SPEAKER_02"
+        },
+        {
+          "word": "need",
+          "start": 8.365,
+          "end": 8.585,
+          "score": 0.854,
+          "speaker": "SPEAKER_02"
+        },
+        {
+          "word": "for",
+          "start": 8.665,
+          "end": 8.785,
+          "score": 0.742,
+          "speaker": "SPEAKER_02"
+        },
+        {
+          "word": "this",
+          "start": 8.805,
+          "end": 8.965,
+          "score": 0.825,
+          "speaker": "SPEAKER_02"
+        },
+        {
+          "word": "task",
+          "start": 9.025,
+          "end": 9.425,
+          "score": 0.971,
+          "speaker": "SPEAKER_02"
+        },
+        {
+          "word": "is",
+          "start": 10.105,
+          "end": 10.225,
+          "score": 0.85,
+          "speaker": "SPEAKER_02"
+        },
+        {
+          "word": "a",
+          "start": 10.245,
+          "end": 10.265,
+          "score": 0.0,
+          "speaker": "SPEAKER_02"
+        },
+        {
+          "word": "medication",
+          "start": 10.646,
+          "end": 11.206,
+          "score": 0.939,
+          "speaker": "SPEAKER_02"
+        },
+        {
+          "word": "list.",
+          "start": 11.246,
+          "end": 11.546,
+          "score": 0.839,
+          "speaker": "SPEAKER_02"
+        }
+      ],
+      "avg_logprob": -0.02302229024369169,
+      "speaker": "SPEAKER_02"
+    },
+    {
+      "start": 12.966,
+      "end": 16.967,
+      "text": "You will also be able to use your script, which I have here placed at my phone.",
+      "words": [
+        {
+          "word": "You",
+          "start": 12.966,
+          "end": 13.066,
+          "score": 0.999,
+          "speaker": "SPEAKER_02"
+        },
+        {
+          "word": "will",
+          "start": 13.106,
+          "end": 13.246,
+          "score": 0.872,
+          "speaker": "SPEAKER_02"
+        },
+        {
+          "word": "also",
+          "start": 13.306,
+          "end": 13.566,
+          "score": 0.863,
+          "speaker": "SPEAKER_02"
+        },
+        {
+          "word": "be",
+          "start": 13.606,
+          "end": 13.686,
+          "score": 0.994,
+          "speaker": "SPEAKER_02"
+        },
+        {
+          "word": "able",
+          "start": 13.766,
+          "end": 13.926,
+          "score": 0.812,
+          "speaker": "SPEAKER_02"
+        },
+        {
+          "word": "to",
+          "start": 13.966,
+          "end": 14.046,
+          "score": 0.737,
+          "speaker": "SPEAKER_02"
+        },
+        {
+          "word": "use",
+          "start": 14.186,
+          "end": 14.306,
+          "score": 0.894,
+          "speaker": "SPEAKER_02"
+        },
+        {
+          "word": "your",
+          "start": 14.346,
+          "end": 14.486,
+          "score": 0.985,
+          "speaker": "SPEAKER_02"
+        },
+        {
+          "word": "script,",
+          "start": 14.566,
+          "end": 14.926,
+          "score": 0.93,
+          "speaker": "SPEAKER_02"
+        },
+        {
+          "word": "which",
+          "start": 15.146,
+          "end": 15.306,
+          "score": 0.867,
+          "speaker": "SPEAKER_02"
+        },
+        {
+          "word": "I",
+          "start": 15.406,
+          "end": 15.486,
+          "score": 0.752,
+          "speaker": "SPEAKER_02"
+        },
+        {
+          "word": "have",
+          "start": 15.526,
+          "end": 15.726,
+          "score": 0.859,
+          "speaker": "SPEAKER_02"
+        },
+        {
+          "word": "here",
+          "start": 15.786,
+          "end": 15.946,
+          "score": 0.892,
+          "speaker": "SPEAKER_02"
+        },
+        {
+          "word": "placed",
+          "start": 16.027,
+          "end": 16.307,
+          "score": 0.831,
+          "speaker": "SPEAKER_02"
+        },
+        {
+          "word": "at",
+          "start": 16.367,
+          "end": 16.447,
+          "score": 0.803,
+          "speaker": "SPEAKER_02"
+        },
+        {
+          "word": "my",
+          "start": 16.487,
+          "end": 16.627,
+          "score": 0.97,
+          "speaker": "SPEAKER_02"
+        },
+        {
+          "word": "phone.",
+          "start": 16.667,
+          "end": 16.967,
+          "score": 0.899,
+          "speaker": "SPEAKER_02"
+        }
+      ],
+      "avg_logprob": -0.02302229024369169,
+      "speaker": "SPEAKER_02"
+    },
+    {
+      "start": 22.808,
+      "end": 24.928,
+      "text": "Thank you for calling MTC Pharmacy.",
+      "words": [
+        {
+          "word": "Thank",
+          "start": 22.808,
+          "end": 22.988,
+          "score": 0.935,
+          "speaker": "SPEAKER_01"
+        },
+        {
+          "word": "you",
+          "start": 23.008,
+          "end": 23.128,
+          "score": 0.896,
+          "speaker": "SPEAKER_01"
+        },
+        {
+          "word": "for",
+          "start": 23.148,
+          "end": 23.268,
+          "score": 0.884,
+          "speaker": "SPEAKER_01"
+        },
+        {
+          "word": "calling",
+          "start": 23.308,
+          "end": 23.628,
+          "score": 0.88,
+          "speaker": "SPEAKER_01"
+        },
+        {
+          "word": "MTC",
+          "start": 23.648,
+          "end": 24.328,
+          "score": 0.482,
+          "speaker": "SPEAKER_01"
+        },
+        {
+          "word": "Pharmacy.",
+          "start": 24.368,
+          "end": 24.928,
+          "score": 0.683,
+          "speaker": "SPEAKER_01"
+        }
+      ],
+      "avg_logprob": -0.02302229024369169,
+      "speaker": "SPEAKER_01"
+    },
+    {
+      "start": 25.348,
+      "end": 35.91,
+      "text": "If you are calling from a physician's office, please leave your name, your office phone number, your office name, physician's name, DEA number,",
+      "words": [
+        {
+          "word": "If",
+          "start": 25.348,
+          "end": 25.408,
+          "score": 1.0,
+          "speaker": "SPEAKER_01"
+        },
+        {
+          "word": "you",
+          "start": 25.468,
+          "end": 25.568,
+          "score": 0.99,
+          "speaker": "SPEAKER_01"
+        },
+        {
+          "word": "are",
+          "start": 25.628,
+          "end": 25.708,
+          "score": 0.827,
+          "speaker": "SPEAKER_01"
+        },
+        {
+          "word": "calling",
+          "start": 25.748,
+          "end": 26.028,
+          "score": 0.937,
+          "speaker": "SPEAKER_01"
+        },
+        {
+          "word": "from",
+          "start": 26.068,
+          "end": 26.208,
+          "score": 0.83,
+          "speaker": "SPEAKER_01"
+        },
+        {
+          "word": "a",
+          "start": 26.268,
+          "end": 26.288,
+          "score": 0.97,
+          "speaker": "SPEAKER_01"
+        },
+        {
+          "word": "physician's",
+          "start": 26.328,
+          "end": 26.748,
+          "score": 0.576,
+          "speaker": "SPEAKER_01"
+        },
+        {
+          "word": "office,",
+          "start": 26.848,
+          "end": 27.108,
+          "score": 0.382,
+          "speaker": "SPEAKER_01"
+        },
+        {
+          "word": "please",
+          "start": 27.729,
+          "end": 28.109,
+          "score": 0.653,
+          "speaker": "SPEAKER_01"
+        },
+        {
+          "word": "leave",
+          "start": 28.169,
+          "end": 28.429,
+          "score": 0.706,
+          "speaker": "SPEAKER_01"
+        },
+        {
+          "word": "your",
+          "start": 28.589,
+          "end": 28.789,
+          "score": 0.81,
+          "speaker": "SPEAKER_01"
+        },
+        {
+          "word": "name,",
+          "start": 28.849,
+          "end": 29.089,
+          "score": 0.905,
+          "speaker": "SPEAKER_01"
+        },
+        {
+          "word": "your",
+          "start": 29.809,
+          "end": 29.969,
+          "score": 0.82,
+          "speaker": "SPEAKER_01"
+        },
+        {
+          "word": "office",
+          "start": 30.029,
+          "end": 30.329,
+          "score": 0.759,
+          "speaker": "SPEAKER_01"
+        },
+        {
+          "word": "phone",
+          "start": 30.369,
+          "end": 30.529,
+          "score": 0.304,
+          "speaker": "SPEAKER_01"
+        },
+        {
+          "word": "number,",
+          "start": 30.569,
+          "end": 30.809,
+          "score": 0.873,
+          "speaker": "SPEAKER_01"
+        },
+        {
+          "word": "your",
+          "start": 31.549,
+          "end": 31.689,
+          "score": 0.848,
+          "speaker": "SPEAKER_01"
+        },
+        {
+          "word": "office",
+          "start": 31.749,
+          "end": 32.049,
+          "score": 0.762,
+          "speaker": "SPEAKER_01"
+        },
+        {
+          "word": "name,",
+          "start": 32.109,
+          "end": 32.389,
+          "score": 0.755,
+          "speaker": "SPEAKER_01"
+        },
+        {
+          "word": "physician's",
+          "start": 33.47,
+          "end": 33.97,
+          "score": 0.624,
+          "speaker": "SPEAKER_01"
+        },
+        {
+          "word": "name,",
+          "start": 34.03,
+          "end": 34.31,
+          "score": 0.805,
+          "speaker": "SPEAKER_01"
+        },
+        {
+          "word": "DEA",
+          "start": 35.23,
+          "end": 35.63,
+          "score": 0.806,
+          "speaker": "SPEAKER_01"
+        },
+        {
+          "word": "number,",
+          "start": 35.69,
+          "end": 35.91,
+          "score": 0.884,
+          "speaker": "SPEAKER_01"
+        }
+      ],
+      "avg_logprob": -0.02302229024369169,
+      "speaker": "SPEAKER_01"
+    },
+    {
+      "start": 37.652,
+      "end": 42.637,
+      "text": " Please provide your patient's name and date of birth, medication, and instructions.",
+      "words": [
+        {
+          "word": "Please",
+          "start": 37.652,
+          "end": 37.852,
+          "score": 0.806,
+          "speaker": "SPEAKER_01"
+        },
+        {
+          "word": "provide",
+          "start": 37.872,
+          "end": 38.173,
+          "score": 0.831,
+          "speaker": "SPEAKER_01"
+        },
+        {
+          "word": "your",
+          "start": 38.213,
+          "end": 38.333,
+          "score": 0.877,
+          "speaker": "SPEAKER_01"
+        },
+        {
+          "word": "patient's",
+          "start": 38.353,
+          "end": 38.733,
+          "score": 0.853,
+          "speaker": "SPEAKER_01"
+        },
+        {
+          "word": "name",
+          "start": 38.833,
+          "end": 39.133,
+          "score": 0.882,
+          "speaker": "SPEAKER_01"
+        },
+        {
+          "word": "and",
+          "start": 39.434,
+          "end": 39.514,
+          "score": 0.695,
+          "speaker": "SPEAKER_01"
+        },
+        {
+          "word": "date",
+          "start": 39.534,
+          "end": 39.694,
+          "score": 0.704,
+          "speaker": "SPEAKER_01"
+        },
+        {
+          "word": "of",
+          "start": 39.714,
+          "end": 39.754,
+          "score": 0.032,
+          "speaker": "SPEAKER_01"
+        },
+        {
+          "word": "birth,",
+          "start": 39.794,
+          "end": 40.074,
+          "score": 0.808,
+          "speaker": "SPEAKER_01"
+        },
+        {
+          "word": "medication,",
+          "start": 40.955,
+          "end": 41.576,
+          "score": 0.971,
+          "speaker": "SPEAKER_01"
+        },
+        {
+          "word": "and",
+          "start": 41.796,
+          "end": 41.896,
+          "score": 0.815,
+          "speaker": "SPEAKER_01"
+        },
+        {
+          "word": "instructions.",
+          "start": 41.956,
+          "end": 42.637,
+          "score": 0.793,
+          "speaker": "SPEAKER_01"
+        }
+      ],
+      "avg_logprob": -0.036155352505241954,
+      "speaker": "SPEAKER_01"
+    },
+    {
+      "start": 43.698,
+      "end": 44.118,
+      "text": "Thank you.",
+      "words": [
+        {
+          "word": "Thank",
+          "start": 43.698,
+          "end": 43.918,
+          "score": 0.844,
+          "speaker": "SPEAKER_01"
+        },
+        {
+          "word": "you.",
+          "start": 43.958,
+          "end": 44.118,
+          "score": 0.914,
+          "speaker": "SPEAKER_00"
+        }
+      ],
+      "avg_logprob": -0.036155352505241954,
+      "speaker": "SPEAKER_01"
+    },
+    {
+      "start": 45.6,
+      "end": 47.081,
+      "text": "Record your message at the tone.",
+      "words": [
+        {
+          "word": "Record",
+          "start": 45.6,
+          "end": 45.96,
+          "score": 0.913,
+          "speaker": "SPEAKER_00"
+        },
+        {
+          "word": "your",
+          "start": 45.98,
+          "end": 46.1,
+          "score": 0.89,
+          "speaker": "SPEAKER_00"
+        },
+        {
+          "word": "message",
+          "start": 46.12,
+          "end": 46.44,
+          "score": 0.636,
+          "speaker": "SPEAKER_00"
+        },
+        {
+          "word": "at",
+          "start": 46.481,
+          "end": 46.561,
+          "score": 0.832,
+          "speaker": "SPEAKER_00"
+        },
+        {
+          "word": "the",
+          "start": 46.601,
+          "end": 46.681,
+          "score": 0.869,
+          "speaker": "SPEAKER_00"
+        },
+        {
+          "word": "tone.",
+          "start": 46.721,
+          "end": 47.081,
+          "score": 0.848,
+          "speaker": "SPEAKER_00"
+        }
+      ],
+      "avg_logprob": -0.036155352505241954,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 47.361,
+      "end": 50.905,
+      "text": "When you are finished, hang up or press pound for more options.",
+      "words": [
+        {
+          "word": "When",
+          "start": 47.361,
+          "end": 47.481,
+          "score": 0.959,
+          "speaker": "SPEAKER_00"
+        },
+        {
+          "word": "you",
+          "start": 47.502,
+          "end": 47.602,
+          "score": 0.947,
+          "speaker": "SPEAKER_00"
+        },
+        {
+          "word": "are",
+          "start": 47.662,
+          "end": 47.742,
+          "score": 0.663,
+          "speaker": "SPEAKER_00"
+        },
+        {
+          "word": "finished,",
+          "start": 47.782,
+          "end": 48.202,
+          "score": 0.826,
+          "speaker": "SPEAKER_00"
+        },
+        {
+          "word": "hang",
+          "start": 48.563,
+          "end": 48.783,
+          "score": 0.892,
+          "speaker": "SPEAKER_00"
+        },
+        {
+          "word": "up",
+          "start": 48.903,
+          "end": 49.023,
+          "score": 0.822,
+          "speaker": "SPEAKER_00"
+        },
+        {
+          "word": "or",
+          "start": 49.143,
+          "end": 49.263,
+          "score": 0.273,
+          "speaker": "SPEAKER_00"
+        },
+        {
+          "word": "press",
+          "start": 49.303,
+          "end": 49.543,
+          "score": 0.42,
+          "speaker": "SPEAKER_00"
+        },
+        {
+          "word": "pound",
+          "start": 49.604,
+          "end": 49.984,
+          "score": 0.877,
+          "speaker": "SPEAKER_00"
+        },
+        {
+          "word": "for",
+          "start": 50.044,
+          "end": 50.164,
+          "score": 0.821,
+          "speaker": "SPEAKER_00"
+        },
+        {
+          "word": "more",
+          "start": 50.204,
+          "end": 50.384,
+          "score": 0.876,
+          "speaker": "SPEAKER_00"
+        },
+        {
+          "word": "options.",
+          "start": 50.504,
+          "end": 50.905,
+          "score": 0.585,
+          "speaker": "SPEAKER_00"
+        }
+      ],
+      "avg_logprob": -0.036155352505241954,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 52.859,
+      "end": 56.462,
+      "text": " This is Sherry Dykes calling from Dr. Ernie Burt's office.",
+      "words": [
+        {
+          "word": "This",
+          "start": 52.859,
+          "end": 53.039,
+          "score": 0.82,
+          "speaker": "SPEAKER_02"
+        },
+        {
+          "word": "is",
+          "start": 53.239,
+          "end": 53.379,
+          "score": 0.791,
+          "speaker": "SPEAKER_02"
+        },
+        {
+          "word": "Sherry",
+          "start": 53.46,
+          "end": 53.78,
+          "score": 0.881,
+          "speaker": "SPEAKER_02"
+        },
+        {
+          "word": "Dykes",
+          "start": 53.82,
+          "end": 54.22,
+          "score": 0.736,
+          "speaker": "SPEAKER_02"
+        },
+        {
+          "word": "calling",
+          "start": 54.3,
+          "end": 54.66,
+          "score": 0.871,
+          "speaker": "SPEAKER_02"
+        },
+        {
+          "word": "from",
+          "start": 54.7,
+          "end": 54.841,
+          "score": 0.906,
+          "speaker": "SPEAKER_02"
+        },
+        {
+          "word": "Dr.",
+          "start": 54.901,
+          "end": 55.261,
+          "score": 0.581,
+          "speaker": "SPEAKER_02"
+        },
+        {
+          "word": "Ernie",
+          "start": 55.381,
+          "end": 55.641,
+          "score": 0.725,
+          "speaker": "SPEAKER_02"
+        },
+        {
+          "word": "Burt's",
+          "start": 55.721,
+          "end": 56.021,
+          "score": 0.8,
+          "speaker": "SPEAKER_02"
+        },
+        {
+          "word": "office.",
+          "start": 56.102,
+          "end": 56.462,
+          "score": 0.884,
+          "speaker": "SPEAKER_02"
+        }
+      ],
+      "avg_logprob": -0.08598893082567624,
+      "speaker": "SPEAKER_02"
+    },
+    {
+      "start": 56.982,
+      "end": 57.903,
+      "text": "Our phone number is 803-555-1212.",
+      "words": [
+        {
+          "word": "Our",
+          "start": 56.982,
+          "end": 57.122,
+          "score": 0.85,
+          "speaker": "SPEAKER_02"
+        },
+        {
+          "word": "phone",
+          "start": 57.222,
+          "end": 57.463,
+          "score": 0.864,
+          "speaker": "SPEAKER_02"
+        },
+        {
+          "word": "number",
+          "start": 57.503,
+          "end": 57.743,
+          "score": 0.91,
+          "speaker": "SPEAKER_02"
+        },
+        {
+          "word": "is",
+          "start": 57.763,
+          "end": 57.803,
+          "score": 0.0,
+          "speaker": "SPEAKER_02"
+        },
+        {
+          "word": "803-555-1212.",
+          "start": 57.823,
+          "end": 57.903,
+          "score": 1.0,
+          "speaker": "SPEAKER_02"
+        }
+      ],
+      "avg_logprob": -0.08598893082567624,
+      "speaker": "SPEAKER_02"
+    },
+    {
+      "start": 57.943,
+      "end": 62.326,
+      "text": "Dr. Burt's DEA number is J as in Jenny, J as in Jenny, 867-5309.",
+      "words": [
+        {
+          "word": "Dr.",
+          "start": 57.943,
+          "end": 58.023,
+          "score": 0.086,
+          "speaker": "SPEAKER_02"
+        },
+        {
+          "word": "Burt's",
+          "start": 58.223,
+          "end": 58.423,
+          "score": 0.226,
+          "speaker": "SPEAKER_02"
+        },
+        {
+          "word": "DEA",
+          "start": 58.624,
+          "end": 58.784,
+          "score": 0.583,
+          "speaker": "SPEAKER_02"
+        },
+        {
+          "word": "number",
+          "start": 58.804,
+          "end": 59.164,
+          "score": 0.566,
+          "speaker": "SPEAKER_02"
+        },
+        {
+          "word": "is",
+          "start": 59.244,
+          "end": 59.304,
+          "score": 0.25,
+          "speaker": "SPEAKER_02"
+        },
+        {
+          "word": "J",
+          "start": 59.324,
+          "end": 59.344,
+          "score": 0.0,
+          "speaker": "SPEAKER_02"
+        },
+        {
+          "word": "as",
+          "start": 59.364,
+          "end": 60.105,
+          "score": 0.932,
+          "speaker": "SPEAKER_02"
+        },
+        {
+          "word": "in",
+          "start": 60.125,
+          "end": 60.245,
+          "score": 0.637,
+          "speaker": "SPEAKER_02"
+        },
+        {
+          "word": "Jenny,",
+          "start": 60.265,
+          "end": 60.925,
+          "score": 0.442,
+          "speaker": "SPEAKER_02"
+        },
+        {
+          "word": "J",
+          "start": 60.945,
+          "end": 60.965,
+          "score": 0.0,
+          "speaker": "SPEAKER_02"
+        },
+        {
+          "word": "as",
+          "start": 61.266,
+          "end": 61.506,
+          "score": 0.454,
+          "speaker": "SPEAKER_02"
+        },
+        {
+          "word": "in",
+          "start": 61.566,
+          "end": 61.706,
+          "score": 0.574,
+          "speaker": "SPEAKER_02"
+        },
+        {
+          "word": "Jenny,",
+          "start": 61.726,
+          "end": 62.286,
+          "score": 0.599,
+          "speaker": "SPEAKER_02"
+        },
+        {
+          "word": "867-5309.",
+          "start": 62.306,
+          "end": 62.326,
+          "score": 0.0,
+          "speaker": "SPEAKER_02"
+        }
+      ],
+      "avg_logprob": -0.08598893082567624,
+      "speaker": "SPEAKER_02"
+    },
+    {
+      "start": 62.406,
+      "end": 67.53,
+      "text": "I'm calling in a prescription today for Mr. Peyton Manning.",
+      "words": [
+        {
+          "word": "I'm",
+          "start": 62.406,
+          "end": 62.667,
+          "score": 0.642,
+          "speaker": "SPEAKER_02"
+        },
+        {
+          "word": "calling",
+          "start": 62.687,
+          "end": 63.467,
+          "score": 0.326,
+          "speaker": "SPEAKER_02"
+        },
+        {
+          "word": "in",
+          "start": 63.567,
+          "end": 63.788,
+          "score": 0.611,
+          "speaker": "SPEAKER_02"
+        },
+        {
+          "word": "a",
+          "start": 63.808,
+          "end": 63.828,
+          "score": 0.0,
+          "speaker": "SPEAKER_02"
+        },
+        {
+          "word": "prescription",
+          "start": 63.848,
+          "end": 65.169,
+          "score": 0.425,
+          "speaker": "SPEAKER_02"
+        },
+        {
+          "word": "today",
+          "start": 65.189,
+          "end": 65.809,
+          "score": 0.566,
+          "speaker": "SPEAKER_02"
+        },
+        {
+          "word": "for",
+          "start": 65.889,
+          "end": 66.169,
+          "score": 0.569,
+          "speaker": "SPEAKER_02"
+        },
+        {
+          "word": "Mr.",
+          "start": 66.189,
+          "end": 66.57,
+          "score": 0.657,
+          "speaker": "SPEAKER_02"
+        },
+        {
+          "word": "Peyton",
+          "start": 66.67,
+          "end": 67.15,
+          "score": 0.632,
+          "speaker": "SPEAKER_02"
+        },
+        {
+          "word": "Manning.",
+          "start": 67.19,
+          "end": 67.53,
+          "score": 0.472,
+          "speaker": "SPEAKER_02"
+        }
+      ],
+      "avg_logprob": -0.08598893082567624,
+      "speaker": "SPEAKER_02"
+    },
+    {
+      "start": 68.111,
+      "end": 68.731,
+      "text": "Date of birth is 7-2-1978.",
+      "words": [
+        {
+          "word": "Date",
+          "start": 68.111,
+          "end": 68.311,
+          "score": 0.386,
+          "speaker": "SPEAKER_02"
+        },
+        {
+          "word": "of",
+          "start": 68.351,
+          "end": 68.431,
+          "score": 0.327,
+          "speaker": "SPEAKER_02"
+        },
+        {
+          "word": "birth",
+          "start": 68.451,
+          "end": 68.591,
+          "score": 0.266,
+          "speaker": "SPEAKER_02"
+        },
+        {
+          "word": "is",
+          "start": 68.611,
+          "end": 68.671,
+          "score": 0.25,
+          "speaker": "SPEAKER_02"
+        },
+        {
+          "word": "7-2-1978.",
+          "start": 68.691,
+          "end": 68.731,
+          "score": 1.0,
+          "speaker": "SPEAKER_02"
+        }
+      ],
+      "avg_logprob": -0.08598893082567624,
+      "speaker": "SPEAKER_02"
+    },
+    {
+      "start": 82.582,
+      "end": 105.816,
+      "text": " His first name is spelled P as in Paul, E as in Edward, Y, T as in Tom, O, N as in Nancy, and Manning, M as in Mary, A, N as in Nancy, N as in Nancy, I, N as in Nancy, G. Mr. Manning is needing his Diavan HCT 160 slash 12.5 milligrams.",
+      "words": [
+        {
+          "word": "His",
+          "start": 82.582,
+          "end": 82.702,
+          "score": 0.761,
+          "speaker": "SPEAKER_02"
+        },
+        {
+          "word": "first",
+          "start": 82.762,
+          "end": 82.962,
+          "score": 0.827,
+          "speaker": "SPEAKER_02"
+        },
+        {
+          "word": "name",
+          "start": 83.022,
+          "end": 83.202,
+          "score": 0.851,
+          "speaker": "SPEAKER_02"
+        },
+        {
+          "word": "is",
+          "start": 83.262,
+          "end": 83.343,
+          "score": 0.722,
+          "speaker": "SPEAKER_02"
+        },
+        {
+          "word": "spelled",
+          "start": 83.383,
+          "end": 83.783,
+          "score": 0.864,
+          "speaker": "SPEAKER_02"
+        },
+        {
+          "word": "P",
+          "start": 84.323,
+          "end": 84.503,
+          "score": 0.957,
+          "speaker": "SPEAKER_02"
+        },
+        {
+          "word": "as",
+          "start": 84.583,
+          "end": 84.683,
+          "score": 0.508,
+          "speaker": "SPEAKER_02"
+        },
+        {
+          "word": "in",
+          "start": 84.723,
+          "end": 84.843,
+          "score": 0.431,
+          "speaker": "SPEAKER_02"
+        },
+        {
+          "word": "Paul,",
+          "start": 85.064,
+          "end": 85.524,
+          "score": 0.931,
+          "speaker": "SPEAKER_02"
+        },
+        {
+          "word": "E",
+          "start": 86.144,
+          "end": 86.304,
+          "score": 0.823,
+          "speaker": "SPEAKER_02"
+        },
+        {
+          "word": "as",
+          "start": 86.464,
+          "end": 86.564,
+          "score": 0.654,
+          "speaker": "SPEAKER_02"
+        },
+        {
+          "word": "in",
+          "start": 86.604,
+          "end": 86.684,
+          "score": 0.43,
+          "speaker": "SPEAKER_02"
+        },
+        {
+          "word": "Edward,",
+          "start": 86.845,
+          "end": 87.205,
+          "score": 0.824,
+          "speaker": "SPEAKER_02"
+        },
+        {
+          "word": "Y,",
+          "start": 87.865,
+          "end": 87.985,
+          "score": 0.681,
+          "speaker": "SPEAKER_02"
+        },
+        {
+          "word": "T",
+          "start": 88.325,
+          "end": 88.506,
+          "score": 0.934,
+          "speaker": "SPEAKER_02"
+        },
+        {
+          "word": "as",
+          "start": 88.586,
+          "end": 88.686,
+          "score": 0.715,
+          "speaker": "SPEAKER_02"
+        },
+        {
+          "word": "in",
+          "start": 88.706,
+          "end": 88.806,
+          "score": 0.518,
+          "speaker": "SPEAKER_02"
+        },
+        {
+          "word": "Tom,",
+          "start": 88.866,
+          "end": 89.286,
+          "score": 0.838,
+          "speaker": "SPEAKER_02"
+        },
+        {
+          "word": "O,",
+          "start": 90.147,
+          "end": 90.267,
+          "score": 0.793,
+          "speaker": "SPEAKER_02"
+        },
+        {
+          "word": "N",
+          "start": 90.287,
+          "end": 90.307,
+          "score": 0.0,
+          "speaker": "SPEAKER_02"
+        },
+        {
+          "word": "as",
+          "start": 90.987,
+          "end": 91.087,
+          "score": 0.715,
+          "speaker": "SPEAKER_02"
+        },
+        {
+          "word": "in",
+          "start": 91.127,
+          "end": 91.187,
+          "score": 0.448,
+          "speaker": "SPEAKER_02"
+        },
+        {
+          "word": "Nancy,",
+          "start": 91.247,
+          "end": 91.687,
+          "score": 0.811,
+          "speaker": "SPEAKER_02"
+        },
+        {
+          "word": "and",
+          "start": 92.168,
+          "end": 92.268,
+          "score": 0.766,
+          "speaker": "SPEAKER_02"
+        },
+        {
+          "word": "Manning,",
+          "start": 92.328,
+          "end": 92.748,
+          "score": 0.953,
+          "speaker": "SPEAKER_02"
+        },
+        {
+          "word": "M",
+          "start": 93.268,
+          "end": 93.308,
+          "score": 0.819,
+          "speaker": "SPEAKER_02"
+        },
+        {
+          "word": "as",
+          "start": 93.368,
+          "end": 93.468,
+          "score": 0.833,
+          "speaker": "SPEAKER_02"
+        },
+        {
+          "word": "in",
+          "start": 93.528,
+          "end": 93.609,
+          "score": 0.558,
+          "speaker": "SPEAKER_02"
+        },
+        {
+          "word": "Mary,",
+          "start": 93.649,
+          "end": 94.029,
+          "score": 0.795,
+          "speaker": "SPEAKER_02"
+        },
+        {
+          "word": "A,",
+          "start": 94.729,
+          "end": 94.889,
+          "score": 0.868,
+          "speaker": "SPEAKER_02"
+        },
+        {
+          "word": "N",
+          "start": 94.909,
+          "end": 94.929,
+          "score": 0.0,
+          "speaker": "SPEAKER_02"
+        },
+        {
+          "word": "as",
+          "start": 95.45,
+          "end": 95.55,
+          "score": 0.833,
+          "speaker": "SPEAKER_02"
+        },
+        {
+          "word": "in",
+          "start": 95.61,
+          "end": 95.67,
+          "score": 0.425,
+          "speaker": "SPEAKER_02"
+        },
+        {
+          "word": "Nancy,",
+          "start": 95.73,
+          "end": 96.21,
+          "score": 0.772,
+          "speaker": "SPEAKER_02"
+        },
+        {
+          "word": "N",
+          "start": 96.65,
+          "end": 96.71,
+          "score": 0.871,
+          "speaker": "SPEAKER_02"
+        },
+        {
+          "word": "as",
+          "start": 96.75,
+          "end": 96.85,
+          "score": 0.832,
+          "speaker": "SPEAKER_02"
+        },
+        {
+          "word": "in",
+          "start": 96.91,
+          "end": 96.991,
+          "score": 0.476,
+          "speaker": "SPEAKER_02"
+        },
+        {
+          "word": "Nancy,",
+          "start": 97.051,
+          "end": 97.531,
+          "score": 0.834,
+          "speaker": "SPEAKER_02"
+        },
+        {
+          "word": "I,",
+          "start": 98.351,
+          "end": 98.431,
+          "score": 0.985,
+          "speaker": "SPEAKER_02"
+        },
+        {
+          "word": "N",
+          "start": 98.451,
+          "end": 98.471,
+          "score": 0.0,
+          "speaker": "SPEAKER_02"
+        },
+        {
+          "word": "as",
+          "start": 98.491,
+          "end": 98.531,
+          "score": 0.0,
+          "speaker": "SPEAKER_02"
+        },
+        {
+          "word": "in",
+          "start": 99.092,
+          "end": 99.172,
+          "score": 0.875,
+          "speaker": "SPEAKER_02"
+        },
+        {
+          "word": "Nancy,",
+          "start": 99.472,
+          "end": 99.872,
+          "score": 0.872,
+          "speaker": "SPEAKER_02"
+        },
+        {
+          "word": "G.",
+          "start": 100.192,
+          "end": 100.513,
+          "score": 0.897,
+          "speaker": "SPEAKER_02"
+        },
+        {
+          "word": "Mr.",
+          "start": 101.373,
+          "end": 101.633,
+          "score": 0.516,
+          "speaker": "SPEAKER_02"
+        },
+        {
+          "word": "Manning",
+          "start": 101.673,
+          "end": 102.054,
+          "score": 0.919,
+          "speaker": "SPEAKER_02"
+        },
+        {
+          "word": "is",
+          "start": 102.134,
+          "end": 102.194,
+          "score": 0.948,
+          "speaker": "SPEAKER_02"
+        },
+        {
+          "word": "needing",
+          "start": 102.254,
+          "end": 102.514,
+          "score": 0.952,
+          "speaker": "SPEAKER_02"
+        },
+        {
+          "word": "his",
+          "start": 102.574,
+          "end": 102.714,
+          "score": 0.848,
+          "speaker": "SPEAKER_02"
+        },
+        {
+          "word": "Diavan",
+          "start": 102.774,
+          "end": 103.394,
+          "score": 0.688,
+          "speaker": "SPEAKER_02"
+        },
+        {
+          "word": "HCT",
+          "start": 103.694,
+          "end": 104.355,
+          "score": 0.899,
+          "speaker": "SPEAKER_02"
+        },
+        {
+          "word": "160"
+        },
+        {
+          "word": "slash",
+          "start": 104.395,
+          "end": 105.095,
+          "score": 0.66,
+          "speaker": "SPEAKER_02"
+        },
+        {
+          "word": "12.5"
+        },
+        {
+          "word": "milligrams.",
+          "start": 105.195,
+          "end": 105.816,
+          "score": 0.594,
+          "speaker": "SPEAKER_02"
+        }
+      ],
+      "avg_logprob": -0.05049777747346805,
+      "speaker": "SPEAKER_02"
+    },
+    {
+      "start": 108.257,
+      "end": 113.544,
+      "text": " He will take that one tablet by mouth daily, number 90, with three additional refills.",
+      "words": [
+        {
+          "word": "He",
+          "start": 108.257,
+          "end": 108.377,
+          "score": 0.812,
+          "speaker": "SPEAKER_02"
+        },
+        {
+          "word": "will",
+          "start": 108.398,
+          "end": 108.578,
+          "score": 0.937,
+          "speaker": "SPEAKER_02"
+        },
+        {
+          "word": "take",
+          "start": 108.618,
+          "end": 108.818,
+          "score": 0.769,
+          "speaker": "SPEAKER_02"
+        },
+        {
+          "word": "that",
+          "start": 108.878,
+          "end": 109.038,
+          "score": 0.898,
+          "speaker": "SPEAKER_02"
+        },
+        {
+          "word": "one",
+          "start": 109.179,
+          "end": 109.339,
+          "score": 0.618,
+          "speaker": "SPEAKER_02"
+        },
+        {
+          "word": "tablet",
+          "start": 109.399,
+          "end": 109.819,
+          "score": 0.869,
+          "speaker": "SPEAKER_02"
+        },
+        {
+          "word": "by",
+          "start": 109.879,
+          "end": 110.04,
+          "score": 0.821,
+          "speaker": "SPEAKER_02"
+        },
+        {
+          "word": "mouth",
+          "start": 110.1,
+          "end": 110.38,
+          "score": 0.881,
+          "speaker": "SPEAKER_02"
+        },
+        {
+          "word": "daily,",
+          "start": 110.46,
+          "end": 110.861,
+          "score": 0.858,
+          "speaker": "SPEAKER_02"
+        },
+        {
+          "word": "number",
+          "start": 111.281,
+          "end": 111.982,
+          "score": 0.915,
+          "speaker": "SPEAKER_02"
+        },
+        {
+          "word": "90,"
+        },
+        {
+          "word": "with",
+          "start": 112.182,
+          "end": 112.343,
+          "score": 0.737,
+          "speaker": "SPEAKER_02"
+        },
+        {
+          "word": "three",
+          "start": 112.383,
+          "end": 112.583,
+          "score": 0.933,
+          "speaker": "SPEAKER_02"
+        },
+        {
+          "word": "additional",
+          "start": 112.623,
+          "end": 113.003,
+          "score": 0.96,
+          "speaker": "SPEAKER_02"
+        },
+        {
+          "word": "refills.",
+          "start": 113.043,
+          "end": 113.544,
+          "score": 0.808,
+          "speaker": "SPEAKER_02"
+        }
+      ],
+      "avg_logprob": -0.06926330123786573,
+      "speaker": "SPEAKER_02"
+    },
+    {
+      "start": 114.245,
+      "end": 124.999,
+      "text": "Again, that is Diavan HCT, 160-12.5 milligrams, one tablet by mouth daily, number 90, with three additional refills.",
+      "words": [
+        {
+          "word": "Again,",
+          "start": 114.245,
+          "end": 114.565,
+          "score": 0.879,
+          "speaker": "SPEAKER_02"
+        },
+        {
+          "word": "that",
+          "start": 114.625,
+          "end": 114.786,
+          "score": 0.856,
+          "speaker": "SPEAKER_02"
+        },
+        {
+          "word": "is",
+          "start": 114.846,
+          "end": 114.946,
+          "score": 0.734,
+          "speaker": "SPEAKER_02"
+        },
+        {
+          "word": "Diavan",
+          "start": 115.006,
+          "end": 115.667,
+          "score": 0.849,
+          "speaker": "SPEAKER_02"
+        },
+        {
+          "word": "HCT,",
+          "start": 116.067,
+          "end": 116.728,
+          "score": 0.808,
+          "speaker": "SPEAKER_02"
+        },
+        {
+          "word": "160-12.5",
+          "start": 116.748,
+          "end": 117.509,
+          "score": 0.852,
+          "speaker": "SPEAKER_02"
+        },
+        {
+          "word": "milligrams,",
+          "start": 117.589,
+          "end": 120.132,
+          "score": 0.737,
+          "speaker": "SPEAKER_02"
+        },
+        {
+          "word": "one",
+          "start": 120.693,
+          "end": 120.813,
+          "score": 0.832,
+          "speaker": "SPEAKER_02"
+        },
+        {
+          "word": "tablet",
+          "start": 120.853,
+          "end": 121.214,
+          "score": 0.723,
+          "speaker": "SPEAKER_02"
+        },
+        {
+          "word": "by",
+          "start": 121.254,
+          "end": 121.394,
+          "score": 0.876,
+          "speaker": "SPEAKER_02"
+        },
+        {
+          "word": "mouth",
+          "start": 121.474,
+          "end": 121.775,
+          "score": 0.908,
+          "speaker": "SPEAKER_02"
+        },
+        {
+          "word": "daily,",
+          "start": 121.855,
+          "end": 122.255,
+          "score": 0.86,
+          "speaker": "SPEAKER_02"
+        },
+        {
+          "word": "number",
+          "start": 122.696,
+          "end": 123.517,
+          "score": 0.881,
+          "speaker": "SPEAKER_02"
+        },
+        {
+          "word": "90,"
+        },
+        {
+          "word": "with",
+          "start": 123.717,
+          "end": 123.877,
+          "score": 0.864,
+          "speaker": "SPEAKER_02"
+        },
+        {
+          "word": "three",
+          "start": 123.917,
+          "end": 124.118,
+          "score": 0.911,
+          "speaker": "SPEAKER_02"
+        },
+        {
+          "word": "additional",
+          "start": 124.158,
+          "end": 124.538,
+          "score": 0.941,
+          "speaker": "SPEAKER_02"
+        },
+        {
+          "word": "refills.",
+          "start": 124.578,
+          "end": 124.999,
+          "score": 0.908,
+          "speaker": "SPEAKER_02"
+        }
+      ],
+      "avg_logprob": -0.06926330123786573,
+      "speaker": "SPEAKER_02"
+    },
+    {
+      "start": 125.439,
+      "end": 125.82,
+      "text": "Thank you.",
+      "words": [
+        {
+          "word": "Thank",
+          "start": 125.439,
+          "end": 125.68,
+          "score": 0.932,
+          "speaker": "SPEAKER_02"
+        },
+        {
+          "word": "you.",
+          "start": 125.7,
+          "end": 125.82,
+          "score": 0.935,
+          "speaker": "SPEAKER_02"
+        }
+      ],
+      "avg_logprob": -0.06926330123786573,
+      "speaker": "SPEAKER_02"
+    }
+  ],
+  "word_segments": [
+    {
+      "word": "The",
+      "start": 7.425,
+      "end": 7.525,
+      "score": 0.889,
+      "speaker": "SPEAKER_02"
+    },
+    {
+      "word": "supplies",
+      "start": 7.545,
+      "end": 8.025,
+      "score": 0.861,
+      "speaker": "SPEAKER_02"
+    },
+    {
+      "word": "you",
+      "start": 8.065,
+      "end": 8.145,
+      "score": 0.955,
+      "speaker": "SPEAKER_02"
+    },
+    {
+      "word": "will",
+      "start": 8.185,
+      "end": 8.325,
+      "score": 0.872,
+      "speaker": "SPEAKER_02"
+    },
+    {
+      "word": "need",
+      "start": 8.365,
+      "end": 8.585,
+      "score": 0.854,
+      "speaker": "SPEAKER_02"
+    },
+    {
+      "word": "for",
+      "start": 8.665,
+      "end": 8.785,
+      "score": 0.742,
+      "speaker": "SPEAKER_02"
+    },
+    {
+      "word": "this",
+      "start": 8.805,
+      "end": 8.965,
+      "score": 0.825,
+      "speaker": "SPEAKER_02"
+    },
+    {
+      "word": "task",
+      "start": 9.025,
+      "end": 9.425,
+      "score": 0.971,
+      "speaker": "SPEAKER_02"
+    },
+    {
+      "word": "is",
+      "start": 10.105,
+      "end": 10.225,
+      "score": 0.85,
+      "speaker": "SPEAKER_02"
+    },
+    {
+      "word": "a",
+      "start": 10.245,
+      "end": 10.265,
+      "score": 0.0,
+      "speaker": "SPEAKER_02"
+    },
+    {
+      "word": "medication",
+      "start": 10.646,
+      "end": 11.206,
+      "score": 0.939,
+      "speaker": "SPEAKER_02"
+    },
+    {
+      "word": "list.",
+      "start": 11.246,
+      "end": 11.546,
+      "score": 0.839,
+      "speaker": "SPEAKER_02"
+    },
+    {
+      "word": "You",
+      "start": 12.966,
+      "end": 13.066,
+      "score": 0.999,
+      "speaker": "SPEAKER_02"
+    },
+    {
+      "word": "will",
+      "start": 13.106,
+      "end": 13.246,
+      "score": 0.872,
+      "speaker": "SPEAKER_02"
+    },
+    {
+      "word": "also",
+      "start": 13.306,
+      "end": 13.566,
+      "score": 0.863,
+      "speaker": "SPEAKER_02"
+    },
+    {
+      "word": "be",
+      "start": 13.606,
+      "end": 13.686,
+      "score": 0.994,
+      "speaker": "SPEAKER_02"
+    },
+    {
+      "word": "able",
+      "start": 13.766,
+      "end": 13.926,
+      "score": 0.812,
+      "speaker": "SPEAKER_02"
+    },
+    {
+      "word": "to",
+      "start": 13.966,
+      "end": 14.046,
+      "score": 0.737,
+      "speaker": "SPEAKER_02"
+    },
+    {
+      "word": "use",
+      "start": 14.186,
+      "end": 14.306,
+      "score": 0.894,
+      "speaker": "SPEAKER_02"
+    },
+    {
+      "word": "your",
+      "start": 14.346,
+      "end": 14.486,
+      "score": 0.985,
+      "speaker": "SPEAKER_02"
+    },
+    {
+      "word": "script,",
+      "start": 14.566,
+      "end": 14.926,
+      "score": 0.93,
+      "speaker": "SPEAKER_02"
+    },
+    {
+      "word": "which",
+      "start": 15.146,
+      "end": 15.306,
+      "score": 0.867,
+      "speaker": "SPEAKER_02"
+    },
+    {
+      "word": "I",
+      "start": 15.406,
+      "end": 15.486,
+      "score": 0.752,
+      "speaker": "SPEAKER_02"
+    },
+    {
+      "word": "have",
+      "start": 15.526,
+      "end": 15.726,
+      "score": 0.859,
+      "speaker": "SPEAKER_02"
+    },
+    {
+      "word": "here",
+      "start": 15.786,
+      "end": 15.946,
+      "score": 0.892,
+      "speaker": "SPEAKER_02"
+    },
+    {
+      "word": "placed",
+      "start": 16.027,
+      "end": 16.307,
+      "score": 0.831,
+      "speaker": "SPEAKER_02"
+    },
+    {
+      "word": "at",
+      "start": 16.367,
+      "end": 16.447,
+      "score": 0.803,
+      "speaker": "SPEAKER_02"
+    },
+    {
+      "word": "my",
+      "start": 16.487,
+      "end": 16.627,
+      "score": 0.97,
+      "speaker": "SPEAKER_02"
+    },
+    {
+      "word": "phone.",
+      "start": 16.667,
+      "end": 16.967,
+      "score": 0.899,
+      "speaker": "SPEAKER_02"
+    },
+    {
+      "word": "Thank",
+      "start": 22.808,
+      "end": 22.988,
+      "score": 0.935,
+      "speaker": "SPEAKER_01"
+    },
+    {
+      "word": "you",
+      "start": 23.008,
+      "end": 23.128,
+      "score": 0.896,
+      "speaker": "SPEAKER_01"
+    },
+    {
+      "word": "for",
+      "start": 23.148,
+      "end": 23.268,
+      "score": 0.884,
+      "speaker": "SPEAKER_01"
+    },
+    {
+      "word": "calling",
+      "start": 23.308,
+      "end": 23.628,
+      "score": 0.88,
+      "speaker": "SPEAKER_01"
+    },
+    {
+      "word": "MTC",
+      "start": 23.648,
+      "end": 24.328,
+      "score": 0.482,
+      "speaker": "SPEAKER_01"
+    },
+    {
+      "word": "Pharmacy.",
+      "start": 24.368,
+      "end": 24.928,
+      "score": 0.683,
+      "speaker": "SPEAKER_01"
+    },
+    {
+      "word": "If",
+      "start": 25.348,
+      "end": 25.408,
+      "score": 1.0,
+      "speaker": "SPEAKER_01"
+    },
+    {
+      "word": "you",
+      "start": 25.468,
+      "end": 25.568,
+      "score": 0.99,
+      "speaker": "SPEAKER_01"
+    },
+    {
+      "word": "are",
+      "start": 25.628,
+      "end": 25.708,
+      "score": 0.827,
+      "speaker": "SPEAKER_01"
+    },
+    {
+      "word": "calling",
+      "start": 25.748,
+      "end": 26.028,
+      "score": 0.937,
+      "speaker": "SPEAKER_01"
+    },
+    {
+      "word": "from",
+      "start": 26.068,
+      "end": 26.208,
+      "score": 0.83,
+      "speaker": "SPEAKER_01"
+    },
+    {
+      "word": "a",
+      "start": 26.268,
+      "end": 26.288,
+      "score": 0.97,
+      "speaker": "SPEAKER_01"
+    },
+    {
+      "word": "physician's",
+      "start": 26.328,
+      "end": 26.748,
+      "score": 0.576,
+      "speaker": "SPEAKER_01"
+    },
+    {
+      "word": "office,",
+      "start": 26.848,
+      "end": 27.108,
+      "score": 0.382,
+      "speaker": "SPEAKER_01"
+    },
+    {
+      "word": "please",
+      "start": 27.729,
+      "end": 28.109,
+      "score": 0.653,
+      "speaker": "SPEAKER_01"
+    },
+    {
+      "word": "leave",
+      "start": 28.169,
+      "end": 28.429,
+      "score": 0.706,
+      "speaker": "SPEAKER_01"
+    },
+    {
+      "word": "your",
+      "start": 28.589,
+      "end": 28.789,
+      "score": 0.81,
+      "speaker": "SPEAKER_01"
+    },
+    {
+      "word": "name,",
+      "start": 28.849,
+      "end": 29.089,
+      "score": 0.905,
+      "speaker": "SPEAKER_01"
+    },
+    {
+      "word": "your",
+      "start": 29.809,
+      "end": 29.969,
+      "score": 0.82,
+      "speaker": "SPEAKER_01"
+    },
+    {
+      "word": "office",
+      "start": 30.029,
+      "end": 30.329,
+      "score": 0.759,
+      "speaker": "SPEAKER_01"
+    },
+    {
+      "word": "phone",
+      "start": 30.369,
+      "end": 30.529,
+      "score": 0.304,
+      "speaker": "SPEAKER_01"
+    },
+    {
+      "word": "number,",
+      "start": 30.569,
+      "end": 30.809,
+      "score": 0.873,
+      "speaker": "SPEAKER_01"
+    },
+    {
+      "word": "your",
+      "start": 31.549,
+      "end": 31.689,
+      "score": 0.848,
+      "speaker": "SPEAKER_01"
+    },
+    {
+      "word": "office",
+      "start": 31.749,
+      "end": 32.049,
+      "score": 0.762,
+      "speaker": "SPEAKER_01"
+    },
+    {
+      "word": "name,",
+      "start": 32.109,
+      "end": 32.389,
+      "score": 0.755,
+      "speaker": "SPEAKER_01"
+    },
+    {
+      "word": "physician's",
+      "start": 33.47,
+      "end": 33.97,
+      "score": 0.624,
+      "speaker": "SPEAKER_01"
+    },
+    {
+      "word": "name,",
+      "start": 34.03,
+      "end": 34.31,
+      "score": 0.805,
+      "speaker": "SPEAKER_01"
+    },
+    {
+      "word": "DEA",
+      "start": 35.23,
+      "end": 35.63,
+      "score": 0.806,
+      "speaker": "SPEAKER_01"
+    },
+    {
+      "word": "number,",
+      "start": 35.69,
+      "end": 35.91,
+      "score": 0.884,
+      "speaker": "SPEAKER_01"
+    },
+    {
+      "word": "Please",
+      "start": 37.652,
+      "end": 37.852,
+      "score": 0.806,
+      "speaker": "SPEAKER_01"
+    },
+    {
+      "word": "provide",
+      "start": 37.872,
+      "end": 38.173,
+      "score": 0.831,
+      "speaker": "SPEAKER_01"
+    },
+    {
+      "word": "your",
+      "start": 38.213,
+      "end": 38.333,
+      "score": 0.877,
+      "speaker": "SPEAKER_01"
+    },
+    {
+      "word": "patient's",
+      "start": 38.353,
+      "end": 38.733,
+      "score": 0.853,
+      "speaker": "SPEAKER_01"
+    },
+    {
+      "word": "name",
+      "start": 38.833,
+      "end": 39.133,
+      "score": 0.882,
+      "speaker": "SPEAKER_01"
+    },
+    {
+      "word": "and",
+      "start": 39.434,
+      "end": 39.514,
+      "score": 0.695,
+      "speaker": "SPEAKER_01"
+    },
+    {
+      "word": "date",
+      "start": 39.534,
+      "end": 39.694,
+      "score": 0.704,
+      "speaker": "SPEAKER_01"
+    },
+    {
+      "word": "of",
+      "start": 39.714,
+      "end": 39.754,
+      "score": 0.032,
+      "speaker": "SPEAKER_01"
+    },
+    {
+      "word": "birth,",
+      "start": 39.794,
+      "end": 40.074,
+      "score": 0.808,
+      "speaker": "SPEAKER_01"
+    },
+    {
+      "word": "medication,",
+      "start": 40.955,
+      "end": 41.576,
+      "score": 0.971,
+      "speaker": "SPEAKER_01"
+    },
+    {
+      "word": "and",
+      "start": 41.796,
+      "end": 41.896,
+      "score": 0.815,
+      "speaker": "SPEAKER_01"
+    },
+    {
+      "word": "instructions.",
+      "start": 41.956,
+      "end": 42.637,
+      "score": 0.793,
+      "speaker": "SPEAKER_01"
+    },
+    {
+      "word": "Thank",
+      "start": 43.698,
+      "end": 43.918,
+      "score": 0.844,
+      "speaker": "SPEAKER_01"
+    },
+    {
+      "word": "you.",
+      "start": 43.958,
+      "end": 44.118,
+      "score": 0.914,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "word": "Record",
+      "start": 45.6,
+      "end": 45.96,
+      "score": 0.913,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "word": "your",
+      "start": 45.98,
+      "end": 46.1,
+      "score": 0.89,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "word": "message",
+      "start": 46.12,
+      "end": 46.44,
+      "score": 0.636,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "word": "at",
+      "start": 46.481,
+      "end": 46.561,
+      "score": 0.832,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "word": "the",
+      "start": 46.601,
+      "end": 46.681,
+      "score": 0.869,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "word": "tone.",
+      "start": 46.721,
+      "end": 47.081,
+      "score": 0.848,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "word": "When",
+      "start": 47.361,
+      "end": 47.481,
+      "score": 0.959,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "word": "you",
+      "start": 47.502,
+      "end": 47.602,
+      "score": 0.947,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "word": "are",
+      "start": 47.662,
+      "end": 47.742,
+      "score": 0.663,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "word": "finished,",
+      "start": 47.782,
+      "end": 48.202,
+      "score": 0.826,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "word": "hang",
+      "start": 48.563,
+      "end": 48.783,
+      "score": 0.892,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "word": "up",
+      "start": 48.903,
+      "end": 49.023,
+      "score": 0.822,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "word": "or",
+      "start": 49.143,
+      "end": 49.263,
+      "score": 0.273,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "word": "press",
+      "start": 49.303,
+      "end": 49.543,
+      "score": 0.42,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "word": "pound",
+      "start": 49.604,
+      "end": 49.984,
+      "score": 0.877,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "word": "for",
+      "start": 50.044,
+      "end": 50.164,
+      "score": 0.821,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "word": "more",
+      "start": 50.204,
+      "end": 50.384,
+      "score": 0.876,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "word": "options.",
+      "start": 50.504,
+      "end": 50.905,
+      "score": 0.585,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "word": "This",
+      "start": 52.859,
+      "end": 53.039,
+      "score": 0.82,
+      "speaker": "SPEAKER_02"
+    },
+    {
+      "word": "is",
+      "start": 53.239,
+      "end": 53.379,
+      "score": 0.791,
+      "speaker": "SPEAKER_02"
+    },
+    {
+      "word": "Sherry",
+      "start": 53.46,
+      "end": 53.78,
+      "score": 0.881,
+      "speaker": "SPEAKER_02"
+    },
+    {
+      "word": "Dykes",
+      "start": 53.82,
+      "end": 54.22,
+      "score": 0.736,
+      "speaker": "SPEAKER_02"
+    },
+    {
+      "word": "calling",
+      "start": 54.3,
+      "end": 54.66,
+      "score": 0.871,
+      "speaker": "SPEAKER_02"
+    },
+    {
+      "word": "from",
+      "start": 54.7,
+      "end": 54.841,
+      "score": 0.906,
+      "speaker": "SPEAKER_02"
+    },
+    {
+      "word": "Dr.",
+      "start": 54.901,
+      "end": 55.261,
+      "score": 0.581,
+      "speaker": "SPEAKER_02"
+    },
+    {
+      "word": "Ernie",
+      "start": 55.381,
+      "end": 55.641,
+      "score": 0.725,
+      "speaker": "SPEAKER_02"
+    },
+    {
+      "word": "Burt's",
+      "start": 55.721,
+      "end": 56.021,
+      "score": 0.8,
+      "speaker": "SPEAKER_02"
+    },
+    {
+      "word": "office.",
+      "start": 56.102,
+      "end": 56.462,
+      "score": 0.884,
+      "speaker": "SPEAKER_02"
+    },
+    {
+      "word": "Our",
+      "start": 56.982,
+      "end": 57.122,
+      "score": 0.85,
+      "speaker": "SPEAKER_02"
+    },
+    {
+      "word": "phone",
+      "start": 57.222,
+      "end": 57.463,
+      "score": 0.864,
+      "speaker": "SPEAKER_02"
+    },
+    {
+      "word": "number",
+      "start": 57.503,
+      "end": 57.743,
+      "score": 0.91,
+      "speaker": "SPEAKER_02"
+    },
+    {
+      "word": "is",
+      "start": 57.763,
+      "end": 57.803,
+      "score": 0.0,
+      "speaker": "SPEAKER_02"
+    },
+    {
+      "word": "803-555-1212.",
+      "start": 57.823,
+      "end": 57.903,
+      "score": 1.0,
+      "speaker": "SPEAKER_02"
+    },
+    {
+      "word": "Dr.",
+      "start": 57.943,
+      "end": 58.023,
+      "score": 0.086,
+      "speaker": "SPEAKER_02"
+    },
+    {
+      "word": "Burt's",
+      "start": 58.223,
+      "end": 58.423,
+      "score": 0.226,
+      "speaker": "SPEAKER_02"
+    },
+    {
+      "word": "DEA",
+      "start": 58.624,
+      "end": 58.784,
+      "score": 0.583,
+      "speaker": "SPEAKER_02"
+    },
+    {
+      "word": "number",
+      "start": 58.804,
+      "end": 59.164,
+      "score": 0.566,
+      "speaker": "SPEAKER_02"
+    },
+    {
+      "word": "is",
+      "start": 59.244,
+      "end": 59.304,
+      "score": 0.25,
+      "speaker": "SPEAKER_02"
+    },
+    {
+      "word": "J",
+      "start": 59.324,
+      "end": 59.344,
+      "score": 0.0,
+      "speaker": "SPEAKER_02"
+    },
+    {
+      "word": "as",
+      "start": 59.364,
+      "end": 60.105,
+      "score": 0.932,
+      "speaker": "SPEAKER_02"
+    },
+    {
+      "word": "in",
+      "start": 60.125,
+      "end": 60.245,
+      "score": 0.637,
+      "speaker": "SPEAKER_02"
+    },
+    {
+      "word": "Jenny,",
+      "start": 60.265,
+      "end": 60.925,
+      "score": 0.442,
+      "speaker": "SPEAKER_02"
+    },
+    {
+      "word": "J",
+      "start": 60.945,
+      "end": 60.965,
+      "score": 0.0,
+      "speaker": "SPEAKER_02"
+    },
+    {
+      "word": "as",
+      "start": 61.266,
+      "end": 61.506,
+      "score": 0.454,
+      "speaker": "SPEAKER_02"
+    },
+    {
+      "word": "in",
+      "start": 61.566,
+      "end": 61.706,
+      "score": 0.574,
+      "speaker": "SPEAKER_02"
+    },
+    {
+      "word": "Jenny,",
+      "start": 61.726,
+      "end": 62.286,
+      "score": 0.599,
+      "speaker": "SPEAKER_02"
+    },
+    {
+      "word": "867-5309.",
+      "start": 62.306,
+      "end": 62.326,
+      "score": 0.0,
+      "speaker": "SPEAKER_02"
+    },
+    {
+      "word": "I'm",
+      "start": 62.406,
+      "end": 62.667,
+      "score": 0.642,
+      "speaker": "SPEAKER_02"
+    },
+    {
+      "word": "calling",
+      "start": 62.687,
+      "end": 63.467,
+      "score": 0.326,
+      "speaker": "SPEAKER_02"
+    },
+    {
+      "word": "in",
+      "start": 63.567,
+      "end": 63.788,
+      "score": 0.611,
+      "speaker": "SPEAKER_02"
+    },
+    {
+      "word": "a",
+      "start": 63.808,
+      "end": 63.828,
+      "score": 0.0,
+      "speaker": "SPEAKER_02"
+    },
+    {
+      "word": "prescription",
+      "start": 63.848,
+      "end": 65.169,
+      "score": 0.425,
+      "speaker": "SPEAKER_02"
+    },
+    {
+      "word": "today",
+      "start": 65.189,
+      "end": 65.809,
+      "score": 0.566,
+      "speaker": "SPEAKER_02"
+    },
+    {
+      "word": "for",
+      "start": 65.889,
+      "end": 66.169,
+      "score": 0.569,
+      "speaker": "SPEAKER_02"
+    },
+    {
+      "word": "Mr.",
+      "start": 66.189,
+      "end": 66.57,
+      "score": 0.657,
+      "speaker": "SPEAKER_02"
+    },
+    {
+      "word": "Peyton",
+      "start": 66.67,
+      "end": 67.15,
+      "score": 0.632,
+      "speaker": "SPEAKER_02"
+    },
+    {
+      "word": "Manning.",
+      "start": 67.19,
+      "end": 67.53,
+      "score": 0.472,
+      "speaker": "SPEAKER_02"
+    },
+    {
+      "word": "Date",
+      "start": 68.111,
+      "end": 68.311,
+      "score": 0.386,
+      "speaker": "SPEAKER_02"
+    },
+    {
+      "word": "of",
+      "start": 68.351,
+      "end": 68.431,
+      "score": 0.327,
+      "speaker": "SPEAKER_02"
+    },
+    {
+      "word": "birth",
+      "start": 68.451,
+      "end": 68.591,
+      "score": 0.266,
+      "speaker": "SPEAKER_02"
+    },
+    {
+      "word": "is",
+      "start": 68.611,
+      "end": 68.671,
+      "score": 0.25,
+      "speaker": "SPEAKER_02"
+    },
+    {
+      "word": "7-2-1978.",
+      "start": 68.691,
+      "end": 68.731,
+      "score": 1.0,
+      "speaker": "SPEAKER_02"
+    },
+    {
+      "word": "His",
+      "start": 82.582,
+      "end": 82.702,
+      "score": 0.761,
+      "speaker": "SPEAKER_02"
+    },
+    {
+      "word": "first",
+      "start": 82.762,
+      "end": 82.962,
+      "score": 0.827,
+      "speaker": "SPEAKER_02"
+    },
+    {
+      "word": "name",
+      "start": 83.022,
+      "end": 83.202,
+      "score": 0.851,
+      "speaker": "SPEAKER_02"
+    },
+    {
+      "word": "is",
+      "start": 83.262,
+      "end": 83.343,
+      "score": 0.722,
+      "speaker": "SPEAKER_02"
+    },
+    {
+      "word": "spelled",
+      "start": 83.383,
+      "end": 83.783,
+      "score": 0.864,
+      "speaker": "SPEAKER_02"
+    },
+    {
+      "word": "P",
+      "start": 84.323,
+      "end": 84.503,
+      "score": 0.957,
+      "speaker": "SPEAKER_02"
+    },
+    {
+      "word": "as",
+      "start": 84.583,
+      "end": 84.683,
+      "score": 0.508,
+      "speaker": "SPEAKER_02"
+    },
+    {
+      "word": "in",
+      "start": 84.723,
+      "end": 84.843,
+      "score": 0.431,
+      "speaker": "SPEAKER_02"
+    },
+    {
+      "word": "Paul,",
+      "start": 85.064,
+      "end": 85.524,
+      "score": 0.931,
+      "speaker": "SPEAKER_02"
+    },
+    {
+      "word": "E",
+      "start": 86.144,
+      "end": 86.304,
+      "score": 0.823,
+      "speaker": "SPEAKER_02"
+    },
+    {
+      "word": "as",
+      "start": 86.464,
+      "end": 86.564,
+      "score": 0.654,
+      "speaker": "SPEAKER_02"
+    },
+    {
+      "word": "in",
+      "start": 86.604,
+      "end": 86.684,
+      "score": 0.43,
+      "speaker": "SPEAKER_02"
+    },
+    {
+      "word": "Edward,",
+      "start": 86.845,
+      "end": 87.205,
+      "score": 0.824,
+      "speaker": "SPEAKER_02"
+    },
+    {
+      "word": "Y,",
+      "start": 87.865,
+      "end": 87.985,
+      "score": 0.681,
+      "speaker": "SPEAKER_02"
+    },
+    {
+      "word": "T",
+      "start": 88.325,
+      "end": 88.506,
+      "score": 0.934,
+      "speaker": "SPEAKER_02"
+    },
+    {
+      "word": "as",
+      "start": 88.586,
+      "end": 88.686,
+      "score": 0.715,
+      "speaker": "SPEAKER_02"
+    },
+    {
+      "word": "in",
+      "start": 88.706,
+      "end": 88.806,
+      "score": 0.518,
+      "speaker": "SPEAKER_02"
+    },
+    {
+      "word": "Tom,",
+      "start": 88.866,
+      "end": 89.286,
+      "score": 0.838,
+      "speaker": "SPEAKER_02"
+    },
+    {
+      "word": "O,",
+      "start": 90.147,
+      "end": 90.267,
+      "score": 0.793,
+      "speaker": "SPEAKER_02"
+    },
+    {
+      "word": "N",
+      "start": 90.287,
+      "end": 90.307,
+      "score": 0.0,
+      "speaker": "SPEAKER_02"
+    },
+    {
+      "word": "as",
+      "start": 90.987,
+      "end": 91.087,
+      "score": 0.715,
+      "speaker": "SPEAKER_02"
+    },
+    {
+      "word": "in",
+      "start": 91.127,
+      "end": 91.187,
+      "score": 0.448,
+      "speaker": "SPEAKER_02"
+    },
+    {
+      "word": "Nancy,",
+      "start": 91.247,
+      "end": 91.687,
+      "score": 0.811,
+      "speaker": "SPEAKER_02"
+    },
+    {
+      "word": "and",
+      "start": 92.168,
+      "end": 92.268,
+      "score": 0.766,
+      "speaker": "SPEAKER_02"
+    },
+    {
+      "word": "Manning,",
+      "start": 92.328,
+      "end": 92.748,
+      "score": 0.953,
+      "speaker": "SPEAKER_02"
+    },
+    {
+      "word": "M",
+      "start": 93.268,
+      "end": 93.308,
+      "score": 0.819,
+      "speaker": "SPEAKER_02"
+    },
+    {
+      "word": "as",
+      "start": 93.368,
+      "end": 93.468,
+      "score": 0.833,
+      "speaker": "SPEAKER_02"
+    },
+    {
+      "word": "in",
+      "start": 93.528,
+      "end": 93.609,
+      "score": 0.558,
+      "speaker": "SPEAKER_02"
+    },
+    {
+      "word": "Mary,",
+      "start": 93.649,
+      "end": 94.029,
+      "score": 0.795,
+      "speaker": "SPEAKER_02"
+    },
+    {
+      "word": "A,",
+      "start": 94.729,
+      "end": 94.889,
+      "score": 0.868,
+      "speaker": "SPEAKER_02"
+    },
+    {
+      "word": "N",
+      "start": 94.909,
+      "end": 94.929,
+      "score": 0.0,
+      "speaker": "SPEAKER_02"
+    },
+    {
+      "word": "as",
+      "start": 95.45,
+      "end": 95.55,
+      "score": 0.833,
+      "speaker": "SPEAKER_02"
+    },
+    {
+      "word": "in",
+      "start": 95.61,
+      "end": 95.67,
+      "score": 0.425,
+      "speaker": "SPEAKER_02"
+    },
+    {
+      "word": "Nancy,",
+      "start": 95.73,
+      "end": 96.21,
+      "score": 0.772,
+      "speaker": "SPEAKER_02"
+    },
+    {
+      "word": "N",
+      "start": 96.65,
+      "end": 96.71,
+      "score": 0.871,
+      "speaker": "SPEAKER_02"
+    },
+    {
+      "word": "as",
+      "start": 96.75,
+      "end": 96.85,
+      "score": 0.832,
+      "speaker": "SPEAKER_02"
+    },
+    {
+      "word": "in",
+      "start": 96.91,
+      "end": 96.991,
+      "score": 0.476,
+      "speaker": "SPEAKER_02"
+    },
+    {
+      "word": "Nancy,",
+      "start": 97.051,
+      "end": 97.531,
+      "score": 0.834,
+      "speaker": "SPEAKER_02"
+    },
+    {
+      "word": "I,",
+      "start": 98.351,
+      "end": 98.431,
+      "score": 0.985,
+      "speaker": "SPEAKER_02"
+    },
+    {
+      "word": "N",
+      "start": 98.451,
+      "end": 98.471,
+      "score": 0.0,
+      "speaker": "SPEAKER_02"
+    },
+    {
+      "word": "as",
+      "start": 98.491,
+      "end": 98.531,
+      "score": 0.0,
+      "speaker": "SPEAKER_02"
+    },
+    {
+      "word": "in",
+      "start": 99.092,
+      "end": 99.172,
+      "score": 0.875,
+      "speaker": "SPEAKER_02"
+    },
+    {
+      "word": "Nancy,",
+      "start": 99.472,
+      "end": 99.872,
+      "score": 0.872,
+      "speaker": "SPEAKER_02"
+    },
+    {
+      "word": "G.",
+      "start": 100.192,
+      "end": 100.513,
+      "score": 0.897,
+      "speaker": "SPEAKER_02"
+    },
+    {
+      "word": "Mr.",
+      "start": 101.373,
+      "end": 101.633,
+      "score": 0.516,
+      "speaker": "SPEAKER_02"
+    },
+    {
+      "word": "Manning",
+      "start": 101.673,
+      "end": 102.054,
+      "score": 0.919,
+      "speaker": "SPEAKER_02"
+    },
+    {
+      "word": "is",
+      "start": 102.134,
+      "end": 102.194,
+      "score": 0.948,
+      "speaker": "SPEAKER_02"
+    },
+    {
+      "word": "needing",
+      "start": 102.254,
+      "end": 102.514,
+      "score": 0.952,
+      "speaker": "SPEAKER_02"
+    },
+    {
+      "word": "his",
+      "start": 102.574,
+      "end": 102.714,
+      "score": 0.848,
+      "speaker": "SPEAKER_02"
+    },
+    {
+      "word": "Diavan",
+      "start": 102.774,
+      "end": 103.394,
+      "score": 0.688,
+      "speaker": "SPEAKER_02"
+    },
+    {
+      "word": "HCT",
+      "start": 103.694,
+      "end": 104.355,
+      "score": 0.899,
+      "speaker": "SPEAKER_02"
+    },
+    {
+      "word": "160"
+    },
+    {
+      "word": "slash",
+      "start": 104.395,
+      "end": 105.095,
+      "score": 0.66,
+      "speaker": "SPEAKER_02"
+    },
+    {
+      "word": "12.5"
+    },
+    {
+      "word": "milligrams.",
+      "start": 105.195,
+      "end": 105.816,
+      "score": 0.594,
+      "speaker": "SPEAKER_02"
+    },
+    {
+      "word": "He",
+      "start": 108.257,
+      "end": 108.377,
+      "score": 0.812,
+      "speaker": "SPEAKER_02"
+    },
+    {
+      "word": "will",
+      "start": 108.398,
+      "end": 108.578,
+      "score": 0.937,
+      "speaker": "SPEAKER_02"
+    },
+    {
+      "word": "take",
+      "start": 108.618,
+      "end": 108.818,
+      "score": 0.769,
+      "speaker": "SPEAKER_02"
+    },
+    {
+      "word": "that",
+      "start": 108.878,
+      "end": 109.038,
+      "score": 0.898,
+      "speaker": "SPEAKER_02"
+    },
+    {
+      "word": "one",
+      "start": 109.179,
+      "end": 109.339,
+      "score": 0.618,
+      "speaker": "SPEAKER_02"
+    },
+    {
+      "word": "tablet",
+      "start": 109.399,
+      "end": 109.819,
+      "score": 0.869,
+      "speaker": "SPEAKER_02"
+    },
+    {
+      "word": "by",
+      "start": 109.879,
+      "end": 110.04,
+      "score": 0.821,
+      "speaker": "SPEAKER_02"
+    },
+    {
+      "word": "mouth",
+      "start": 110.1,
+      "end": 110.38,
+      "score": 0.881,
+      "speaker": "SPEAKER_02"
+    },
+    {
+      "word": "daily,",
+      "start": 110.46,
+      "end": 110.861,
+      "score": 0.858,
+      "speaker": "SPEAKER_02"
+    },
+    {
+      "word": "number",
+      "start": 111.281,
+      "end": 111.982,
+      "score": 0.915,
+      "speaker": "SPEAKER_02"
+    },
+    {
+      "word": "90,"
+    },
+    {
+      "word": "with",
+      "start": 112.182,
+      "end": 112.343,
+      "score": 0.737,
+      "speaker": "SPEAKER_02"
+    },
+    {
+      "word": "three",
+      "start": 112.383,
+      "end": 112.583,
+      "score": 0.933,
+      "speaker": "SPEAKER_02"
+    },
+    {
+      "word": "additional",
+      "start": 112.623,
+      "end": 113.003,
+      "score": 0.96,
+      "speaker": "SPEAKER_02"
+    },
+    {
+      "word": "refills.",
+      "start": 113.043,
+      "end": 113.544,
+      "score": 0.808,
+      "speaker": "SPEAKER_02"
+    },
+    {
+      "word": "Again,",
+      "start": 114.245,
+      "end": 114.565,
+      "score": 0.879,
+      "speaker": "SPEAKER_02"
+    },
+    {
+      "word": "that",
+      "start": 114.625,
+      "end": 114.786,
+      "score": 0.856,
+      "speaker": "SPEAKER_02"
+    },
+    {
+      "word": "is",
+      "start": 114.846,
+      "end": 114.946,
+      "score": 0.734,
+      "speaker": "SPEAKER_02"
+    },
+    {
+      "word": "Diavan",
+      "start": 115.006,
+      "end": 115.667,
+      "score": 0.849,
+      "speaker": "SPEAKER_02"
+    },
+    {
+      "word": "HCT,",
+      "start": 116.067,
+      "end": 116.728,
+      "score": 0.808,
+      "speaker": "SPEAKER_02"
+    },
+    {
+      "word": "160-12.5",
+      "start": 116.748,
+      "end": 117.509,
+      "score": 0.852,
+      "speaker": "SPEAKER_02"
+    },
+    {
+      "word": "milligrams,",
+      "start": 117.589,
+      "end": 120.132,
+      "score": 0.737,
+      "speaker": "SPEAKER_02"
+    },
+    {
+      "word": "one",
+      "start": 120.693,
+      "end": 120.813,
+      "score": 0.832,
+      "speaker": "SPEAKER_02"
+    },
+    {
+      "word": "tablet",
+      "start": 120.853,
+      "end": 121.214,
+      "score": 0.723,
+      "speaker": "SPEAKER_02"
+    },
+    {
+      "word": "by",
+      "start": 121.254,
+      "end": 121.394,
+      "score": 0.876,
+      "speaker": "SPEAKER_02"
+    },
+    {
+      "word": "mouth",
+      "start": 121.474,
+      "end": 121.775,
+      "score": 0.908,
+      "speaker": "SPEAKER_02"
+    },
+    {
+      "word": "daily,",
+      "start": 121.855,
+      "end": 122.255,
+      "score": 0.86,
+      "speaker": "SPEAKER_02"
+    },
+    {
+      "word": "number",
+      "start": 122.696,
+      "end": 123.517,
+      "score": 0.881,
+      "speaker": "SPEAKER_02"
+    },
+    {
+      "word": "90,"
+    },
+    {
+      "word": "with",
+      "start": 123.717,
+      "end": 123.877,
+      "score": 0.864,
+      "speaker": "SPEAKER_02"
+    },
+    {
+      "word": "three",
+      "start": 123.917,
+      "end": 124.118,
+      "score": 0.911,
+      "speaker": "SPEAKER_02"
+    },
+    {
+      "word": "additional",
+      "start": 124.158,
+      "end": 124.538,
+      "score": 0.941,
+      "speaker": "SPEAKER_02"
+    },
+    {
+      "word": "refills.",
+      "start": 124.578,
+      "end": 124.999,
+      "score": 0.908,
+      "speaker": "SPEAKER_02"
+    },
+    {
+      "word": "Thank",
+      "start": 125.439,
+      "end": 125.68,
+      "score": 0.932,
+      "speaker": "SPEAKER_02"
+    },
+    {
+      "word": "you.",
+      "start": 125.7,
+      "end": 125.82,
+      "score": 0.935,
+      "speaker": "SPEAKER_02"
+    }
+  ]
+}
