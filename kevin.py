@@ -73,7 +73,9 @@ class TranscriptMerger:
         for seg in segments:
             speaker = seg.get('speaker', 'Unknown')
             for w in seg.get('words', []):
-                score = w.get('score', 0.0) 
+                if 'start' not in w or 'end' not in w:
+                    continue  # skip words whisperX couldn't align
+                score = w.get('score', 0.0)
                 flattened_words.append({
                     'text': w['word'],
                     'start': w['start'],
