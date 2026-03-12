@@ -25,6 +25,7 @@ dist-ssr
 
 # Environment / secrets
 .env
+.env.local
 
 # Python
 .venv/
