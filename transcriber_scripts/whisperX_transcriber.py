@@ -22,6 +22,8 @@ class MeetingPipeline:
     def __init__(self, audio_path: str):
         self.audio_path = audio_path
         self.base_name = os.path.splitext(os.path.basename(audio_path))[0]
+        self.out_dir = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "outputs", "whisperx")
+        os.makedirs(self.out_dir, exist_ok=True)
         
         self.device = "cuda" if torch.cuda.is_available() else "cpu"
         self.compute_type = "int8" 
@@ -123,20 +125,20 @@ class MeetingPipeline:
         detailed_txt, clean_txt = self.format_output(final_result)
         
         # --- FIX 3: Save the Raw JSON ---
-        json_filename = f"{self.base_name}_full_output.json"
+        json_filename = os.path.join(self.out_dir, f"{self.base_name}_full_output.json")
         with open(json_filename, "w", encoding="utf-8") as f:
             json.dump(final_result, f, indent=2)
         logging.info(f"💾 Saved JSON Data: {json_filename}")
 
         # Save Text
-        txt_filename = f"{self.base_name}_transcript.txt"
+        txt_filename = os.path.join(self.out_dir, f"{self.base_name}_transcript.txt")
         with open(txt_filename, "w", encoding="utf-8") as f:
             f.write(detailed_txt)
         logging.info(f"💾 Saved transcript: {txt_filename}")
 
         # Save Summary
         summary = self.summarize(clean_txt)
-        md_filename = f"{self.base_name}_summary.md"
+        md_filename = os.path.join(self.out_dir, f"{self.base_name}_summary.md")
         with open(md_filename, "w", encoding="utf-8") as f:
             f.write(summary)
         logging.info(f"💾 Saved summary: {md_filename}")
