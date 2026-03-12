@@ -1,4 +1,4 @@
-import { createBrowserRouter, RouterProvider } from 'react-router-dom';
+import { createBrowserRouter, RouterProvider } from 'react-router';
 import { Root } from './components/Root';
 import { Dashboard } from './components/Dashboard';
 import NewNote from './components/NewNote';

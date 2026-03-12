@@ -1,78 +1,65 @@
-import { Outlet, NavLink } from 'react-router-dom';
-import { motion, AnimatePresence } from 'framer-motion';
-import { Stethoscope } from 'lucide-react';
+import { Outlet, Link, useLocation } from "react-router";
+import { motion } from "motion/react";
 
-const navLinks = [
-  { to: '/', label: 'Overview', end: true },
-  { to: '/new-note', label: 'New Note' },
-  { to: '/patients', label: 'Patients' },
-  { to: '/history', label: 'History' },
-];
+export function Root() {
+  const location = useLocation();
 
-export default function Root() {
+  const navItems = [
+    { path: "/", label: "Overview" },
+    { path: "/new-note", label: "New Note" },
+    { path: "/patients", label: "Patients" },
+    { path: "/history", label: "History" },
+  ];
+
   return (
-    <div className="min-h-screen bg-[#f8faf9]">
-      {/* Fixed Header */}
-      <header className="fixed top-0 left-0 right-0 h-16 bg-white border-b border-gray-100 z-50 flex items-center px-6">
-        {/* Logo */}
-        <div className="flex items-center gap-3 mr-10 shrink-0">
-          <div
-            className="w-9 h-9 rounded-xl flex items-center justify-center text-white shadow-md"
-            style={{ background: 'linear-gradient(135deg, #1a5d3a 0%, #2d8a5e 100%)' }}
-          >
-            <Stethoscope size={18} />
+    <div className="flex h-screen bg-white">
+      {/* Minimal Top Bar */}
+      <div className="fixed top-0 left-0 right-0 h-16 bg-white border-b border-slate-200 z-50">
+        <div className="h-full max-w-[1600px] mx-auto px-12 flex items-center justify-between">
+          {/* Logo + Nav */}
+          <div className="flex items-center gap-12">
+            <Link to="/" className="flex items-center gap-3">
+              <div className="w-7 h-7 bg-slate-900" />
+              <span className="text-sm font-medium tracking-wide uppercase text-slate-900">MedScribe</span>
+            </Link>
+
+            <nav className="flex items-center gap-1">
+              {navItems.map((item) => {
+                const isActive = location.pathname === item.path;
+                return (
+                  <Link key={item.path} to={item.path} className="relative px-4 py-2">
+                    <span className={`text-sm transition-colors ${isActive ? 'text-slate-900' : 'text-slate-500 hover:text-slate-900'}`}>
+                      {item.label}
+                    </span>
+                    {isActive && (
+                      <motion.div
+                        layoutId="activeIndicator"
+                        className="absolute bottom-0 left-0 right-0 h-px bg-slate-900"
+                        transition={{ type: "spring", stiffness: 380, damping: 30 }}
+                      />
+                    )}
+                  </Link>
+                );
+              })}
+            </nav>
           </div>
-          <span className="text-[17px] font-bold tracking-tight text-gray-900">MedScribe</span>
-        </div>
 
-        {/* Navigation */}
-        <nav className="flex items-stretch flex-1 h-full">
-          {navLinks.map(link => (
-            <NavLink
-              key={link.to}
-              to={link.to}
-              end={link.end ?? false}
-              className="relative flex items-center px-4 h-full"
-            >
-              {({ isActive }) => (
-                <>
-                  <span
-                    className="text-sm font-medium transition-colors duration-150"
-                    style={{ color: isActive ? '#1a5d3a' : '#6b7280' }}
-                  >
-                    {link.label}
-                  </span>
-                  {isActive && (
-                    <motion.div
-                      layoutId="nav-underline"
-                      className="absolute bottom-0 left-3 right-3 h-[2px] rounded-full"
-                      style={{ background: '#1a5d3a' }}
-                      transition={{ type: 'spring', stiffness: 380, damping: 30 }}
-                    />
-                  )}
-                </>
-              )}
-            </NavLink>
-          ))}
-        </nav>
-
-        {/* User */}
-        <div className="flex items-center gap-3 shrink-0">
-          <div
-            className="w-9 h-9 rounded-full flex items-center justify-center text-white text-sm font-semibold"
-            style={{ background: 'linear-gradient(135deg, #1a5d3a 0%, #2d8a5e 100%)' }}
-          >
-            SJ
+          {/* User */}
+          <div className="flex items-center gap-4">
+            <div className="text-right">
+              <p className="text-sm font-medium text-slate-900">Dr. Sarah Johnson</p>
+              <p className="text-xs text-slate-500">Internal Medicine</p>
+            </div>
+            <div className="w-9 h-9 bg-slate-900 text-white flex items-center justify-center">
+              <span className="text-xs font-medium">SJ</span>
+            </div>
           </div>
-          <span className="text-sm text-gray-500 hidden md:block">Dr. Sarah Johnson</span>
         </div>
-      </header>
+      </div>
 
-      {/* Page content */}
-      <main className="pt-16 min-h-screen">
-        <AnimatePresence mode="wait">
-          <Outlet />
-        </AnimatePresence>
+      {/* Main Content */}
+      <main className="flex-1 mt-16 overflow-auto">
+        <Outlet />
       </main>
     </div>
   );
