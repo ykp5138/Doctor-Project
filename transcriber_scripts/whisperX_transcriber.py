@@ -59,7 +59,11 @@ class MeetingPipeline:
         logging.info("👥 Loading Diarization Pipeline...")
         try:
             # --- FIX 2: Use the directly imported class ---
-            diarize_model = DiarizationPipeline(use_auth_token=HF_TOKEN, device=self.device)
+            try:
+                diarize_model = DiarizationPipeline(use_auth_token=HF_TOKEN, device=self.device)
+            except TypeError:
+                # pyannote.audio 4.x renamed use_auth_token -> token
+                diarize_model = DiarizationPipeline(token=HF_TOKEN, device=self.device)
         except Exception as e:
             logging.error(f"❌ Failed to load Diarization. Error: {e}")
             sys.exit(1)
