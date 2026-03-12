@@ -1,109 +1,99 @@
-import { useState } from 'react';
-import { motion } from 'framer-motion';
-import { Search, UserPlus } from 'lucide-react';
+import { useState } from "react";
+import { Input } from "./ui/input";
+import { Search } from "lucide-react";
+import { motion } from "motion/react";
 
-const samplePatients = [
-  { name: 'John Smith', mrn: 'MRN-001234', dob: '1974-03-15', lastVisit: 'Mar 12, 2026', notes: 8, status: 'Active', initials: 'JS' },
-  { name: 'Emily Davis', mrn: 'MRN-002187', dob: '1989-07-22', lastVisit: 'Mar 12, 2026', notes: 5, status: 'Active', initials: 'ED' },
-  { name: 'Robert Chen', mrn: 'MRN-003045', dob: '1965-11-04', lastVisit: 'Mar 11, 2026', notes: 12, status: 'Active', initials: 'RC' },
-  { name: 'Maria Lopez', mrn: 'MRN-004321', dob: '1992-01-30', lastVisit: 'Mar 11, 2026', notes: 3, status: 'Active', initials: 'ML' },
-  { name: 'David Park', mrn: 'MRN-005678', dob: '1958-09-18', lastVisit: 'Mar 10, 2026', notes: 6, status: 'Active', initials: 'DP' },
-  { name: 'Sarah White', mrn: 'MRN-006543', dob: '1981-05-25', lastVisit: 'Mar 10, 2026', notes: 4, status: 'Inactive', initials: 'SW' },
-  { name: 'James Wilson', mrn: 'MRN-007890', dob: '1970-12-08', lastVisit: 'Mar 9, 2026', notes: 9, status: 'Active', initials: 'JW' },
-  { name: 'Linda Brown', mrn: 'MRN-008765', dob: '1995-06-14', lastVisit: 'Mar 9, 2026', notes: 2, status: 'Active', initials: 'LB' },
-];
+export function PatientList() {
+  const [searchQuery, setSearchQuery] = useState("");
 
-export default function PatientList() {
-  const [search, setSearch] = useState('');
+  const patients = [
+    { name: "John Smith", mrn: "001234", dob: "05/14/1965", lastVisit: "Mar 12, 2026", notes: 8, status: "Active" },
+    { name: "Emily Davis", mrn: "001235", dob: "11/22/1978", lastVisit: "Mar 12, 2026", notes: 5, status: "Active" },
+    { name: "Michael Brown", mrn: "001236", dob: "08/30/1952", lastVisit: "Mar 11, 2026", notes: 12, status: "Active" },
+    { name: "Sarah Wilson", mrn: "001237", dob: "03/17/1990", lastVisit: "Mar 10, 2026", notes: 3, status: "Active" },
+    { name: "David Martinez", mrn: "001238", dob: "12/05/1968", lastVisit: "Mar 9, 2026", notes: 15, status: "Monitoring" },
+    { name: "Jennifer Lee", mrn: "001239", dob: "07/28/1985", lastVisit: "Mar 8, 2026", notes: 6, status: "Active" },
+    { name: "Robert Taylor", mrn: "001240", dob: "06/15/1960", lastVisit: "Mar 7, 2026", notes: 10, status: "Active" },
+    { name: "Lisa Anderson", mrn: "001241", dob: "09/03/1975", lastVisit: "Mar 6, 2026", notes: 4, status: "Active" },
+  ];
 
-  const filtered = samplePatients.filter(p =>
-    p.name.toLowerCase().includes(search.toLowerCase()) ||
-    p.mrn.toLowerCase().includes(search.toLowerCase())
+  const filteredPatients = patients.filter(
+    (patient) =>
+      patient.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      patient.mrn.includes(searchQuery)
   );
 
   return (
-    <motion.div
-      className="max-w-5xl mx-auto px-6 py-10"
-      initial={{ opacity: 0, y: 12 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.3 }}
-    >
-      <div className="flex items-center justify-between mb-8">
-        <div>
-          <h1 className="text-2xl font-bold text-gray-900">Patients</h1>
-          <p className="text-sm text-gray-500 mt-1">Manage and search your patient directory.</p>
+    <div className="min-h-screen">
+      <motion.section
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0.8, ease: [0.19, 1.0, 0.22, 1.0] }}
+        className="border-b border-slate-200"
+      >
+        <div className="max-w-[1600px] mx-auto px-12 py-16">
+          <p className="text-xs uppercase tracking-widest text-slate-500 mb-4">Directory</p>
+          <h1 className="text-5xl font-light text-slate-900 tracking-tight">Patients</h1>
         </div>
-        <button
-          className="flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold text-white transition-all hover:-translate-y-0.5"
-          style={{ background: 'linear-gradient(135deg, #1a5d3a 0%, #2d8a5e 100%)', boxShadow: '0 4px 12px rgba(26,93,58,0.25)' }}
+      </motion.section>
+
+      <div className="max-w-[1600px] mx-auto px-12 py-16">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8, delay: 0.2, ease: [0.19, 1.0, 0.22, 1.0] }}
+          className="mb-12"
         >
-          <UserPlus size={15} />
-          Add Patient
-        </button>
-      </div>
+          <div className="relative">
+            <Search className="absolute left-0 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+            <Input
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              placeholder="Search by name or MRN"
+              className="pl-8 border-0 border-b border-slate-200 rounded-none focus:border-slate-900 focus:ring-0 text-lg bg-transparent"
+            />
+          </div>
+        </motion.div>
 
-      {/* Search */}
-      <div className="relative mb-6">
-        <Search size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" />
-        <input
-          type="text"
-          value={search}
-          onChange={e => setSearch(e.target.value)}
-          placeholder="Search by name or MRN…"
-          className="w-full pl-11 pr-4 py-3 bg-white border border-gray-200 rounded-xl text-sm focus:outline-none focus:border-[#1a5d3a] transition-colors"
-        />
-      </div>
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8, delay: 0.3, ease: [0.19, 1.0, 0.22, 1.0] }}
+          className="grid grid-cols-12 gap-4 px-8 py-4 border-b border-slate-200"
+        >
+          <div className="col-span-3"><span className="text-xs uppercase tracking-widest text-slate-500">Name</span></div>
+          <div className="col-span-2"><span className="text-xs uppercase tracking-widest text-slate-500">MRN</span></div>
+          <div className="col-span-2"><span className="text-xs uppercase tracking-widest text-slate-500">Date of Birth</span></div>
+          <div className="col-span-2"><span className="text-xs uppercase tracking-widest text-slate-500">Last Visit</span></div>
+          <div className="col-span-1"><span className="text-xs uppercase tracking-widest text-slate-500">Notes</span></div>
+          <div className="col-span-2"><span className="text-xs uppercase tracking-widest text-slate-500">Status</span></div>
+        </motion.div>
 
-      {/* Table */}
-      <div className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
-        <div className="grid grid-cols-12 gap-4 px-6 py-3 border-b border-gray-50 text-xs font-semibold text-gray-400 uppercase tracking-wider">
-          <div className="col-span-3">Patient</div>
-          <div className="col-span-2">MRN</div>
-          <div className="col-span-2">Date of Birth</div>
-          <div className="col-span-2">Last Visit</div>
-          <div className="col-span-1 text-center">Notes</div>
-          <div className="col-span-2">Status</div>
+        <div>
+          {filteredPatients.map((patient, index) => (
+            <motion.div
+              key={patient.mrn}
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: 0.4 + index * 0.03, ease: [0.19, 1.0, 0.22, 1.0] }}
+              className="grid grid-cols-12 gap-4 px-8 py-6 border-b border-slate-100 hover:bg-slate-50 transition-colors cursor-pointer"
+            >
+              <div className="col-span-3"><span className="text-sm font-medium text-slate-900">{patient.name}</span></div>
+              <div className="col-span-2"><span className="text-sm font-mono text-slate-500">{patient.mrn}</span></div>
+              <div className="col-span-2"><span className="text-sm text-slate-600">{patient.dob}</span></div>
+              <div className="col-span-2"><span className="text-sm text-slate-600">{patient.lastVisit}</span></div>
+              <div className="col-span-1"><span className="text-sm text-slate-600">{patient.notes}</span></div>
+              <div className="col-span-2"><span className="text-xs uppercase tracking-wider text-slate-400">{patient.status}</span></div>
+            </motion.div>
+          ))}
         </div>
 
-        {filtered.length === 0 ? (
-          <div className="px-6 py-12 text-center text-sm text-gray-400">No patients found.</div>
-        ) : (
-          filtered.map((patient, i) => (
-            <motion.div
-              key={i}
-              initial={{ opacity: 0, x: -8 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ delay: i * 0.04 }}
-              className={`grid grid-cols-12 gap-4 px-6 py-4 items-center hover:bg-gray-50 transition-colors cursor-pointer ${i !== filtered.length - 1 ? 'border-b border-gray-50' : ''}`}
-            >
-              <div className="col-span-3 flex items-center gap-3">
-                <div
-                  className="w-8 h-8 rounded-full flex items-center justify-center text-white text-xs font-semibold shrink-0"
-                  style={{ background: 'linear-gradient(135deg, #1a5d3a 0%, #2d8a5e 100%)' }}
-                >
-                  {patient.initials}
-                </div>
-                <span className="text-sm font-medium text-gray-800 truncate">{patient.name}</span>
-              </div>
-              <div className="col-span-2 text-sm text-gray-500 font-mono">{patient.mrn}</div>
-              <div className="col-span-2 text-sm text-gray-500">{patient.dob}</div>
-              <div className="col-span-2 text-sm text-gray-500">{patient.lastVisit}</div>
-              <div className="col-span-1 text-center text-sm font-medium text-gray-700">{patient.notes}</div>
-              <div className="col-span-2">
-                <span
-                  className="text-[11px] font-medium px-2.5 py-1 rounded-full"
-                  style={patient.status === 'Active'
-                    ? { background: '#f0fdf4', color: '#16a34a' }
-                    : { background: '#f9fafb', color: '#9ca3af' }
-                  }
-                >
-                  {patient.status}
-                </span>
-              </div>
-            </motion.div>
-          ))
+        {filteredPatients.length === 0 && (
+          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-center py-24">
+            <p className="text-sm text-slate-400">No patients found</p>
+          </motion.div>
         )}
       </div>
-    </motion.div>
+    </div>
   );
 }
