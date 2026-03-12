@@ -546,6 +546,29 @@ Billing Items: [time spent, complexity level]
 
 
 
+def merge_for_api(whisper_path, assembly_path):
+    """API-facing entry point: runs full pipeline and returns (words, summary)."""
+    merger = TranscriptMerger(whisper_path, assembly_path)
+    a_words = merger.preprocess_assembly()
+    w_words = merger.preprocess_whisper()
+    pairs = merger.align_streams(w_words, a_words)
+    final_words = merger.resolve_conflicts(pairs)
+
+    words = [
+        {
+            "text": w["text"],
+            "speaker": w["speaker"],
+            "flagged": w["flagged"],
+            "start": w.get("start", 0),
+            "end": w.get("end", 0),
+        }
+        for w in final_words
+    ]
+
+    summary = merger.generate_summary(final_words)
+    return words, summary
+
+
 if __name__ == "__main__":
     # Check if user provided command line arguments
     if len(sys.argv) == 3:
