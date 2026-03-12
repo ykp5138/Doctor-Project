@@ -160,6 +160,7 @@ class TranscriptMerger:
         aligned_pairs = []
         assembly_idx = 0
         n_assembly = len(assembly_words)
+        used_indices = set()  # track matched assembly words to prevent reuse
 
         for w_word in whisper_words:
             best_match = None
@@ -180,6 +181,9 @@ class TranscriptMerger:
             best_overlap_idx = assembly_idx
 
             for i in range(search_start_idx, search_end_idx):
+                if i in used_indices:
+                    continue
+
                 a_word = assembly_words[i]
                 text_match = self.are_words_effectively_equal(w_word['text'], a_word['text'])
                 overlap = self.get_overlap(w_word, a_word)
@@ -211,9 +215,8 @@ class TranscriptMerger:
                     best_match = best_overlap_match
                     best_idx = best_overlap_idx
 
-            # Advance past the matched word to prevent the same assembly word
-            # being reused and causing duplicates (e.g. "is is" instead of "is a")
             if best_match:
+                used_indices.add(best_idx)
                 assembly_idx = best_idx + 1
 
             aligned_pairs.append((w_word, best_match))
