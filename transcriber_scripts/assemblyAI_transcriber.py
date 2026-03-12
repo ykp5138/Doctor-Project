@@ -1,4 +1,5 @@
 import os
+import sys
 import subprocess
 import statistics
 import json
@@ -51,29 +52,28 @@ def main():
         raise FileNotFoundError(f"Folder '{AUDIO_DIR}' does not exist")
 
 
-    files = os.listdir(AUDIO_DIR)
-    audio_files = []
+    # If a specific file is passed as argument, only process that one
+    if len(sys.argv) > 1:
+        audio_files = [sys.argv[1]]
+    else:
+        files = os.listdir(AUDIO_DIR)
+        audio_files = []
 
+        for f in files:
+            lower = f.lower()
+            full_path = os.path.join(AUDIO_DIR, f)
 
-    for f in files:
-        lower = f.lower()
-        full_path = os.path.join(AUDIO_DIR, f)
+            if lower.endswith(SUPPORTED_AUDIO_EXTS):
+                audio_files.append(full_path)
 
+            elif lower.endswith(VIDEO_EXTS):
+                base = os.path.splitext(f)[0]
+                wav_path = os.path.join(AUDIO_DIR, f"{base}.wav")
 
-        if lower.endswith(SUPPORTED_AUDIO_EXTS):
-            audio_files.append(full_path)
+                if not os.path.exists(wav_path):
+                    extract_audio_from_mov(full_path, wav_path)
 
-
-        elif lower.endswith(VIDEO_EXTS):
-            base = os.path.splitext(f)[0]
-            wav_path = os.path.join(AUDIO_DIR, f"{base}.wav")
-
-
-            if not os.path.exists(wav_path):
-                extract_audio_from_mov(full_path, wav_path)
-
-
-            audio_files.append(wav_path)
+                audio_files.append(wav_path)
 
 
     audio_files.sort()
