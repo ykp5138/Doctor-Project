@@ -195,9 +195,13 @@ class TranscriptMerger:
                     break
 
                 if text_match and best_text_match is None:
-                    # Same word but timestamps drifted apart — still a valid match
-                    best_text_match = a_word
-                    best_text_idx = i
+                    # Same word but timestamps drifted apart — still a valid match,
+                    # but cap drift at 10s to prevent matching words from a completely
+                    # different part of the transcript (e.g. second mention of a phrase)
+                    time_diff = abs(a_word['start'] - w_word['start'])
+                    if time_diff < 10.0:
+                        best_text_match = a_word
+                        best_text_idx = i
 
                 if overlap > 0 and overlap > best_overlap_score:
                     # Timestamps align but word text differs — last resort
