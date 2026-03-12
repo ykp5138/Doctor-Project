@@ -353,7 +353,9 @@ class TranscriptMerger:
         print("--- Resolving Conflicts ---")
         final_words = self.resolve_conflicts(pairs)
 
-        self.format_output(final_words, "perfect_transcript.txt")
+        out_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), "outputs", "kevin")
+        os.makedirs(out_dir, exist_ok=True)
+        self.format_output(final_words, os.path.join(out_dir, "perfect_transcript.txt"))
 
 
 

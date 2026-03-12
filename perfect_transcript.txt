@@ -1,7 +1,0 @@
-SPEAKER_02: The supplies you will need for this task is is medication list. You will also be able to use your script, which I have here placed at my phone.
-
-SPEAKER_01: Thank you for calling [MTC]* Pharmacy. If you are calling from a physician's office, please leave your name, your office phone number, your office name, physician's name, DEA number, Please provide your patient's name and date of birth, medication, and instructions. Thank you.
-
-SPEAKER_00: Record your message at the tone. When you are finished, hang up or press pound for more options.
-
-SPEAKER_02: This is Sherry Dykes calling from Dr. Ernie Burt's office. Our phone number is [803-555-1212.]* is 803-555-1212. [DEA]* [number]* 803-555-1212. 803-555-1212. [as]* [in]* 803-555-1212. 803-555-1212. [as]* in [Jenny,]* Dr. [Dr.]* Dr. [in]* Dr. Dr. [DEA]* [for]* [Mr.]* [Peyton]* Jenny. J as in Jenny. [Jenny.]* His first name is spelled P as in Paul, E as in Edward, Y, T as in Tom, O, [N]* as in Nancy, and Manning, M as in Mary, A, A, as in Nancy, N as in Nancy, I, I, [as]* [in]* Nancy, G. Mr. Manning is needing his Diavan HCT [slash]* [12.5]* He will take that one tablet by mouth daily, number with three additional refills. Again, that is Diavan HCT, 160-12.5 [milligrams,]* one tablet by mouth daily, number with three additional refills. Thank you.
