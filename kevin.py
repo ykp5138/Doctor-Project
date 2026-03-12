@@ -400,29 +400,32 @@ class TranscriptMerger:
         print(f"Successfully saved merged transcript to {output_file}")
 
     def build_timestamped_transcript(self, resolved_words):
-        """Build a readable transcript with timestamps for LLM consumption."""
+        """Build a readable transcript with start-end timestamps per speaker turn."""
         lines = []
         current_speaker = None
         current_start = 0
+        current_end = 0
         current_words = []
 
         for word in resolved_words:
             speaker = word['speaker']
             text = word['text']
             start = word.get('start', 0)
+            end = word.get('end', 0)
 
             if speaker != current_speaker:
                 if current_speaker is not None and current_words:
-                    ts = f"[{self._fmt_ts(current_start)}]"
+                    ts = f"[{self._fmt_ts(current_start)} - {self._fmt_ts(current_end)}]"
                     lines.append(f"{ts} {current_speaker}: {' '.join(current_words)}")
                 current_speaker = speaker
                 current_start = start
                 current_words = []
 
+            current_end = end
             current_words.append(text)
 
         if current_speaker and current_words:
-            ts = f"[{self._fmt_ts(current_start)}]"
+            ts = f"[{self._fmt_ts(current_start)} - {self._fmt_ts(current_end)}]"
             lines.append(f"{ts} {current_speaker}: {' '.join(current_words)}")
 
         return "\n".join(lines)
@@ -433,51 +436,76 @@ class TranscriptMerger:
         s = int(seconds % 60)
         return f"{h:02d}:{m:02d}:{s:02d}"
 
+    def _fmt_duration(self, seconds):
+        h = int(seconds // 3600)
+        m = int((seconds % 3600) // 60)
+        s = int(seconds % 60)
+        ms = int((seconds % 1) * 1000)
+        if h > 0:
+            return f"{h}h {m}m {s}.{ms:03d}s"
+        return f"{m}m {s}.{ms:03d}s"
+
     def generate_summary(self, resolved_words):
         """Call Ollama to produce a condensed summary and topic chapters."""
         timestamped = self.build_timestamped_transcript(resolved_words)
 
-        prompt = f"""You are a medical transcription analyst. Analyze the following transcript and produce a structured report.
+        total_start = resolved_words[0].get('start', 0) if resolved_words else 0
+        total_end = resolved_words[-1].get('end', 0) if resolved_words else 0
+        duration = self._fmt_duration(total_end - total_start)
+
+        prompt = f"""You are a medical transcription analyst. Analyze the transcript below and produce a structured report.
+
+RECORDING DURATION: {duration}
 
 TRANSCRIPT:
 {timestamped}
 
-Produce output in EXACTLY this format with no extra commentary:
+STRICT OUTPUT RULES:
+1. Never write "Not stated", "Not mentioned", "N/A", or "Unknown" for optional fields — omit those lines entirely.
+2. For CORE fields (Patient, DOB/Age, Date/Time, Encounter Type, Chief Complaint, Visit Reason, Medications Started/Changed): always include them, write "Unknown" only if truly not mentioned.
+3. For ALL OTHER clinical fields: only include the line if it is actually discussed in the transcript. If not discussed, skip the line completely.
+4. Always include SUMMARY, DURATION, and CHAPTERS.
+5. Include CLINICAL NOTE only if this is a medical or clinical encounter (phone prescription calls count).
+6. For CHAPTERS: use the exact timestamps shown in the transcript above. Each chapter end time = next chapter start time. Last chapter end = recording end.
+
+Produce output in EXACTLY this format, no extra commentary:
 
 === SUMMARY ===
-[Write 1-6 sentences summarizing what happened. Be concise. If it is clearly a medical appointment, focus on clinical content. If not, summarize what was discussed.]
+[1-6 sentences. Concise. Clinical focus if medical.]
 
-=== CLINICAL NOTE === (omit this entire section if this is NOT a medical appointment)
-Patient: [name if mentioned, else "Not stated"]
-DOB/Age: [if mentioned]
-Date/Time: [if mentioned]
+=== DURATION ===
+Total recording time: {duration}
+
+=== CLINICAL NOTE ===
+Patient: [full name or Unknown]
+DOB/Age: [date of birth / age or Unknown]
+Date/Time: [date and time of encounter or Unknown]
 Encounter Type: [Telehealth / ED / Clinic / Phone / Unknown]
 
-Chief Complaint: [one line]
-Visit Reason: [e.g. New prescription, Follow-up for HTN, etc.]
+Chief Complaint: [what the patient/caller needs — one line]
+Visit Reason: [context: new rx, refill, follow-up for X, etc.]
 
-HPI: [onset, timing, course, key symptoms, severity, treatments tried]
-PMH/Meds/Allergies: [relevant history if mentioned]
+Medications Started/Changed: [drug name, dose, sig, qty, refills — be specific]
 
-Vitals/Exam: [if mentioned, else omit line]
-Labs/Imaging: [if mentioned, else omit line]
-
-Assessment: [primary diagnosis or reason]
-Active Problems: [other issues if mentioned]
-Medications Started/Changed: [list if any]
-Orders/Investigations: [list if any]
-Procedures Done: [if any]
-Follow-up Instructions: [if mentioned]
-Red Flags Given: [if mentioned]
-Disposition: [e.g. discharged, admitted, follow up in 2 weeks]
-Patient Agreement/Concerns: [if mentioned]
-Billing Items: [time spent, complexity if mentioned]
+[Only add the lines below if they are actually discussed — otherwise omit entirely:]
+HPI: [onset, timing, key symptoms, severity, treatments tried]
+PMH/Meds/Allergies: [relevant history]
+Vitals/Exam: [findings]
+Labs/Imaging: [results or what was ordered]
+Assessment: [primary diagnosis or clinical decision]
+Active Problems: [other conditions mentioned]
+Orders/Investigations: [tests ordered]
+Procedures Done: [procedures performed]
+Follow-up Instructions: [next steps given to patient]
+Red Flags Given: [warning signs discussed]
+Disposition: [what happens next — discharged, follow up, admitted]
+Patient Agreement/Concerns: [patient's response or questions]
+Billing Items: [time spent, complexity level]
 
 === CHAPTERS ===
-[For each distinct topic/section, write one line in this exact format:]
-[HH:MM:SS - HH:MM:SS] Topic Title: one sentence description
-[HH:MM:SS - HH:MM:SS] Topic Title: one sentence description
-[Continue for each topic. Max 6 chapters. Group by topic, not by minute.]
+[Group by distinct topic. Max 6. Use timestamps from the transcript.]
+[HH:MM:SS - HH:MM:SS] Title: one sentence description
+[HH:MM:SS - HH:MM:SS] Title: one sentence description
 """
 
         try:
