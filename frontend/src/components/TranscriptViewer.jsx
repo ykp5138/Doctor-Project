@@ -197,7 +197,7 @@ export default function TranscriptViewer({ words, setWords, audioFile }) {
                   }
                   W
                 </button>
-                {popup.a_start !== null && (
+                {popup.a_start != null && (
                   <button
                     className={`popup-play-btn ${popup.playingTrack === 'assembly' ? 'playing' : ''}`}
                     onClick={() => popup.playingTrack === 'assembly' ? stopPlay() : playSlice(popup.a_start, popup.a_end, 'assembly')}
