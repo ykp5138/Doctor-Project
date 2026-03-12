@@ -4,6 +4,7 @@ import { Dashboard } from './components/Dashboard';
 import NewNote from './components/NewNote';
 import { PatientList } from './components/PatientList';
 import { NoteHistory } from './components/NoteHistory';
+import { NoteProvider } from './NoteContext';
 import './App.css';
 
 const router = createBrowserRouter([
@@ -20,5 +21,9 @@ const router = createBrowserRouter([
 ]);
 
 export default function App() {
-  return <RouterProvider router={router} />;
+  return (
+    <NoteProvider>
+      <RouterProvider router={router} />
+    </NoteProvider>
+  );
 }

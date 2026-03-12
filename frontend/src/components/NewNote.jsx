@@ -6,6 +6,7 @@ import { Mic, MicOff, Circle, Upload, X } from "lucide-react";
 import { motion, AnimatePresence } from "motion/react";
 import TranscriptViewer from "./TranscriptViewer";
 import SummaryViewer from "./SummaryViewer";
+import { useNote } from "../NoteContext";
 
 const STEPS = [
   { id: 1, label: "WhisperX", desc: "Transcribing + diarizing audio" },
@@ -14,15 +15,13 @@ const STEPS = [
 ];
 
 export default function NewNote() {
-  // Patient info
-  const [patientName, setPatientName] = useState("");
-  const [noteType, setNoteType] = useState("soap");
+  // Persistent state (survives navigation)
+  const { result, setResult, words, setWords, file, setFile, patientName, setPatientName, noteType, setNoteType, resultTab, setResultTab } = useNote();
 
   // Audio source
   const [inputTab, setInputTab] = useState("upload");
 
   // Upload state
-  const [file, setFile] = useState(null);
   const [isDragging, setIsDragging] = useState(false);
   const fileInputRef = useRef(null);
 
@@ -37,9 +36,7 @@ export default function NewNote() {
   // Pipeline state
   const [loading, setLoading] = useState(false);
   const [step, setStep] = useState(0);
-  const [result, setResult] = useState(null);
   const [error, setError] = useState(null);
-  const [resultTab, setResultTab] = useState("transcript");
   const stepTimer = useRef(null);
 
   // ── Upload handlers ──
@@ -49,11 +46,11 @@ export default function NewNote() {
     e.preventDefault();
     setIsDragging(false);
     const f = e.dataTransfer.files?.[0];
-    if (f && f.type.startsWith("audio/")) { setFile(f); setResult(null); setError(null); }
+    if (f && f.type.startsWith("audio/")) { setFile(f); setResult(null); setWords([]); setError(null); }
   };
   const handleFileChange = (e) => {
     const f = e.target.files?.[0];
-    if (f) { setFile(f); setResult(null); setError(null); }
+    if (f) { setFile(f); setResult(null); setWords([]); setError(null); }
   };
   const formatFileSize = (bytes) => {
     if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`;
@@ -117,6 +114,7 @@ export default function NewNote() {
     setStep(1);
     setError(null);
     setResult(null);
+    setWords([]);
 
     stepTimer.current = setTimeout(() => setStep(2), 25000);
     const t2 = setTimeout(() => setStep(3), 55000);
@@ -135,6 +133,7 @@ export default function NewNote() {
       }
       const data = await res.json();
       setResult(data);
+      setWords(data.words || []);
       setResultTab("transcript");
     } catch (err) {
       setError(err.message || "An error occurred");
@@ -243,7 +242,7 @@ export default function NewNote() {
                         <p className="text-xs text-slate-500 mt-0.5">{formatFileSize(file.size)}</p>
                       </div>
                       <button
-                        onClick={() => { setFile(null); setResult(null); setError(null); }}
+                        onClick={() => { setFile(null); setResult(null); setWords([]); setError(null); }}
                         className="text-slate-400 hover:text-slate-900 transition-colors"
                       >
                         <X className="w-4 h-4" />
@@ -422,7 +421,7 @@ export default function NewNote() {
 
                   <div className="bg-white p-8">
                     {resultTab === "transcript"
-                      ? <TranscriptViewer words={result.words} audioFile={file} />
+                      ? <TranscriptViewer words={words} setWords={setWords} audioFile={file} />
                       : <SummaryViewer summary={result.summary} audioFile={file} />
                     }
                   </div>

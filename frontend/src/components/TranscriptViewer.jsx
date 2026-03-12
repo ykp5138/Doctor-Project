@@ -1,14 +1,11 @@
 import { useState, useMemo, useRef, useEffect, useCallback } from 'react';
 
-export default function TranscriptViewer({ words: initialWords, audioFile }) {
-  const [words, setWords] = useState(initialWords);
+export default function TranscriptViewer({ words, setWords, audioFile }) {
   const [popup, setPopup] = useState(null);
   const audioCtxRef = useRef(null);
   const audioBufferRef = useRef(null);
   const sourceRef = useRef(null);
   const popupRef = useRef(null);
-
-  useEffect(() => { setWords(initialWords); }, [initialWords]);
 
   // Close popup on outside click
   useEffect(() => {
@@ -72,7 +69,7 @@ export default function TranscriptViewer({ words: initialWords, audioFile }) {
   }, [words]);
 
   const handleWordClick = useCallback((word, index, e) => {
-    if (!word.flagged) return;
+    if (!word.flagged && !word.fixed) return;
     // Count other flagged instances of the same word text
     const sameWordIndices = words
       .map((w, i) => ({ w, i }))
@@ -167,8 +164,8 @@ export default function TranscriptViewer({ words: initialWords, audioFile }) {
                 <span
                   key={word.globalIndex}
                   className={`word ${word.flagged ? 'word-flagged' : word.fixed ? 'word-fixed' : ''}`}
-                  title={word.flagged ? `Low confidence · ${fmt(word.start || 0)} — click to review` : fmt(word.start || 0)}
-                  onClick={word.flagged ? (e) => handleWordClick(word, word.globalIndex, e) : undefined}
+                  title={word.flagged ? `Low confidence · ${fmt(word.start || 0)} — click to review` : word.fixed ? `Reviewed · click to re-edit` : fmt(word.start || 0)}
+                  onClick={(word.flagged || word.fixed) ? (e) => handleWordClick(word, word.globalIndex, e) : undefined}
                 >
                   {word.text}{' '}
                 </span>
