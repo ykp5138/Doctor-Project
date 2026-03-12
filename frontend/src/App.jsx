@@ -175,7 +175,7 @@ function App() {
               </div>
               <div className="tab-content result-content">
                 {resultTab === 'transcript'
-                  ? <TranscriptViewer words={result.words} />
+                  ? <TranscriptViewer words={result.words} audioFile={file} />
                   : <SummaryViewer summary={result.summary} />
                 }
               </div>
