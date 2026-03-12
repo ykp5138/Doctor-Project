@@ -289,6 +289,8 @@ class TranscriptMerger:
                 "flagged": False,
                 "start": w_word.get('start', 0),
                 "end": w_word.get('end', 0),
+                "a_start": None,
+                "a_end": None,
             }
 
             if not a_word:
@@ -296,6 +298,9 @@ class TranscriptMerger:
                     result_word['flagged'] = True
                 final_transcript.append(result_word)
                 continue
+
+            result_word['a_start'] = a_word.get('start', None)
+            result_word['a_end'] = a_word.get('end', None)
 
             a_text = a_word['text']
             a_low = a_word['is_low_confidence']
@@ -561,6 +566,8 @@ def merge_for_api(whisper_path, assembly_path):
             "flagged": w["flagged"],
             "start": w.get("start", 0),
             "end": w.get("end", 0),
+            "a_start": w.get("a_start"),
+            "a_end": w.get("a_end"),
         }
         for w in final_words
     ]

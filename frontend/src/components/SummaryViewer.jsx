@@ -1,4 +1,37 @@
-export default function SummaryViewer({ summary }) {
+import { useRef, useCallback } from 'react';
+
+export default function SummaryViewer({ summary, audioFile }) {
+  const audioCtxRef = useRef(null);
+  const audioBufferRef = useRef(null);
+  const sourceRef = useRef(null);
+
+  const ensureAudio = useCallback(async () => {
+    if (!audioFile) return false;
+    if (audioBufferRef.current) return true;
+    try {
+      audioCtxRef.current = new AudioContext();
+      const arrayBuffer = await audioFile.arrayBuffer();
+      audioBufferRef.current = await audioCtxRef.current.decodeAudioData(arrayBuffer);
+      return true;
+    } catch { return false; }
+  }, [audioFile]);
+
+  const playSlice = useCallback(async (start, end) => {
+    const ready = await ensureAudio();
+    if (!ready) return;
+    if (sourceRef.current) { try { sourceRef.current.stop(); } catch {} sourceRef.current = null; }
+    const ctx = audioCtxRef.current;
+    const buf = audioBufferRef.current;
+    const from = Math.max(0, start - 1.5);
+    const duration = Math.min(buf.duration - from, (end - start) + 3);
+    const src = ctx.createBufferSource();
+    src.buffer = buf;
+    src.connect(ctx.destination);
+    src.start(0, from, duration);
+    src.onended = () => { sourceRef.current = null; };
+    sourceRef.current = src;
+  }, [ensureAudio]);
+
   if (!summary) return null;
 
   // Parse sections from the summary text
@@ -13,6 +46,12 @@ export default function SummaryViewer({ summary }) {
     return <div className="summary-raw">{summary}</div>;
   }
 
+  // Convert [HH:MM:SS] timestamp string to seconds
+  const tsToSecs = (ts) => {
+    const parts = ts.split(':').map(Number);
+    return parts[0] * 3600 + parts[1] * 60 + parts[2];
+  };
+
   const renderChapters = (body) => {
     const lines = body.split('\n').filter(l => l.trim());
     return (
@@ -20,9 +59,22 @@ export default function SummaryViewer({ summary }) {
         {lines.map((line, i) => {
           const m = line.match(/^\[(\d{2}:\d{2}:\d{2})\s*-\s*(\d{2}:\d{2}:\d{2})\]\s*(.+?):\s*(.+)$/);
           if (m) {
+            const start = tsToSecs(m[1]);
+            const end = tsToSecs(m[2]);
             return (
               <div key={i} className="chapter-item">
-                <span className="chapter-ts">{m[1]} – {m[2]}</span>
+                <div className="chapter-ts-row">
+                  <span className="chapter-ts">{m[1]} – {m[2]}</span>
+                  {audioFile && (
+                    <button
+                      className="chapter-play-btn"
+                      onClick={() => playSlice(start, end)}
+                      title="Play this section"
+                    >
+                      <svg width="9" height="9" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+                    </button>
+                  )}
+                </div>
                 <div className="chapter-content">
                   <span className="chapter-title">{m[3]}</span>
                   <span className="chapter-desc">{m[4]}</span>

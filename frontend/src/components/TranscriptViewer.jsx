@@ -34,7 +34,7 @@ export default function TranscriptViewer({ words: initialWords, audioFile }) {
     } catch { return false; }
   }, [audioFile]);
 
-  const playSlice = useCallback(async (start, end) => {
+  const playSlice = useCallback(async (start, end, trackKey) => {
     const ready = await ensureAudio();
     if (!ready) return;
     if (sourceRef.current) { try { sourceRef.current.stop(); } catch {} sourceRef.current = null; }
@@ -46,14 +46,14 @@ export default function TranscriptViewer({ words: initialWords, audioFile }) {
     src.buffer = buf;
     src.connect(ctx.destination);
     src.start(0, from, duration);
-    src.onended = () => { sourceRef.current = null; setPopup(p => p ? { ...p, playing: false } : p); };
+    src.onended = () => { sourceRef.current = null; setPopup(p => p ? { ...p, playingTrack: null } : p); };
     sourceRef.current = src;
-    setPopup(p => p ? { ...p, playing: true } : p);
+    setPopup(p => p ? { ...p, playingTrack: trackKey } : p);
   }, [ensureAudio]);
 
   const stopPlay = useCallback(() => {
     if (sourceRef.current) { try { sourceRef.current.stop(); } catch {} sourceRef.current = null; }
-    setPopup(p => p ? { ...p, playing: false } : p);
+    setPopup(p => p ? { ...p, playingTrack: null } : p);
   }, []);
 
   const fetchSuggestions = useCallback(async (word, index) => {
@@ -91,11 +91,13 @@ export default function TranscriptViewer({ words: initialWords, audioFile }) {
       wordText: word.text,          // original text for "fix all" matching
       start: word.start || 0,
       end: word.end || 0,
+      a_start: word.a_start ?? null,
+      a_end: word.a_end ?? null,
       position: { top, left },
       suggestions: [],
       loading: true,
       otherValue: '',
-      playing: false,
+      playingTrack: null,
       sameWordIndices,              // other indices with the same flagged text
     });
     fetchSuggestions(word, index);
@@ -106,8 +108,8 @@ export default function TranscriptViewer({ words: initialWords, audioFile }) {
     if (!newText.trim()) return;
     const { wordIndex, sameWordIndices } = popup;
     setWords(ws => ws.map((w, i) => {
-      if (i === wordIndex) return { ...w, text: newText.trim(), flagged: false };
-      if (applyAll && sameWordIndices.includes(i)) return { ...w, text: newText.trim(), flagged: false };
+      if (i === wordIndex) return { ...w, text: newText.trim(), flagged: false, fixed: true };
+      if (applyAll && sameWordIndices.includes(i)) return { ...w, text: newText.trim(), flagged: false, fixed: true };
       return w;
     }));
     setPopup(null);
@@ -117,8 +119,8 @@ export default function TranscriptViewer({ words: initialWords, audioFile }) {
   const keepWord = useCallback((keepAll = false) => {
     const { wordIndex, sameWordIndices } = popup;
     setWords(ws => ws.map((w, i) => {
-      if (i === wordIndex) return { ...w, flagged: false };
-      if (keepAll && sameWordIndices.includes(i)) return { ...w, flagged: false };
+      if (i === wordIndex) return { ...w, flagged: false, fixed: true };
+      if (keepAll && sameWordIndices.includes(i)) return { ...w, flagged: false, fixed: true };
       return w;
     }));
     setPopup(null);
@@ -164,7 +166,7 @@ export default function TranscriptViewer({ words: initialWords, audioFile }) {
               {block.words.map((word) => (
                 <span
                   key={word.globalIndex}
-                  className={`word ${word.flagged ? 'word-flagged' : ''}`}
+                  className={`word ${word.flagged ? 'word-flagged' : word.fixed ? 'word-fixed' : ''}`}
                   title={word.flagged ? `Low confidence · ${fmt(word.start || 0)} — click to review` : fmt(word.start || 0)}
                   onClick={word.flagged ? (e) => handleWordClick(word, word.globalIndex, e) : undefined}
                 >
@@ -187,16 +189,30 @@ export default function TranscriptViewer({ words: initialWords, audioFile }) {
           <div className="popup-header">
             <span className="popup-flagged-word">"{popup.wordText}"</span>
             {audioFile && (
-              <button
-                className={`popup-play-btn ${popup.playing ? 'playing' : ''}`}
-                onClick={() => popup.playing ? stopPlay() : playSlice(popup.start, popup.end)}
-              >
-                {popup.playing
-                  ? <svg width="11" height="11" viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg>
-                  : <svg width="11" height="11" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>
-                }
-                {popup.playing ? 'Stop' : 'Play clip'}
-              </button>
+              <div className="popup-play-btns">
+                <button
+                  className={`popup-play-btn ${popup.playingTrack === 'whisper' ? 'playing' : ''}`}
+                  onClick={() => popup.playingTrack === 'whisper' ? stopPlay() : playSlice(popup.start, popup.end, 'whisper')}
+                >
+                  {popup.playingTrack === 'whisper'
+                    ? <svg width="11" height="11" viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg>
+                    : <svg width="11" height="11" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+                  }
+                  W
+                </button>
+                {popup.a_start !== null && (
+                  <button
+                    className={`popup-play-btn ${popup.playingTrack === 'assembly' ? 'playing' : ''}`}
+                    onClick={() => popup.playingTrack === 'assembly' ? stopPlay() : playSlice(popup.a_start, popup.a_end, 'assembly')}
+                  >
+                    {popup.playingTrack === 'assembly'
+                      ? <svg width="11" height="11" viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg>
+                      : <svg width="11" height="11" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+                    }
+                    A
+                  </button>
+                )}
+              </div>
             )}
           </div>
 

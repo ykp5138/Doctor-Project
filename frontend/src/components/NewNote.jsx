@@ -423,7 +423,7 @@ export default function NewNote() {
                   <div className="bg-white p-8">
                     {resultTab === "transcript"
                       ? <TranscriptViewer words={result.words} audioFile={file} />
-                      : <SummaryViewer summary={result.summary} />
+                      : <SummaryViewer summary={result.summary} audioFile={file} />
                     }
                   </div>
                 </motion.div>
