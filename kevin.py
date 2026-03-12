@@ -164,41 +164,52 @@ class TranscriptMerger:
         for w_word in whisper_words:
             best_match = None
             best_score = 0
-            
+
             # Look back slightly (5 words) then forward to handle slight desyncs
             search_start_idx = max(0, assembly_idx - 5)
-            
-            # Limit forward search to avoid runaway scanning (e.g., scan next 50 words max)
-            search_end_idx = min(n_assembly, search_start_idx + 50)
+
+            # Increased window to 150 to handle long letter-spelling / numeric sections
+            search_end_idx = min(n_assembly, search_start_idx + 150)
 
             best_idx = assembly_idx
 
-            for i in range(search_start_idx, search_end_idx):
-                a_word = assembly_words[i]
-                
-                # If Assembly word starts way after Whisper word ends, stop scanning
-                # (Relaxed buffer of 1.0s to allow for significant drift)
-                if a_word['start'] > w_word['end'] + 1.0:
-                    break
-                
-                overlap = self.get_overlap(w_word, a_word)
-                
-                if overlap > 0:
-                    # Calculate Match Score
-                    score = overlap
-                    
-                    # Apply Bonus if words are textually similar (The "One Tablet" Fix)
+            # For zero-confidence words, timestamps are unreliable — prefer text match first
+            if w_word.get('score', 1.0) == 0.0:
+                for i in range(search_start_idx, search_end_idx):
+                    a_word = assembly_words[i]
                     if self.are_words_effectively_equal(w_word['text'], a_word['text']):
-                        score *= 2.0 
-                    
-                    if score > best_score:
-                        best_score = score
                         best_match = a_word
                         best_idx = i
+                        break
 
-            # Only advance the index if we found a good match to prevent skipping
+            if not best_match:
+                for i in range(search_start_idx, search_end_idx):
+                    a_word = assembly_words[i]
+
+                    # If Assembly word starts way after Whisper word ends, stop scanning
+                    # (Relaxed buffer of 1.0s to allow for significant drift)
+                    if a_word['start'] > w_word['end'] + 1.0:
+                        break
+
+                    overlap = self.get_overlap(w_word, a_word)
+
+                    if overlap > 0:
+                        # Calculate Match Score
+                        score = overlap
+
+                        # Apply Bonus if words are textually similar (The "One Tablet" Fix)
+                        if self.are_words_effectively_equal(w_word['text'], a_word['text']):
+                            score *= 2.0
+
+                        if score > best_score:
+                            best_score = score
+                            best_match = a_word
+                            best_idx = i
+
+            # Advance past the matched word to prevent the same assembly word
+            # being reused and causing duplicates (e.g. "is is" instead of "is a")
             if best_match:
-                assembly_idx = best_idx
+                assembly_idx = best_idx + 1
 
             aligned_pairs.append((w_word, best_match))
         return aligned_pairs
