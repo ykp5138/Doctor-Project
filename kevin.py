@@ -275,9 +275,9 @@ class TranscriptMerger:
             print(f"LLM Error: {e}. Defaulting to Whisper option.")
             return option_a
 
-    def resolve_conflicts(self, pairs):
+    def resolve_conflicts(self, pairs, assembly_words=None):
         final_transcript = []
-        
+
         for i, (w_word, a_word) in enumerate(pairs):
             
             w_text = w_word['text']
@@ -296,6 +296,18 @@ class TranscriptMerger:
             if not a_word:
                 if w_low:
                     result_word['flagged'] = True
+                # Fallback: text-only search through all assembly words for timestamp
+                if assembly_words:
+                    best_ts, best_diff = None, float('inf')
+                    for aw in assembly_words:
+                        if self.are_words_effectively_equal(w_word['text'], aw['text']):
+                            diff = abs(aw.get('start', 0) - w_word.get('start', 0))
+                            if diff < best_diff:
+                                best_diff = diff
+                                best_ts = aw
+                    if best_ts:
+                        result_word['a_start'] = best_ts.get('start')
+                        result_word['a_end'] = best_ts.get('end')
                 final_transcript.append(result_word)
                 continue
 
@@ -557,7 +569,7 @@ def merge_for_api(whisper_path, assembly_path):
     a_words = merger.preprocess_assembly()
     w_words = merger.preprocess_whisper()
     pairs = merger.align_streams(w_words, a_words)
-    final_words = merger.resolve_conflicts(pairs)
+    final_words = merger.resolve_conflicts(pairs, a_words)
 
     words = [
         {
