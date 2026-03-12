@@ -1,11 +1,17 @@
 from fastapi import FastAPI, UploadFile, File, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
-from typing import Dict, Any
+from typing import Dict, Any, List
+from pydantic import BaseModel
 import os
 import sys
 import subprocess
 import uuid
 import traceback
+import json
+import requests
+
+OLLAMA_URL = "http://localhost:11434/api/generate"
+OLLAMA_MODEL = "llama3"
 
 app = FastAPI()
 
