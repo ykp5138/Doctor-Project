@@ -186,11 +186,6 @@ class TranscriptMerger:
                 for i in range(search_start_idx, search_end_idx):
                     a_word = assembly_words[i]
 
-                    # If Assembly word starts way after Whisper word ends, stop scanning
-                    # (Relaxed buffer of 1.0s to allow for significant drift)
-                    if a_word['start'] > w_word['end'] + 1.0:
-                        break
-
                     overlap = self.get_overlap(w_word, a_word)
 
                     if overlap > 0:
