@@ -100,3 +100,38 @@ async def transcribe(file: UploadFile = File(...)) -> Dict[str, Any]:
     except Exception as e:
         traceback.print_exc()
         raise HTTPException(status_code=500, detail=str(e))
+
+
+class SuggestRequest(BaseModel):
+    word: str
+    context: str
+
+
+@app.post("/suggest")
+def suggest_word(req: SuggestRequest) -> Dict[str, Any]:
+    """Ask Ollama for up to 3 alternative words for a low-confidence flagged word."""
+    prompt = (
+        f'A word in a medical transcript was flagged as low-confidence.\n'
+        f'Context: "...{req.context}..."\n'
+        f'Flagged word: "{req.word}"\n\n'
+        f'List up to 3 alternative words or short phrases that could have been said instead of "{req.word}". '
+        f'Consider homophones, similar-sounding words, and medical terminology that fits the context. '
+        f'If the original word looks correct, return fewer alternatives or none.\n\n'
+        f'Return ONLY a valid JSON array of strings and nothing else. Examples:\n'
+        f'["calling", "falling", "stalling"]\n'
+        f'["prescription", "description"]\n'
+        f'[]'
+    )
+    try:
+        resp = requests.post(OLLAMA_URL, json={"model": OLLAMA_MODEL, "prompt": prompt, "stream": False}, timeout=30)
+        raw = resp.json().get("response", "[]").strip()
+        # Extract the JSON array from the response
+        start = raw.find("[")
+        end = raw.rfind("]") + 1
+        if start != -1 and end > start:
+            suggestions = json.loads(raw[start:end])
+        else:
+            suggestions = []
+        return {"suggestions": [s for s in suggestions if s != req.word][:3]}
+    except Exception as e:
+        return {"suggestions": []}
