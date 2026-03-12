@@ -39,7 +39,7 @@ def extract_audio_from_mov(video_path, wav_path):
 
 
 def main():
-    load_dotenv(os.path.join(BASE_DIR, ".env.local"))
+    load_dotenv(os.path.join(BASE_DIR, ".env"))
 
 
     aai.settings.api_key = os.getenv("ASSEMBLYAI_API_KEY")
