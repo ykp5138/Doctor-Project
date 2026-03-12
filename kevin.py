@@ -72,9 +72,40 @@ class TranscriptMerger:
 
         for seg in segments:
             speaker = seg.get('speaker', 'Unknown')
-            for w in seg.get('words', []):
-                if 'start' not in w or 'end' not in w:
-                    continue  # skip words whisperX couldn't align
+            seg_words = seg.get('words', [])
+            last_end = seg.get('start', 0.0)
+            seg_end = seg.get('end', last_end)
+
+            # Collect words, estimating timestamps for any that whisperX couldn't align
+            words_with_ts = []
+            pending_no_ts = []
+
+            for w in seg_words:
+                if 'start' in w and 'end' in w:
+                    # Flush any pending unaligned words into the gap before this word
+                    if pending_no_ts:
+                        gap_start = last_end
+                        gap_end = w['start']
+                        slot = (gap_end - gap_start) / (len(pending_no_ts) + 1)
+                        for k, pw in enumerate(pending_no_ts):
+                            pw['start'] = gap_start + slot * k
+                            pw['end'] = gap_start + slot * (k + 1)
+                        words_with_ts.extend(pending_no_ts)
+                        pending_no_ts = []
+                    last_end = w['end']
+                    words_with_ts.append(w)
+                else:
+                    pending_no_ts.append(dict(w))
+
+            # Flush any trailing unaligned words using remaining segment time
+            if pending_no_ts:
+                slot = (seg_end - last_end) / (len(pending_no_ts) + 1)
+                for k, pw in enumerate(pending_no_ts):
+                    pw['start'] = last_end + slot * k
+                    pw['end'] = last_end + slot * (k + 1)
+                words_with_ts.extend(pending_no_ts)
+
+            for w in words_with_ts:
                 score = w.get('score', 0.0)
                 flattened_words.append({
                     'text': w['word'],
