@@ -398,6 +398,97 @@ class TranscriptMerger:
         
         print(f"Successfully saved merged transcript to {output_file}")
 
+    def build_timestamped_transcript(self, resolved_words):
+        """Build a readable transcript with timestamps for LLM consumption."""
+        lines = []
+        current_speaker = None
+        current_start = 0
+        current_words = []
+
+        for word in resolved_words:
+            speaker = word['speaker']
+            text = word['text']
+            start = word.get('start', 0)
+
+            if speaker != current_speaker:
+                if current_speaker is not None and current_words:
+                    ts = f"[{self._fmt_ts(current_start)}]"
+                    lines.append(f"{ts} {current_speaker}: {' '.join(current_words)}")
+                current_speaker = speaker
+                current_start = start
+                current_words = []
+
+            current_words.append(text)
+
+        if current_speaker and current_words:
+            ts = f"[{self._fmt_ts(current_start)}]"
+            lines.append(f"{ts} {current_speaker}: {' '.join(current_words)}")
+
+        return "\n".join(lines)
+
+    def _fmt_ts(self, seconds):
+        h = int(seconds // 3600)
+        m = int((seconds % 3600) // 60)
+        s = int(seconds % 60)
+        return f"{h:02d}:{m:02d}:{s:02d}"
+
+    def generate_summary(self, resolved_words):
+        """Call Ollama to produce a condensed summary and topic chapters."""
+        timestamped = self.build_timestamped_transcript(resolved_words)
+
+        prompt = f"""You are a medical transcription analyst. Analyze the following transcript and produce a structured report.
+
+TRANSCRIPT:
+{timestamped}
+
+Produce output in EXACTLY this format with no extra commentary:
+
+=== SUMMARY ===
+[Write 1-6 sentences summarizing what happened. Be concise. If it is clearly a medical appointment, focus on clinical content. If not, summarize what was discussed.]
+
+=== CLINICAL NOTE === (omit this entire section if this is NOT a medical appointment)
+Patient: [name if mentioned, else "Not stated"]
+DOB/Age: [if mentioned]
+Date/Time: [if mentioned]
+Encounter Type: [Telehealth / ED / Clinic / Phone / Unknown]
+
+Chief Complaint: [one line]
+Visit Reason: [e.g. New prescription, Follow-up for HTN, etc.]
+
+HPI: [onset, timing, course, key symptoms, severity, treatments tried]
+PMH/Meds/Allergies: [relevant history if mentioned]
+
+Vitals/Exam: [if mentioned, else omit line]
+Labs/Imaging: [if mentioned, else omit line]
+
+Assessment: [primary diagnosis or reason]
+Active Problems: [other issues if mentioned]
+Medications Started/Changed: [list if any]
+Orders/Investigations: [list if any]
+Procedures Done: [if any]
+Follow-up Instructions: [if mentioned]
+Red Flags Given: [if mentioned]
+Disposition: [e.g. discharged, admitted, follow up in 2 weeks]
+Patient Agreement/Concerns: [if mentioned]
+Billing Items: [time spent, complexity if mentioned]
+
+=== CHAPTERS ===
+[For each distinct topic/section, write one line in this exact format:]
+[HH:MM:SS - HH:MM:SS] Topic Title: one sentence description
+[HH:MM:SS - HH:MM:SS] Topic Title: one sentence description
+[Continue for each topic. Max 6 chapters. Group by topic, not by minute.]
+"""
+
+        try:
+            response = requests.post(
+                OLLAMA_URL,
+                json={"model": OLLAMA_MODEL, "prompt": prompt, "stream": False}
+            )
+            response.raise_for_status()
+            return response.json().get('response', '').strip()
+        except Exception as e:
+            return f"[Summary generation failed: {e}]"
+
     def run(self):
         a_words = self.preprocess_assembly()
         w_words = self.preprocess_whisper()
@@ -411,7 +502,19 @@ class TranscriptMerger:
 
         out_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), "outputs", "kevin")
         os.makedirs(out_dir, exist_ok=True)
+
+        # Derive base name from whisper input file
+        base_name = os.path.splitext(os.path.basename(self.whisper_data.get('_source', 'transcript')))[0]
+        base_name = base_name.replace('_full_output', '')
+
         self.format_output(final_words, os.path.join(out_dir, "perfect_transcript.txt"))
+
+        print("--- Generating Summary ---")
+        summary = self.generate_summary(final_words)
+        summary_path = os.path.join(out_dir, "summary.txt")
+        with open(summary_path, 'w', encoding='utf-8') as f:
+            f.write(summary)
+        print(f"Summary saved to {summary_path}")
 
 
 
