@@ -23,6 +23,7 @@ NUMBER_MAP = {
 
 class TranscriptMerger:
     def __init__(self, whisper_path, assembly_path):
+        self.whisper_path = whisper_path
         self.whisper_data = self._load_json(whisper_path)
         self.assembly_data = self._load_json(assembly_path)
         self.merged_transcript = []
@@ -504,14 +505,13 @@ Billing Items: [time spent, complexity if mentioned]
         os.makedirs(out_dir, exist_ok=True)
 
         # Derive base name from whisper input file
-        base_name = os.path.splitext(os.path.basename(self.whisper_data.get('_source', 'transcript')))[0]
-        base_name = base_name.replace('_full_output', '')
+        base_name = os.path.splitext(os.path.basename(self.whisper_path))[0].replace('_full_output', '')
 
-        self.format_output(final_words, os.path.join(out_dir, "perfect_transcript.txt"))
+        self.format_output(final_words, os.path.join(out_dir, f"{base_name}_transcript.txt"))
 
         print("--- Generating Summary ---")
         summary = self.generate_summary(final_words)
-        summary_path = os.path.join(out_dir, "summary.txt")
+        summary_path = os.path.join(out_dir, f"{base_name}_summary.txt")
         with open(summary_path, 'w', encoding='utf-8') as f:
             f.write(summary)
         print(f"Summary saved to {summary_path}")
