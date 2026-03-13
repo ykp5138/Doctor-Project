@@ -9,6 +9,7 @@ export function NoteProvider({ children }) {
   const [patientName, setPatientName] = useState('');
   const [noteType, setNoteType] = useState('soap');
   const [resultTab, setResultTab] = useState('transcript');
+  const [keywords, setKeywords] = useState('');
 
   return (
     <NoteContext.Provider value={{
@@ -18,6 +19,7 @@ export function NoteProvider({ children }) {
       patientName, setPatientName,
       noteType, setNoteType,
       resultTab, setResultTab,
+      keywords, setKeywords,
     }}>
       {children}
     </NoteContext.Provider>

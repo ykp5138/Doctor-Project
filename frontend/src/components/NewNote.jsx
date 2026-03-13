@@ -16,7 +16,7 @@ const STEPS = [
 
 export default function NewNote() {
   // Persistent state (survives navigation)
-  const { result, setResult, words, setWords, file, setFile, patientName, setPatientName, noteType, setNoteType, resultTab, setResultTab } = useNote();
+  const { result, setResult, words, setWords, file, setFile, patientName, setPatientName, noteType, setNoteType, resultTab, setResultTab, keywords, setKeywords } = useNote();
 
   // Audio source
   const [inputTab, setInputTab] = useState("upload");
