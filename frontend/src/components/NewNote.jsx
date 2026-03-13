@@ -50,7 +50,7 @@ export default function NewNote() {
     e.preventDefault();
     setIsDragging(false);
     const f = e.dataTransfer.files?.[0];
-    if (f && f.type.startsWith("audio/")) { setFile(f); setResult(null); setWords([]); setError(null); }
+    if (f && (f.type.startsWith("audio/") || f.type === "video/quicktime" || f.name.toLowerCase().endsWith(".mov"))) { setFile(f); setResult(null); setWords([]); setError(null); }
   };
   const handleFileChange = (e) => {
     const f = e.target.files?.[0];
@@ -259,7 +259,7 @@ export default function NewNote() {
               {/* Upload zone */}
               {inputTab === "upload" && (
                 <>
-                  <input ref={fileInputRef} type="file" accept="audio/*" onChange={handleFileChange} className="hidden" />
+                  <input ref={fileInputRef} type="file" accept="audio/*,video/quicktime,.mov" onChange={handleFileChange} className="hidden" />
                   {!file ? (
                     <div
                       onDragOver={handleDragOver}
@@ -270,7 +270,7 @@ export default function NewNote() {
                     >
                       <Upload className={`w-6 h-6 transition-colors ${isDragging ? "text-slate-900" : "text-slate-400"}`} />
                       <span className="text-sm text-slate-500">Drop audio file or click to browse</span>
-                      <span className="text-xs text-slate-400">MP3, WAV, M4A, WebM</span>
+                      <span className="text-xs text-slate-400">MP3, WAV, M4A, WebM, MOV</span>
                     </div>
                   ) : (
                     <div className="border border-slate-200 px-6 py-4 flex items-center justify-between">
