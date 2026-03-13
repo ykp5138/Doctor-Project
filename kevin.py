@@ -497,7 +497,7 @@ class TranscriptMerger:
         prompt = f"""You are a medical transcription analyst. Analyze the transcript below and produce a structured report.
 
 RECORDING DURATION: {duration}
-
+{keywords_block}
 TRANSCRIPT:
 {timestamped}
 
@@ -581,7 +581,7 @@ Billing Items: [only if discussed]
 
 
 
-def merge_for_api(whisper_path, assembly_path):
+def merge_for_api(whisper_path, assembly_path, keywords=None, patient_name=None):
     """API-facing entry point: runs full pipeline and returns (words, summary)."""
     merger = TranscriptMerger(whisper_path, assembly_path)
     a_words = merger.preprocess_assembly()
@@ -602,7 +602,7 @@ def merge_for_api(whisper_path, assembly_path):
         for w in final_words
     ]
 
-    summary = merger.generate_summary(final_words)
+    summary = merger.generate_summary(final_words, keywords=keywords, patient_name=patient_name)
     return words, summary
 
 
