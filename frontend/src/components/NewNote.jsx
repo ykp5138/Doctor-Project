@@ -39,6 +39,10 @@ export default function NewNote() {
   const [error, setError] = useState(null);
   const stepTimer = useRef(null);
 
+  // Patient name warning
+  const [nameWarning, setNameWarning] = useState(false);
+  const nameWarningShown = useRef(false);
+
   // ── Upload handlers ──
   const handleDragOver = (e) => { e.preventDefault(); setIsDragging(true); };
   const handleDragLeave = (e) => { e.preventDefault(); setIsDragging(false); };
@@ -110,6 +114,15 @@ export default function NewNote() {
   // ── Transcribe ──
   const handleTranscribe = async () => {
     if (!file) return;
+
+    // Name validation: flash warning on first attempt, proceed on second
+    if (!patientName.trim() && !nameWarningShown.current) {
+      nameWarningShown.current = true;
+      setNameWarning(true);
+      setTimeout(() => setNameWarning(false), 2000);
+      return;
+    }
+
     setLoading(true);
     setStep(1);
     setError(null);
@@ -121,6 +134,8 @@ export default function NewNote() {
 
     const formData = new FormData();
     formData.append("file", file);
+    if (keywords.trim()) formData.append("keywords", keywords.trim());
+    if (patientName.trim()) formData.append("patient_name", patientName.trim());
 
     try {
       const res = await fetch("http://localhost:8000/transcribe", {
