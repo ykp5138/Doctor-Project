@@ -533,9 +533,8 @@ Patient Agreement/Concerns: [only if discussed]
 Billing Items: [only if discussed]
 
 === CHAPTERS ===
-[00:00:00 - 00:00:30] Opening: brief description
-[00:00:30 - 00:01:15] Topic Two: brief description
-[Use exact timestamps from transcript. Max 6 chapters. Every chapter on its own line in this exact format.]
+[HH:MM:SS - HH:MM:SS] Chapter Title: one sentence description
+[HH:MM:SS - HH:MM:SS] Chapter Title: one sentence description
 """
 
         try:
