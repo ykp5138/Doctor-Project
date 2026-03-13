@@ -1,6 +1,6 @@
-from fastapi import FastAPI, UploadFile, File, HTTPException
+from fastapi import FastAPI, UploadFile, File, Form, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
-from typing import Dict, Any, List
+from typing import Dict, Any, List, Optional
 from pydantic import BaseModel
 import os
 import sys
@@ -35,7 +35,11 @@ def health():
 
 
 @app.post("/transcribe")
-async def transcribe(file: UploadFile = File(...)) -> Dict[str, Any]:
+async def transcribe(
+    file: UploadFile = File(...),
+    keywords: Optional[str] = Form(None),
+    patient_name: Optional[str] = Form(None),
+) -> Dict[str, Any]:
     """
     Pipeline:
       1) Save uploaded audio with a UUID-prefixed name
@@ -76,7 +80,7 @@ async def transcribe(file: UploadFile = File(...)) -> Dict[str, Any]:
         # Step 3: Kevin merge + summary
         print("🧠 Running Kevin merge...")
         from kevin import merge_for_api
-        words, summary = merge_for_api(whisper_out, assembly_out)
+        words, summary = merge_for_api(whisper_out, assembly_out, keywords=keywords, patient_name=patient_name)
 
         # Clean up audio
         try:

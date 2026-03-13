@@ -193,10 +193,23 @@ export default function NewNote() {
                 <Label className="text-xs uppercase tracking-widest text-slate-500 mb-3 block">Patient Name</Label>
                 <Input
                   value={patientName}
-                  onChange={(e) => setPatientName(e.target.value)}
+                  onChange={(e) => { setPatientName(e.target.value); nameWarningShown.current = false; setNameWarning(false); }}
                   placeholder="Enter name"
-                  className="border-0 border-b border-slate-200 rounded-none px-0 focus:border-slate-900 focus:ring-0 text-lg bg-transparent"
+                  className={`border-0 border-b rounded-none px-0 focus:ring-0 text-lg bg-transparent transition-colors ${nameWarning ? 'border-red-400 focus:border-red-400' : 'border-slate-200 focus:border-slate-900'}`}
                 />
+                <AnimatePresence>
+                  {nameWarning && (
+                    <motion.p
+                      initial={{ opacity: 0, y: -4 }}
+                      animate={{ opacity: [0, 1, 0.4, 1, 0.4, 1] }}
+                      exit={{ opacity: 0 }}
+                      transition={{ duration: 0.8 }}
+                      className="text-xs text-red-500 mt-2"
+                    >
+                      Please enter a patient name. Press Transcribe again to skip.
+                    </motion.p>
+                  )}
+                </AnimatePresence>
               </div>
               <div>
                 <Label className="text-xs uppercase tracking-widest text-slate-500 mb-3 block">Note Type</Label>
@@ -211,6 +224,15 @@ export default function NewNote() {
                     <SelectItem value="procedure">Procedure Note</SelectItem>
                   </SelectContent>
                 </Select>
+              </div>
+              <div>
+                <Label className="text-xs uppercase tracking-widest text-slate-500 mb-3 block">Keywords <span className="normal-case text-slate-400">(optional — medicines, terms)</span></Label>
+                <Input
+                  value={keywords}
+                  onChange={(e) => setKeywords(e.target.value)}
+                  placeholder="e.g. metformin, lisinopril, HbA1c"
+                  className="border-0 border-b border-slate-200 rounded-none px-0 focus:border-slate-900 focus:ring-0 text-base bg-transparent"
+                />
               </div>
             </div>
 

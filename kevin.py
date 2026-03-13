@@ -480,13 +480,19 @@ class TranscriptMerger:
             return f"{h}h {m}m {s}.{ms:03d}s"
         return f"{m}m {s}.{ms:03d}s"
 
-    def generate_summary(self, resolved_words):
+    def generate_summary(self, resolved_words, keywords=None, patient_name=None):
         """Call Ollama to produce a condensed summary and topic chapters."""
         timestamped = self.build_timestamped_transcript(resolved_words)
 
         total_start = resolved_words[0].get('start', 0) if resolved_words else 0
         total_end = resolved_words[-1].get('end', 0) if resolved_words else 0
         duration = self._fmt_duration(total_end - total_start)
+
+        keywords_block = ""
+        if keywords:
+            keywords_block = f"\nKEY TERMS PROVIDED BY DOCTOR (treat these as authoritative — prefer them when the transcript is ambiguous): {keywords}\n"
+        if patient_name:
+            keywords_block += f"PATIENT NAME: {patient_name}\n"
 
         prompt = f"""You are a medical transcription analyst. Analyze the transcript below and produce a structured report.
 
