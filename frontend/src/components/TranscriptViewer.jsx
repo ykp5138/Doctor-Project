@@ -185,31 +185,17 @@ export default function TranscriptViewer({ words, setWords, audioFile }) {
           {/* Header: word + audio play */}
           <div className="popup-header">
             <span className="popup-flagged-word">"{popup.wordText}"</span>
-            {audioFile && (
-              <div className="popup-play-btns">
-                <button
-                  className={`popup-play-btn ${popup.playingTrack === 'whisper' ? 'playing' : ''}`}
-                  onClick={() => popup.playingTrack === 'whisper' ? stopPlay() : playSlice(popup.start, popup.end, 'whisper')}
-                >
-                  {popup.playingTrack === 'whisper'
-                    ? <svg width="11" height="11" viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg>
-                    : <svg width="11" height="11" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>
-                  }
-                  W
-                </button>
-                {popup.a_start != null && (
-                  <button
-                    className={`popup-play-btn ${popup.playingTrack === 'assembly' ? 'playing' : ''}`}
-                    onClick={() => popup.playingTrack === 'assembly' ? stopPlay() : playSlice(popup.a_start, popup.a_end, 'assembly')}
-                  >
-                    {popup.playingTrack === 'assembly'
-                      ? <svg width="11" height="11" viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg>
-                      : <svg width="11" height="11" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>
-                    }
-                    A
-                  </button>
-                )}
-              </div>
+            {audioFile && popup.a_start != null && (
+              <button
+                className={`popup-play-btn ${popup.playingTrack === 'assembly' ? 'playing' : ''}`}
+                onClick={() => popup.playingTrack === 'assembly' ? stopPlay() : playSlice(popup.a_start, popup.a_end, 'assembly')}
+              >
+                {popup.playingTrack === 'assembly'
+                  ? <svg width="11" height="11" viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg>
+                  : <svg width="11" height="11" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+                }
+                Play clip
+              </button>
             )}
           </div>
 
