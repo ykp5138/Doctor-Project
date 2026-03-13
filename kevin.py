@@ -496,51 +496,46 @@ TRANSCRIPT:
 {timestamped}
 
 STRICT OUTPUT RULES:
-1. Never write "Not stated", "Not mentioned", "N/A", or "Unknown" for optional fields — omit those lines entirely.
-2. For CORE fields (Patient, DOB/Age, Date/Time, Encounter Type, Chief Complaint, Visit Reason, Medications Started/Changed): always include them, write "Unknown" only if truly not mentioned.
-3. For ALL OTHER clinical fields: only include the line if it is actually discussed in the transcript. If not discussed, skip the line completely.
-4. Always include SUMMARY, DURATION, and CHAPTERS.
-5. Include CLINICAL NOTE only if this is a medical or clinical encounter (phone prescription calls count).
-6. For CHAPTERS: use the exact timestamps shown in the transcript above. Each chapter end time = next chapter start time. Last chapter end = recording end.
+1. Always include === SUMMARY ===, === DURATION ===, and === CHAPTERS ===.
+2. CLINICAL NOTE RULE — CRITICAL: Only include === CLINICAL NOTE === if this is clearly a medical or clinical encounter (clinic visit, phone prescription call, telehealth, etc.). If it is NOT medical (e.g. casual conversation, music, personal story, meeting), DO NOT include === CLINICAL NOTE === at all. Not even with Unknown values. Leave it out completely.
+3. Inside CLINICAL NOTE: omit any field where the value is not known or not mentioned. Do not write "Unknown", "N/A", "Not stated", or similar — just skip that line.
+4. For CHAPTERS: copy timestamps EXACTLY from the transcript above (format: [HH:MM:SS - HH:MM:SS]). Do not make up timestamps.
 
 Produce output in EXACTLY this format, no extra commentary:
 
 === SUMMARY ===
-[1-6 sentences. Concise. Clinical focus if medical.]
+[1-6 sentences summarizing the recording.]
 
 === DURATION ===
 Total recording time: {duration}
 
 === CLINICAL NOTE ===
-Patient: [full name or Unknown]
-DOB/Age: [date of birth / age or Unknown]
-Date/Time: [date and time of encounter or Unknown]
-Encounter Type: [Telehealth / ED / Clinic / Phone / Unknown]
-
-Chief Complaint: [what the patient/caller needs — one line]
-Visit Reason: [context: new rx, refill, follow-up for X, etc.]
-
-Medications Started/Changed: [drug name, dose, sig, qty, refills — be specific]
-
-[Only add the lines below if they are actually discussed — otherwise omit entirely:]
-HPI: [onset, timing, key symptoms, severity, treatments tried]
-PMH/Meds/Allergies: [relevant history]
-Vitals/Exam: [findings]
-Labs/Imaging: [results or what was ordered]
-Assessment: [primary diagnosis or clinical decision]
-Active Problems: [other conditions mentioned]
-Orders/Investigations: [tests ordered]
-Procedures Done: [procedures performed]
-Follow-up Instructions: [next steps given to patient]
-Red Flags Given: [warning signs discussed]
-Disposition: [what happens next — discharged, follow up, admitted]
-Patient Agreement/Concerns: [patient's response or questions]
-Billing Items: [time spent, complexity level]
+[ONLY include this section if the recording is a medical/clinical encounter. Otherwise omit entirely.]
+Patient: [full name if stated]
+DOB/Age: [if stated]
+Date/Time: [if stated]
+Encounter Type: [Telehealth / ED / Clinic / Phone / etc.]
+Chief Complaint: [reason for the call/visit]
+Visit Reason: [new rx / refill / follow-up / etc.]
+Medications Started/Changed: [drug, dose, sig, qty, refills]
+HPI: [only if discussed]
+PMH/Meds/Allergies: [only if discussed]
+Vitals/Exam: [only if discussed]
+Labs/Imaging: [only if discussed]
+Assessment: [only if discussed]
+Active Problems: [only if discussed]
+Orders/Investigations: [only if discussed]
+Procedures Done: [only if discussed]
+Follow-up Instructions: [only if discussed]
+Red Flags Given: [only if discussed]
+Disposition: [only if discussed]
+Patient Agreement/Concerns: [only if discussed]
+Billing Items: [only if discussed]
 
 === CHAPTERS ===
-[Group by distinct topic. Max 6. Use timestamps from the transcript.]
-[HH:MM:SS - HH:MM:SS] Title: one sentence description
-[HH:MM:SS - HH:MM:SS] Title: one sentence description
+[00:00:00 - 00:00:30] Opening: brief description
+[00:00:30 - 00:01:15] Topic Two: brief description
+[Use exact timestamps from transcript. Max 6 chapters. Every chapter on its own line in this exact format.]
 """
 
         try:

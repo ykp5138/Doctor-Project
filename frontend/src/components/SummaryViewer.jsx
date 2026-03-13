@@ -77,7 +77,7 @@ export default function SummaryViewer({ summary, audioFile }) {
     return (
       <div className="chapters-list">
         {lines.map((line, i) => {
-          const m = line.match(/^\[(\d{1,2}:\d{2}:\d{2})\s*[-–]\s*(\d{1,2}:\d{2}:\d{2})\]\s*(.+?):\s*(.+)$/);
+          const m = line.match(/\[(\d{1,2}:\d{2}:\d{2})\s*[-–—]\s*(\d{1,2}:\d{2}:\d{2})\]\s*(.+?):\s*(.+)$/);
           if (m) {
             const start = tsToSecs(m[1]);
             const end = tsToSecs(m[2]);
@@ -132,6 +132,7 @@ export default function SummaryViewer({ summary, audioFile }) {
               if (colonIdx > 0) {
                 const label = line.slice(0, colonIdx).trim();
                 const value = line.slice(colonIdx + 1).trim();
+                if (/^unknown$/i.test(value) || value === '') return null;
                 return (
                   <div key={li} className="note-field">
                     <span className="note-label">{label}</span>
