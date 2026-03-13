@@ -68,33 +68,6 @@ export default function TranscriptViewer({ words, setWords, audioFile }) {
     }
   }, [words]);
 
-  // Find the extent of a flagged cluster around a given index.
-  // Consecutive flagged/fixed words with at most 1 non-flagged word gap form one cluster.
-  const getCluster = useCallback((index) => {
-    let startIdx = index;
-    let endIdx = index;
-
-    // Expand backward
-    let gap = 0;
-    for (let i = index - 1; i >= 0; i--) {
-      if (words[i].flagged || words[i].fixed) { startIdx = i; gap = 0; }
-      else { gap++; if (gap > 1) break; }
-    }
-    // Expand forward
-    gap = 0;
-    for (let i = index + 1; i < words.length; i++) {
-      if (words[i].flagged || words[i].fixed) { endIdx = i; gap = 0; }
-      else { gap++; if (gap > 1) break; }
-    }
-
-    return {
-      wStart: words[startIdx].start || 0,
-      wEnd: words[endIdx].end || 0,
-      aStart: words[startIdx].a_start ?? null,
-      aEnd: words[endIdx].a_end ?? null,
-    };
-  }, [words]);
-
   const handleWordClick = useCallback((word, index, e) => {
     if (!word.flagged && !word.fixed) return;
     // Count other flagged instances of the same word text
@@ -102,9 +75,6 @@ export default function TranscriptViewer({ words, setWords, audioFile }) {
       .map((w, i) => ({ w, i }))
       .filter(({ w, i }) => w.flagged && i !== index && w.text.toLowerCase() === word.text.toLowerCase())
       .map(({ i }) => i);
-
-    // Compute cluster timestamps for audio playback
-    const cluster = getCluster(index);
 
     // Use viewport-fixed position so scroll containers don't break it
     const rect = e.currentTarget.getBoundingClientRect();
@@ -116,10 +86,10 @@ export default function TranscriptViewer({ words, setWords, audioFile }) {
     setPopup({
       wordIndex: index,
       wordText: word.text,          // original text for "fix all" matching
-      start: cluster.wStart,
-      end: cluster.wEnd,
-      a_start: cluster.aStart,
-      a_end: cluster.aEnd,
+      start: word.start || 0,
+      end: word.end || 0,
+      a_start: word.a_start ?? null,
+      a_end: word.a_end ?? null,
       position: { top, left },
       suggestions: [],
       loading: true,
@@ -128,7 +98,7 @@ export default function TranscriptViewer({ words, setWords, audioFile }) {
       sameWordIndices,              // other indices with the same flagged text
     });
     fetchSuggestions(word, index);
-  }, [fetchSuggestions, words, getCluster]);
+  }, [fetchSuggestions, words]);
 
   // applyAll=false → fix just this word; applyAll=true → fix this + all same-text instances
   const applyWord = useCallback((newText, applyAll = false) => {

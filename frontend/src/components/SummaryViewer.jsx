@@ -77,7 +77,7 @@ export default function SummaryViewer({ summary, audioFile }) {
     return (
       <div className="chapters-list">
         {lines.map((line, i) => {
-          const m = line.match(/^\[(\d{2}:\d{2}:\d{2})\s*-\s*(\d{2}:\d{2}:\d{2})\]\s*(.+?):\s*(.+)$/);
+          const m = line.match(/^\[(\d{1,2}:\d{2}:\d{2})\s*[-–]\s*(\d{1,2}:\d{2}:\d{2})\]\s*(.+?):\s*(.+)$/);
           if (m) {
             const start = tsToSecs(m[1]);
             const end = tsToSecs(m[2]);
