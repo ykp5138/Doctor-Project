@@ -152,9 +152,9 @@ export default function SummaryViewer({ summary, audioFile }) {
       {sections.map((sec, i) => (
         <div key={i} className={`summary-section section-${sec.title.toLowerCase().replace(/\s+/g, '-')}`}>
           <h3 className="section-heading">{sec.title}</h3>
-          {sec.title === 'CHAPTERS'
+          {sec.title.toUpperCase() === 'CHAPTERS'
             ? renderChapters(sec.body)
-            : sec.title === 'CLINICAL NOTE'
+            : sec.title.toUpperCase() === 'CLINICAL NOTE'
             ? renderClinicalNote(sec.body)
             : <p className="section-body">{sec.body}</p>
           }
