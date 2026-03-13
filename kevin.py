@@ -277,6 +277,8 @@ class TranscriptMerger:
 
     def resolve_conflicts(self, pairs, assembly_words=None):
         final_transcript = []
+        # Pre-extract all whisper texts for occurrence counting
+        all_w_texts = [p[0]['text'] for p in pairs]
 
         for i, (w_word, a_word) in enumerate(pairs):
             
@@ -296,18 +298,34 @@ class TranscriptMerger:
             if not a_word:
                 if w_low:
                     result_word['flagged'] = True
-                # Fallback: text-only search through all assembly words for timestamp
+                # Fallback: find the Nth occurrence in assembly (same order as whisper)
+                # so repeated words like "calling" match the correct instance.
                 if assembly_words:
-                    best_ts, best_diff = None, float('inf')
+                    w_text = w_word['text']
+                    occurrence = sum(
+                        1 for j in range(i)
+                        if self.are_words_effectively_equal(all_w_texts[j], w_text)
+                    )
+                    n = 0
+                    matched = None
                     for aw in assembly_words:
-                        if self.are_words_effectively_equal(w_word['text'], aw['text']):
-                            diff = abs(aw.get('start', 0) - w_word.get('start', 0))
-                            if diff < best_diff:
-                                best_diff = diff
-                                best_ts = aw
-                    if best_ts:
-                        result_word['a_start'] = best_ts.get('start')
-                        result_word['a_end'] = best_ts.get('end')
+                        if self.are_words_effectively_equal(aw['text'], w_text):
+                            if n == occurrence:
+                                matched = aw
+                                break
+                            n += 1
+                    # If assembly has fewer occurrences, fall back to closest by time
+                    if matched is None:
+                        best_diff = float('inf')
+                        for aw in assembly_words:
+                            if self.are_words_effectively_equal(aw['text'], w_text):
+                                diff = abs(aw.get('start', 0) - w_word.get('start', 0))
+                                if diff < best_diff:
+                                    best_diff = diff
+                                    matched = aw
+                    if matched:
+                        result_word['a_start'] = matched.get('start')
+                        result_word['a_end'] = matched.get('end')
                 final_transcript.append(result_word)
                 continue
 
