@@ -6,6 +6,8 @@ import { Mic, MicOff, Circle, Upload, X } from "lucide-react";
 import { motion, AnimatePresence } from "motion/react";
 import TranscriptViewer from "./TranscriptViewer";
 import SummaryViewer from "./SummaryViewer";
+import SuggestedCodes from "./SuggestedCodes";
+import SuggestedEMCodes from "./SuggestedEMCodes";
 import { useNote } from "../NoteContext";
 
 const STEPS = [
@@ -38,6 +40,13 @@ export default function NewNote() {
   const [step, setStep] = useState(0);
   const [error, setError] = useState(null);
   const stepTimer = useRef(null);
+
+  // Billing code suggestions
+  const [icdSuggestions, setIcdSuggestions] = useState([]);
+  const [emSuggestion, setEmSuggestion] = useState(null);
+  const [codesLoading, setCodesLoading] = useState(false);
+  const [activeCodeIdx, setActiveCodeIdx] = useState(null);
+  const [activeEvidenceIdx, setActiveEvidenceIdx] = useState(0);
 
   // Patient name warning
   const [nameWarning, setNameWarning] = useState(false);
@@ -148,8 +157,11 @@ export default function NewNote() {
       }
       const data = await res.json();
       setResult(data);
-      setWords(data.words || []);
+      const fetchedWords = data.words || [];
+      setWords(fetchedWords);
       setResultTab("transcript");
+      // Kick off code suggestions in the background
+      fetchSuggestedCodes(data.summary, fetchedWords);
     } catch (err) {
       setError(err.message || "An error occurred");
     } finally {
@@ -157,6 +169,33 @@ export default function NewNote() {
       clearTimeout(t2);
       setLoading(false);
       setStep(0);
+    }
+  };
+
+  const fetchSuggestedCodes = async (summary, wordsArr) => {
+    if (!summary || !wordsArr.length) return;
+    setCodesLoading(true);
+    setIcdSuggestions([]);
+    setEmSuggestion(null);
+    const transcriptText = wordsArr.map(w => w.text).join(' ');
+    const firstStart = wordsArr[0]?.start ?? 0;
+    const lastEnd = wordsArr[wordsArr.length - 1]?.end ?? 0;
+    const durationSeconds = Math.max(0, lastEnd - firstStart);
+    try {
+      const res = await fetch('http://localhost:8000/suggest-codes', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ summary, transcript_text: transcriptText, duration_seconds: durationSeconds }),
+      });
+      if (res.ok) {
+        const data = await res.json();
+        setIcdSuggestions(data.icd ?? []);
+        setEmSuggestion(data.em ?? null);
+      }
+    } catch (err) {
+      console.error('suggest-codes failed:', err);
+    } finally {
+      setCodesLoading(false);
     }
   };
 
@@ -367,8 +406,8 @@ export default function NewNote() {
                       style={step > s.id
                         ? { background: "#1a1a1a", color: "white" }
                         : step === s.id
-                        ? { background: "#1a1a1a", color: "white" }
-                        : { background: "#e5e5e5", color: "#737373" }
+                          ? { background: "#1a1a1a", color: "white" }
+                          : { background: "#e5e5e5", color: "#737373" }
                       }
                     >
                       {step === s.id ? <span className="spinner-sm" /> : step > s.id ? "✓" : s.id}
@@ -454,13 +493,43 @@ export default function NewNote() {
                     >
                       Clinical Note
                     </button>
+                    <button
+                      onClick={() => setResultTab("codes")}
+                      className={`flex-1 py-2.5 text-xs uppercase tracking-widest transition-colors relative ${resultTab === "codes" ? "bg-slate-900 text-white" : "bg-white text-slate-500 hover:text-slate-900"}`}
+                    >
+                      Codes
+                      {codesLoading && resultTab !== "codes" && (
+                        <span className="absolute top-1 right-1 w-1.5 h-1.5 bg-slate-400 rounded-full animate-pulse" />
+                      )}
+                    </button>
                   </div>
 
                   <div className="bg-white p-8">
-                    {resultTab === "transcript"
-                      ? <TranscriptViewer words={words} setWords={setWords} audioFile={file} />
-                      : <SummaryViewer summary={result.summary} audioFile={file} />
-                    }
+                    {resultTab === "transcript" && (
+                      <TranscriptViewer words={words} setWords={setWords} audioFile={file} />
+                    )}
+                    {resultTab === "summary" && (
+                      <SummaryViewer summary={result.summary} audioFile={file} />
+                    )}
+                    {resultTab === "codes" && (
+                      <div className="codes-tab">
+                        <SuggestedCodes
+                          suggestions={icdSuggestions}
+                          loading={codesLoading}
+                          activeCodeIdx={activeCodeIdx}
+                          activeEvidenceIdx={activeEvidenceIdx}
+                          onSelectEvidence={(ci, ei) => { setActiveCodeIdx(ci); setActiveEvidenceIdx(ei ?? 0); }}
+                          onFeedback={() => { }}
+                        />
+                        <SuggestedEMCodes
+                          emData={emSuggestion}
+                          loading={codesLoading}
+                        />
+                        {!codesLoading && !icdSuggestions.length && !emSuggestion && (
+                          <p className="codes-empty">No billing code suggestions available for this encounter.</p>
+                        )}
+                      </div>
+                    )}
                   </div>
                 </motion.div>
               )}
