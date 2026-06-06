@@ -33,13 +33,33 @@ venv/
 __pycache__/
 *.pyc
 
-# Audio + generated outputs
+# Generated outputs
 outputs/
-audio/
 *_transcription.html
 *_transcription.txt
 confidence_*.json
 reconciled_*.json
+
+# Patient source recordings are .MOV uploads — block PHI media so it can never
+# be committed. (The tracked .mp3 YouTube test files under audio/ are NOT ignored.)
+*.mov
+*.MOV
+
+# Generated semantic-search indexes — rebuild BOTH with:
+#   python build_icd_index.py  AND  python build_icd_index_sapbert.py
+indexes/
+indexes_sapbert/
+
+# Doctor feedback logs — may contain PHI (transcript phrases). Do not commit.
+feedback/
+feedback_store.json
+
+# Claude Code local config
+.claude/
+
+# Scratch / stray files
+request.json
+retrieval_output.json
 
 # Node / frontend
 frontend/node_modules/

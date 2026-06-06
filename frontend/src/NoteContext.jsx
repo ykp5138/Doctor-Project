@@ -10,6 +10,8 @@ export function NoteProvider({ children }) {
   const [noteType, setNoteType] = useState('soap');
   const [resultTab, setResultTab] = useState('transcript');
   const [keywords, setKeywords] = useState('');
+  const [codeRange, setCodeRange] = useState('');
+  const [icdSuggestions, setIcdSuggestions] = useState([]);
 
   return (
     <NoteContext.Provider value={{
@@ -20,6 +22,8 @@ export function NoteProvider({ children }) {
       noteType, setNoteType,
       resultTab, setResultTab,
       keywords, setKeywords,
+      codeRange, setCodeRange,
+      icdSuggestions, setIcdSuggestions,
     }}>
       {children}
     </NoteContext.Provider>

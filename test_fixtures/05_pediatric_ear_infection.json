@@ -1,0 +1,11 @@
+{
+  "concepts": {
+    "symptoms": ["right ear pain for 2 days", "low-grade fever", "tugging at right ear", "decreased appetite"],
+    "diagnoses_mentioned": ["acute otitis media right ear"],
+    "medications_discussed": ["amoxicillin suspension dosed by weight", "acetaminophen as needed"],
+    "procedures_ordered": [],
+    "history_relevant": ["age 3", "two prior ear infections this year", "in daycare"],
+    "vitals_exam_findings": ["right tympanic membrane erythematous and bulging", "left ear normal", "temperature 100.4F"]
+  },
+  "top_k": 10
+}

@@ -1,0 +1,11 @@
+{
+  "concepts": {
+    "symptoms": [],
+    "diagnoses_mentioned": [],
+    "medications_discussed": ["multivitamin daily"],
+    "procedures_ordered": ["annual physical", "lipid panel", "colonoscopy screening referral"],
+    "history_relevant": ["no significant past medical history", "age 52", "non-smoker"],
+    "vitals_exam_findings": ["blood pressure 118/76", "weight stable", "exam unremarkable"]
+  },
+  "top_k": 10
+}

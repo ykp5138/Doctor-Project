@@ -1,4 +1,4 @@
-import { useState, useRef, useCallback } from "react";
+import { useState, useRef, useCallback, useEffect, useMemo } from "react";
 import { Label } from "./ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "./ui/select";
 import { Input } from "./ui/input";
@@ -6,6 +6,7 @@ import { Mic, MicOff, Circle, Upload, X } from "lucide-react";
 import { motion, AnimatePresence } from "motion/react";
 import TranscriptViewer from "./TranscriptViewer";
 import SummaryViewer from "./SummaryViewer";
+import SuggestedCodes from "./SuggestedCodes";
 import { useNote } from "../NoteContext";
 
 const STEPS = [
@@ -16,7 +17,12 @@ const STEPS = [
 
 export default function NewNote() {
   // Persistent state (survives navigation)
-  const { result, setResult, words, setWords, file, setFile, patientName, setPatientName, noteType, setNoteType, resultTab, setResultTab, keywords, setKeywords } = useNote();
+  const {
+    result, setResult, words, setWords, file, setFile,
+    patientName, setPatientName, noteType, setNoteType,
+    resultTab, setResultTab, keywords, setKeywords,
+    codeRange, setCodeRange, icdSuggestions, setIcdSuggestions,
+  } = useNote();
 
   // Audio source
   const [inputTab, setInputTab] = useState("upload");
@@ -39,6 +45,15 @@ export default function NewNote() {
   const [error, setError] = useState(null);
   const stepTimer = useRef(null);
 
+  // ICD suggestion state
+  const [icdLoading, setIcdLoading] = useState(false);
+  const [icdActiveCodeIdx, setIcdActiveCodeIdx] = useState(null);
+  const [icdActiveEvidenceIdx, setIcdActiveEvidenceIdx] = useState(0);
+
+  // Transient confirmation after a feedback ✓/✗ click
+  const [feedbackToast, setFeedbackToast] = useState(null);
+  const feedbackToastTimer = useRef(null);
+
   // Patient name warning
   const [nameWarning, setNameWarning] = useState(false);
   const nameWarningShown = useRef(false);
@@ -50,11 +65,11 @@ export default function NewNote() {
     e.preventDefault();
     setIsDragging(false);
     const f = e.dataTransfer.files?.[0];
-    if (f && (f.type.startsWith("audio/") || f.type === "video/quicktime" || f.name.toLowerCase().endsWith(".mov"))) { setFile(f); setResult(null); setWords([]); setError(null); }
+    if (f && (f.type.startsWith("audio/") || f.type === "video/quicktime" || f.name.toLowerCase().endsWith(".mov"))) { setFile(f); setResult(null); setWords([]); setError(null); setIcdSuggestions([]); setIcdActiveCodeIdx(null); }
   };
   const handleFileChange = (e) => {
     const f = e.target.files?.[0];
-    if (f) { setFile(f); setResult(null); setWords([]); setError(null); }
+    if (f) { setFile(f); setResult(null); setWords([]); setError(null); setIcdSuggestions([]); setIcdActiveCodeIdx(null); }
   };
   const formatFileSize = (bytes) => {
     if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`;
@@ -111,6 +126,74 @@ export default function NewNote() {
     return `${m}:${s.toString().padStart(2, "0")}`;
   };
 
+  // ── ICD helpers ──
+  const handleSelectEvidence = useCallback((codeIdx, evIdx) => {
+    setIcdActiveCodeIdx(codeIdx);
+    setIcdActiveEvidenceIdx(evIdx ?? 0);
+  }, []);
+
+  const handleFeedback = useCallback((code, phrase, wordIndices, isCorrect) => {
+    const showToast = (msg) => {
+      setFeedbackToast(msg);
+      if (feedbackToastTimer.current) clearTimeout(feedbackToastTimer.current);
+      feedbackToastTimer.current = setTimeout(() => setFeedbackToast(null), 1600);
+    };
+    // Optimistic confirmation — shown immediately, never blocks the doctor's flow.
+    showToast(`${isCorrect ? '✓ Correct' : '✗ Incorrect'} — ${code} recorded`);
+
+    const sug = icdSuggestions.find((s) => s.code === code);
+    fetch('http://localhost:8000/feedback', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        code,
+        description: sug?.description ?? '',
+        evidence_phrase: phrase,
+        word_indices: wordIndices ?? [],
+        is_correct: isCorrect,
+        transcript_base: result?.meta?.base ?? null,
+        concepts: result?.concepts ?? null,
+      }),
+    })
+      // Surface a real write failure (non-2xx or network error) instead of the
+      // false "recorded" toast — e.g. a OneDrive file lock blocking the append.
+      .then((res) => {
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      })
+      .catch(() => showToast(`⚠ Failed to record ${code} — not saved`));
+  }, [icdSuggestions, result]);
+
+  // Derive which word indices to highlight and which single word to focus/scroll to
+  const icdHighlightedIndices = useMemo(() => {
+    if (icdActiveCodeIdx === null || !icdSuggestions[icdActiveCodeIdx]) return new Set();
+    const ev = icdSuggestions[icdActiveCodeIdx].evidence[icdActiveEvidenceIdx];
+    return new Set(ev?.word_indices ?? []);
+  }, [icdSuggestions, icdActiveCodeIdx, icdActiveEvidenceIdx]);
+
+  const icdFocusedIndex = useMemo(() => {
+    if (icdActiveCodeIdx === null || !icdSuggestions[icdActiveCodeIdx]) return null;
+    const ev = icdSuggestions[icdActiveCodeIdx].evidence[icdActiveEvidenceIdx];
+    return ev?.word_indices?.[0] ?? null;
+  }, [icdSuggestions, icdActiveCodeIdx, icdActiveEvidenceIdx]);
+
+  // Arrow-key navigation between evidence phrases (like Ctrl+F instances)
+  useEffect(() => {
+    if (icdActiveCodeIdx === null) return;
+    const sug = icdSuggestions[icdActiveCodeIdx];
+    if (!sug) return;
+    const handler = (e) => {
+      if (e.key === 'ArrowRight') {
+        e.preventDefault();
+        setIcdActiveEvidenceIdx(i => Math.min(i + 1, sug.evidence.length - 1));
+      } else if (e.key === 'ArrowLeft') {
+        e.preventDefault();
+        setIcdActiveEvidenceIdx(i => Math.max(i - 1, 0));
+      }
+    };
+    window.addEventListener('keydown', handler);
+    return () => window.removeEventListener('keydown', handler);
+  }, [icdActiveCodeIdx, icdSuggestions]);
+
   // ── Transcribe ──
   const handleTranscribe = async () => {
     if (!file) return;
@@ -128,6 +211,9 @@ export default function NewNote() {
     setError(null);
     setResult(null);
     setWords([]);
+    setIcdSuggestions([]);
+    setIcdActiveCodeIdx(null);
+    setIcdActiveEvidenceIdx(0);
 
     stepTimer.current = setTimeout(() => setStep(2), 25000);
     const t2 = setTimeout(() => setStep(3), 55000);
@@ -150,6 +236,20 @@ export default function NewNote() {
       setResult(data);
       setWords(data.words || []);
       setResultTab("transcript");
+
+      // Fire ICD suggestion asynchronously — doesn't block transcript display
+      if (codeRange.trim() || true) {
+        setIcdLoading(true);
+        fetch('http://localhost:8000/suggest-codes', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ words: data.words, summary: data.summary || '', code_range: codeRange.trim(), concepts: data.concepts }),
+        })
+          .then(r => r.json())
+          .then(d => setIcdSuggestions(d.suggestions || []))
+          .catch(() => setIcdSuggestions([]))
+          .finally(() => setIcdLoading(false));
+      }
     } catch (err) {
       setError(err.message || "An error occurred");
     } finally {
@@ -224,6 +324,15 @@ export default function NewNote() {
                     <SelectItem value="procedure">Procedure Note</SelectItem>
                   </SelectContent>
                 </Select>
+              </div>
+              <div>
+                <Label className="text-xs uppercase tracking-widest text-slate-500 mb-3 block">Code Range <span className="normal-case text-slate-400">(optional — e.g. E11-E14, J45.50, L00-L99)</span></Label>
+                <Input
+                  value={codeRange}
+                  onChange={(e) => setCodeRange(e.target.value)}
+                  placeholder="e.g. I00-I99, E11.9, L00-L99"
+                  className="border-0 border-b border-slate-200 rounded-none px-0 focus:border-slate-900 focus:ring-0 text-base bg-transparent"
+                />
               </div>
               <div>
                 <Label className="text-xs uppercase tracking-widest text-slate-500 mb-3 block">Keywords <span className="normal-case text-slate-400">(optional — medicines, terms)</span></Label>
@@ -457,10 +566,29 @@ export default function NewNote() {
                   </div>
 
                   <div className="bg-white p-8">
-                    {resultTab === "transcript"
-                      ? <TranscriptViewer words={words} setWords={setWords} audioFile={file} />
-                      : <SummaryViewer summary={result.summary} audioFile={file} />
-                    }
+                    {resultTab === "transcript" ? (
+                      <>
+                        {(icdLoading || icdSuggestions.length > 0) && (
+                          <SuggestedCodes
+                            suggestions={icdSuggestions}
+                            loading={icdLoading}
+                            activeCodeIdx={icdActiveCodeIdx}
+                            activeEvidenceIdx={icdActiveEvidenceIdx}
+                            onSelectEvidence={handleSelectEvidence}
+                            onFeedback={handleFeedback}
+                          />
+                        )}
+                        <TranscriptViewer
+                          words={words}
+                          setWords={setWords}
+                          audioFile={file}
+                          icdHighlightedIndices={icdHighlightedIndices}
+                          icdFocusedIndex={icdFocusedIndex}
+                        />
+                      </>
+                    ) : (
+                      <SummaryViewer summary={result.summary} audioFile={file} />
+                    )}
                   </div>
                 </motion.div>
               )}
@@ -469,6 +597,21 @@ export default function NewNote() {
 
         </div>
       </div>
+
+      {/* Feedback confirmation toast */}
+      <AnimatePresence>
+        {feedbackToast && (
+          <motion.div
+            initial={{ opacity: 0, y: 12 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 12 }}
+            transition={{ duration: 0.2 }}
+            className="fixed bottom-8 right-8 z-50 bg-slate-900 text-white text-sm px-5 py-3 shadow-lg"
+          >
+            {feedbackToast}
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }

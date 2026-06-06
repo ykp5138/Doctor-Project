@@ -1,0 +1,11 @@
+{
+  "concepts": {
+    "symptoms": ["increased thirst", "frequent urination", "blurry vision intermittently"],
+    "diagnoses_mentioned": ["type 2 diabetes mellitus", "diabetic neuropathy"],
+    "medications_discussed": ["metformin 1000mg twice daily", "insulin glargine 20 units at bedtime"],
+    "procedures_ordered": ["hemoglobin A1c", "comprehensive metabolic panel", "diabetic foot exam"],
+    "history_relevant": ["diagnosed type 2 diabetes 8 years ago", "father had diabetes"],
+    "vitals_exam_findings": ["BMI 32", "decreased sensation in bilateral feet on monofilament testing"]
+  },
+  "top_k": 10
+}

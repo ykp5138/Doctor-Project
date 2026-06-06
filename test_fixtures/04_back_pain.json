@@ -1,0 +1,11 @@
+{
+  "concepts": {
+    "symptoms": ["lower back pain for 3 days", "pain radiating down left leg", "worse with bending"],
+    "diagnoses_mentioned": ["acute low back pain", "possible lumbar radiculopathy"],
+    "medications_discussed": ["ibuprofen 600mg every 6 hours as needed", "cyclobenzaprine 5mg at bedtime"],
+    "procedures_ordered": ["lumbar spine x-ray", "physical therapy referral"],
+    "history_relevant": ["lifted heavy box at work last week", "no prior back issues"],
+    "vitals_exam_findings": ["positive straight leg raise on left", "decreased lumbar range of motion", "no neurological deficits"]
+  },
+  "top_k": 10
+}

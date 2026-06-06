@@ -434,7 +434,8 @@ class TranscriptMerger:
         
         print(f"Successfully saved merged transcript to {output_file}")
 
-    def build_timestamped_transcript(self, resolved_words):
+    @staticmethod
+    def build_timestamped_transcript(resolved_words):
         """Build a readable transcript with start-end timestamps per speaker turn."""
         lines = []
         current_speaker = None
@@ -450,7 +451,7 @@ class TranscriptMerger:
 
             if speaker != current_speaker:
                 if current_speaker is not None and current_words:
-                    ts = f"[{self._fmt_ts(current_start)} - {self._fmt_ts(current_end)}]"
+                    ts = f"[{TranscriptMerger._fmt_ts(current_start)} - {TranscriptMerger._fmt_ts(current_end)}]"
                     lines.append(f"{ts} {current_speaker}: {' '.join(current_words)}")
                 current_speaker = speaker
                 current_start = start
@@ -460,12 +461,13 @@ class TranscriptMerger:
             current_words.append(text)
 
         if current_speaker and current_words:
-            ts = f"[{self._fmt_ts(current_start)} - {self._fmt_ts(current_end)}]"
+            ts = f"[{TranscriptMerger._fmt_ts(current_start)} - {TranscriptMerger._fmt_ts(current_end)}]"
             lines.append(f"{ts} {current_speaker}: {' '.join(current_words)}")
 
         return "\n".join(lines)
 
-    def _fmt_ts(self, seconds):
+    @staticmethod
+    def _fmt_ts(seconds):
         h = int(seconds // 3600)
         m = int((seconds % 3600) // 60)
         s = int(seconds % 60)
@@ -506,6 +508,7 @@ STRICT OUTPUT RULES:
 2. CLINICAL NOTE RULE — CRITICAL: Only include === CLINICAL NOTE === if this is clearly a medical or clinical encounter (clinic visit, phone prescription call, telehealth, etc.). If it is NOT medical (e.g. casual conversation, music, personal story, meeting), DO NOT include === CLINICAL NOTE === at all. Not even with Unknown values. Leave it out completely.
 3. Inside CLINICAL NOTE: omit any field where the value is not known or not mentioned. Do not write "Unknown", "N/A", "Not stated", or similar — just skip that line.
 4. For CHAPTERS: copy timestamps EXACTLY from the transcript above (format: [HH:MM:SS - HH:MM:SS]). Do not make up timestamps.
+5. ICD-10 CODING: This report will be used downstream for ICD-10-CM coding. In CLINICAL NOTE, use precise medical terminology and include specificity details wherever the transcript supports them — laterality (left/right/bilateral), acuity (acute/chronic), severity, etiology, complications, and stage. In CHAPTERS, flag any segment that contains a diagnosable condition, procedure, or prescription with a brief clinical label.
 
 Produce output in EXACTLY this format, no extra commentary:
 
@@ -582,7 +585,12 @@ Billing Items: [only if discussed]
 
 
 def merge_for_api(whisper_path, assembly_path, keywords=None, patient_name=None):
-    """API-facing entry point: runs full pipeline and returns (words, summary)."""
+    """API-facing entry point: runs full pipeline and returns (words, summary, final_words).
+
+    final_words is the raw resolved-word list (with speaker/timestamp metadata),
+    returned so callers can run additional analysis (e.g. extract_clinical_concepts)
+    without re-running the merge.
+    """
     merger = TranscriptMerger(whisper_path, assembly_path)
     a_words = merger.preprocess_assembly()
     w_words = merger.preprocess_whisper()
@@ -603,7 +611,527 @@ def merge_for_api(whisper_path, assembly_path, keywords=None, patient_name=None)
     ]
 
     summary = merger.generate_summary(final_words, keywords=keywords, patient_name=patient_name)
-    return words, summary
+    return words, summary, final_words
+
+
+def extract_clinical_concepts(resolved_words, keywords=None, patient_name=None):
+    """
+    Extract structured, machine-readable clinical concepts from a resolved transcript.
+
+    Unlike generate_summary (which produces a human-readable clinical note for the UI),
+    this returns a dict of short, self-contained phrases meant to be embedded for a
+    downstream semantic-retrieval system. Schema (all keys always present):
+
+        {
+          "symptoms": [...],
+          "diagnoses_mentioned": [...],
+          "medications_discussed": [...],
+          "procedures_ordered": [...],
+          "history_relevant": [...],
+          "vitals_exam_findings": [...]
+        }
+
+    Returns all-empty lists for a non-medical encounter or on any failure
+    (never raises).
+    """
+    empty = {
+        "symptoms": [],
+        "diagnoses_mentioned": [],
+        "medications_discussed": [],
+        "procedures_ordered": [],
+        "history_relevant": [],
+        "vitals_exam_findings": [],
+    }
+
+    if not resolved_words:
+        return empty
+
+    # Reuse the exact timestamped transcript format that generate_summary feeds Ollama.
+    timestamped = TranscriptMerger.build_timestamped_transcript(resolved_words)
+
+    keywords_block = ""
+    if keywords:
+        keywords_block += f"\nKEY TERMS PROVIDED BY DOCTOR (authoritative — prefer them when the transcript is ambiguous): {keywords}\n"
+    if patient_name:
+        keywords_block += f"PATIENT NAME: {patient_name}\n"
+
+    prompt = f"""You are a clinical information extractor. Read the transcript below and extract structured clinical concepts for a downstream search system.
+{keywords_block}
+TRANSCRIPT:
+{timestamped}
+
+EXTRACTION RULES:
+1. Extract concepts ONLY from what is EXPLICITLY stated in the transcript. Do NOT infer unstated conditions, diagnoses, or findings.
+2. Each item must be a short, COMPLETE clinical concept — never a single bare word. Bad: "cough". Good: "productive cough for 5 days".
+3. Each phrase must be self-contained enough to stand alone when read out of context — it will be embedded for semantic search.
+4. For medications, include drug + dose + frequency whenever stated (e.g. "amoxicillin 500mg three times daily").
+5. Empty lists are valid. If a category has nothing explicitly stated, return an empty list for it.
+6. If this is NOT a medical encounter, return all empty lists.
+
+Field definitions:
+- "symptoms": patient-reported symptoms and complaints
+- "diagnoses_mentioned": conditions named or strongly implied as diagnoses
+- "medications_discussed": drug + dose + frequency if available
+- "procedures_ordered": labs, imaging, referrals ordered or discussed
+- "history_relevant": past-medical-history items relevant to this encounter
+- "vitals_exam_findings": vitals or physical exam findings if mentioned
+
+Return ONLY valid JSON matching EXACTLY this schema — no prose, no markdown fences, no commentary:
+{{
+  "symptoms": [],
+  "diagnoses_mentioned": [],
+  "medications_discussed": [],
+  "procedures_ordered": [],
+  "history_relevant": [],
+  "vitals_exam_findings": []
+}}
+"""
+
+    try:
+        response = requests.post(
+            OLLAMA_URL,
+            json={
+                "model": OLLAMA_MODEL,
+                "prompt": prompt,
+                "stream": False,
+                "options": {"temperature": 0},  # minimize run-to-run concept variance
+            },
+            timeout=60,
+        )
+        response.raise_for_status()
+        raw = response.json().get('response', '').strip()
+        # Same JSON-extraction pattern as main.py's ICD suggestion, but for a JSON
+        # object: take everything from the first '{' to the last '}'.
+        start = raw.find('{')
+        end = raw.rfind('}') + 1
+        if start == -1 or end <= start:
+            return empty
+        parsed = json.loads(raw[start:end])
+        if not isinstance(parsed, dict):
+            return empty
+        # Coerce to the exact schema: every key present, each value a list of
+        # non-empty trimmed strings.
+        result = {}
+        for key in empty:
+            value = parsed.get(key, [])
+            if not isinstance(value, list):
+                result[key] = []
+                continue
+            result[key] = [item.strip() for item in value if isinstance(item, str) and item.strip()]
+        return result
+    except Exception as e:
+        print(f"Concept extraction failed: {e}")
+        return empty
+
+
+def _normalize_word(text: str) -> str:
+    return text.lower().translate(str.maketrans('', '', string.punctuation)).strip()
+
+
+def _find_phrase_in_words(words: list, phrase: str) -> list:
+    """
+    Find word indices in words[] where the given phrase appears.
+    Exact word-by-word match only (after stripping punctuation and lowercasing).
+    Returns [] if not found — no fuzzy fallback to prevent false positives.
+    """
+    phrase_tokens = [_normalize_word(t) for t in phrase.split() if t.strip()]
+    if not phrase_tokens:
+        return []
+    n = len(phrase_tokens)
+
+    for i in range(len(words) - n + 1):
+        if all(_normalize_word(words[i + j]['text']) == phrase_tokens[j] for j in range(n)):
+            return list(range(i, i + n))
+
+    return []
+
+
+# Keywords that indicate a summary section may contain ICD-10-codeable content
+_ICD_KEYWORDS = {
+    'patient', 'diagnosis', 'diagnose', 'condition', 'disease', 'disorder',
+    'symptom', 'complaint', 'pain', 'medication', 'prescription', 'drug',
+    'treatment', 'procedure', 'surgery', 'exam', 'examination', 'assessment',
+    'allergy', 'infection', 'injury', 'fracture', 'chronic', 'acute',
+    'diabetes', 'hypertension', 'asthma', 'encounter', 'visit', 'follow',
+    'refill', 'rx', 'vitals', 'labs', 'imaging', 'hpi', 'pmh', 'chief',
+    'complaint', 'presenting', 'history', 'findings', 'result', 'blood',
+    'pressure', 'glucose', 'insulin', 'dose', 'milligram', 'mg', 'tablet',
+}
+
+
+def _parse_summary_sections(summary: str) -> list:
+    """
+    Parse the summary string into a list of (name, body) tuples.
+    Preserves order. CHAPTERS section is split into individual timestamped items.
+    """
+    sections = []
+    pattern = re.compile(r'===\s*(.+?)\s*===([\s\S]*?)(?====|$)')
+    for m in pattern.finditer(summary):
+        name = m.group(1).strip().upper()
+        body = m.group(2).strip()
+        if not body:
+            continue
+        if name == 'CHAPTERS':
+            # Treat each chapter line as its own mini-section
+            for line in body.splitlines():
+                line = line.strip()
+                if line:
+                    sections.append(('CHAPTER', line))
+        else:
+            sections.append((name, body))
+    return sections
+
+
+def _is_section_icd_relevant(name: str, body: str) -> bool:
+    """
+    Returns True if the section likely contains ICD-10 codeable content.
+    Uses a fast keyword heuristic — no LLM call needed for screening.
+    """
+    # CLINICAL NOTE is always relevant when present — most structured medical content
+    if 'CLINICAL' in name or 'NOTE' in name:
+        return True
+    # DURATION and individual CHAPTER lines are never sent to agents.
+    # Chapter lines are one-sentence timestamp labels (e.g. "[00:01:37] Echo results discussion.")
+    # — they are organizational markers, not clinical findings. Feeding them to an agent
+    # produces hallucinated codes because the LLM has almost no real content to work with.
+    if name in ('DURATION', 'CHAPTER'):
+        return False
+    # SUMMARY section: check for medical keywords
+    lower = body.lower()
+    return any(kw in lower for kw in _ICD_KEYWORDS)
+
+
+def _ts_to_secs(ts: str) -> float:
+    """Convert HH:MM:SS or MM:SS timestamp string to seconds."""
+    parts = ts.strip().split(':')
+    try:
+        if len(parts) == 3:
+            return int(parts[0]) * 3600 + int(parts[1]) * 60 + float(parts[2])
+        if len(parts) == 2:
+            return int(parts[0]) * 60 + float(parts[1])
+    except ValueError:
+        pass
+    return 0.0
+
+
+def _get_chapter_transcript(chapter_line: str, words: list) -> str:
+    """
+    Parse the timestamp from a chapter line (e.g. '[00:01:37 - 00:02:14] Echo results...')
+    and return the actual spoken words from that time window as a readable transcript string.
+    Returns '' if no timestamp found or no words fall in the range.
+    """
+    m = re.match(r'\[(\d{1,2}:\d{2}:\d{2})\s*[-\u2013\u2014]\s*(\d{1,2}:\d{2}:\d{2})\]', chapter_line)
+    if not m:
+        return ''
+
+    start_sec = _ts_to_secs(m.group(1))
+    end_sec = _ts_to_secs(m.group(2))
+
+    slice_words = [w for w in words if w.get('start', 0) >= start_sec and w.get('end', 0) <= end_sec + 0.5]
+    if not slice_words:
+        return ''
+
+    parts = []
+    current_speaker = None
+    current_chunk = []
+    for w in slice_words:
+        speaker = w.get('speaker', 'Speaker')
+        if speaker != current_speaker:
+            if current_speaker and current_chunk:
+                parts.append(f"{current_speaker}: {' '.join(current_chunk)}")
+            current_speaker = speaker
+            current_chunk = []
+        current_chunk.append(w['text'])
+    if current_speaker and current_chunk:
+        parts.append(f"{current_speaker}: {' '.join(current_chunk)}")
+
+    return '\n'.join(parts)
+
+
+def _build_feedback_block(feedback_items: list) -> str:
+    if not feedback_items:
+        return ""
+    lines = []
+    for fb in feedback_items:
+        mark = "CONFIRMED" if fb.get('correct') else "REJECTED"
+        ctx = f' (context: "{fb["context"]}")' if fb.get('context') else ''
+        lines.append(f'{mark}: Code {fb["code"]} for "{fb["phrase"]}"{ctx}')
+    return "\nCLINICIAN FEEDBACK (use to improve accuracy):\n" + "\n".join(lines)
+
+
+def _extract_medical_phrases(transcript_text: str) -> list[str]:
+    """
+    Pass 1 of two-pass ICD suggestion.
+    Ask the LLM to extract verbatim medical phrases from the raw transcript.
+    Returns a list of exact quoted strings that appear in transcript_text.
+    No code determination happens here — just phrase extraction.
+    """
+    prompt = (
+        "You are a medical scribe. Your ONLY job is to find and copy verbatim phrases "
+        "from the transcript below that describe a medical condition, symptom, sign, "
+        "medication, procedure, or diagnosis.\n\n"
+        "TRANSCRIPT:\n"
+        f"{transcript_text}\n\n"
+        "RULES:\n"
+        "1. Copy each phrase EXACTLY as it appears in the transcript — letter for letter.\n"
+        "2. Only include phrases that have clear medical significance.\n"
+        "3. Do NOT include scheduling talk, greetings, or non-clinical conversation.\n"
+        "4. Do NOT paraphrase, translate, or use medical jargon — use the speaker's exact words.\n"
+        "5. Each phrase should be 2-10 words long.\n"
+        "6. If nothing medically significant appears, return [].\n\n"
+        'Return ONLY a valid JSON array of strings. Example:\n'
+        '["shortness of breath", "slight murmur across the valve", "blood pressure is elevated"]\n'
+        'If nothing applies: []'
+    )
+    try:
+        resp = requests.post(
+            OLLAMA_URL,
+            json={"model": OLLAMA_MODEL, "prompt": prompt, "stream": False},
+            timeout=60,
+        )
+        resp.raise_for_status()
+        raw = resp.json().get('response', '[]').strip()
+        start = raw.find('[')
+        end = raw.rfind(']') + 1
+        if start == -1 or end <= start:
+            return []
+        phrases = json.loads(raw[start:end])
+        if not isinstance(phrases, list):
+            return []
+        # Keep only strings that actually appear verbatim in the transcript
+        transcript_lower = transcript_text.lower()
+        verified = []
+        for p in phrases:
+            if not isinstance(p, str) or not p.strip():
+                continue
+            if p.strip().lower() in transcript_lower:
+                verified.append(p.strip())
+            else:
+                print(f"  Pass1: rejected non-verbatim phrase: \"{p}\"")
+        return verified
+    except Exception as e:
+        print(f"  Pass1 error: {e}")
+        return []
+
+
+def _map_phrases_to_codes(
+    phrases: list[str],
+    candidate_codes: list,
+    feedback_items: list,
+    max_codes: int = 6,
+) -> list[dict]:
+    """
+    Pass 2 of two-pass ICD suggestion.
+    Given a locked list of verbatim phrases, map each to the most specific ICD-10-CM code.
+    Returns [{code, evidence_phrase}].
+    """
+    if not phrases:
+        return []
+
+    if candidate_codes:
+        code_lines = "\n".join(f"{c['code']} - {c['description']}" for c in candidate_codes)
+        candidate_block = f"CANDIDATE ICD-10-CM CODES (only use codes from this list):\n{code_lines}\n\n"
+    else:
+        candidate_block = "Use your full ICD-10-CM knowledge.\n\n"
+
+    feedback_block = _build_feedback_block(feedback_items)
+
+    phrase_list = "\n".join(f'- "{p}"' for p in phrases)
+
+    prompt = (
+        "You are an ICD-10-CM medical coding specialist.\n\n"
+        "A scribe has extracted the following verbatim phrases from a patient encounter transcript:\n"
+        f"{phrase_list}\n\n"
+        f"{candidate_block}"
+        f"{feedback_block}\n"
+        "TASK: For each phrase that maps to an ICD-10-CM code, return that mapping.\n"
+        "RULES:\n"
+        "- Only map phrases that clearly describe a codeable medical condition, symptom, "
+        "sign, medication, or procedure.\n"
+        "- Use the most specific code available (prefer 5-7 character codes over 3-character categories).\n"
+        "- One phrase can only map to one code. Multiple phrases can share a code.\n"
+        "- If a phrase does NOT have a clear ICD-10 mapping, skip it.\n"
+        f"- Return at most {max_codes} codes total.\n"
+        "- Return ONLY a valid JSON array, no explanation.\n\n"
+        'FORMAT: [{"code": "R06.00", "phrase": "shortness of breath"}]\n'
+        'Example: phrase "slight murmur across the valve" → {"code": "R01.1", "phrase": "slight murmur across the valve"}\n'
+        'If nothing maps: []'
+    )
+
+    try:
+        resp = requests.post(
+            OLLAMA_URL,
+            json={"model": OLLAMA_MODEL, "prompt": prompt, "stream": False},
+            timeout=60,
+        )
+        resp.raise_for_status()
+        raw = resp.json().get('response', '[]').strip()
+        start = raw.find('[')
+        end = raw.rfind(']') + 1
+        if start == -1 or end <= start:
+            return []
+        mappings = json.loads(raw[start:end])
+        if not isinstance(mappings, list):
+            return []
+        result = []
+        for m in mappings:
+            if not isinstance(m, dict):
+                continue
+            code = m.get('code', '').strip().upper()
+            phrase = m.get('phrase', '').strip()
+            if code and phrase:
+                result.append({'code': code, 'phrase': phrase})
+        return result
+    except Exception as e:
+        print(f"  Pass2 error: {e}")
+        return []
+
+
+def _merge_suggestions(all_raw: list, candidate_desc_map: dict, validate_fn) -> list:
+    """
+    Deduplicate suggestions by code, merging evidence lists.
+    Validates each code and filters unknowns when a candidate list is active.
+    """
+    merged: dict = {}
+    has_candidates = bool(candidate_desc_map)
+
+    for s in all_raw:
+        if not isinstance(s, dict):
+            continue
+        code = s.get('code', '').strip().upper()
+        if not code:
+            continue
+
+        desc = validate_fn(code)
+        if desc is None:
+            desc = candidate_desc_map.get(code)
+        if desc is None and has_candidates:
+            continue  # Outside requested range — skip
+        if desc is None:
+            desc = code
+
+        evidence = [
+            ev for ev in s.get('evidence', [])
+            if isinstance(ev, dict) and ev.get('phrase', '').strip()
+        ]
+        if not evidence:
+            continue
+
+        if code not in merged:
+            merged[code] = {'code': code, 'description': desc, 'evidence': []}
+        # Add unique phrases only
+        existing_phrases = {e['phrase'] for e in merged[code]['evidence']}
+        for ev in evidence:
+            if ev['phrase'] not in existing_phrases:
+                merged[code]['evidence'].append({'phrase': ev['phrase']})
+                existing_phrases.add(ev['phrase'])
+
+    return list(merged.values())
+
+
+def suggest_icd_codes(
+    words: list,
+    summary: str,
+    code_range: str = "",
+    feedback_path: str = None,
+    max_suggestions: int = 10,
+) -> list:
+    """
+    Suggest ICD-10-CM codes by scanning the structured clinical summary.
+
+    Pipeline:
+      1. Parse summary into named sections (SUMMARY, CLINICAL NOTE, each CHAPTER)
+      2. Screen each section with a keyword heuristic for ICD relevance
+      3. Deploy a focused LLM extraction agent to every flagged section
+      4. Merge + deduplicate results across sections
+      5. Match evidence phrases back to word indices in the transcript
+
+    Returns list of:
+    {
+        "code": "E11.9",
+        "description": "Type 2 diabetes mellitus without complications",
+        "evidence": [{"phrase": "blood sugar levels", "word_indices": [12, 13, 14]}]
+    }
+    """
+    try:
+        from icd10_utils import get_codes_for_range_input, validate_and_describe
+    except ImportError:
+        def get_codes_for_range_input(*_a, **_k): return []
+        def validate_and_describe(_c): return None
+
+    if not summary or not summary.strip():
+        print("ICD suggestion: no summary provided, skipping.")
+        return []
+
+    # Load candidate codes and feedback
+    candidate_codes = get_codes_for_range_input(code_range) if code_range else []
+    candidate_desc_map = {c['code']: c['description'] for c in candidate_codes}
+
+    feedback_items = []
+    if feedback_path and os.path.exists(feedback_path):
+        try:
+            with open(feedback_path, 'r', encoding='utf-8') as f:
+                all_fb = json.load(f)
+            feedback_items = all_fb[-20:] if len(all_fb) > 20 else all_fb
+        except Exception:
+            pass
+
+    # Parse summary into sections — only CHAPTER sections are used.
+    # CLINICAL NOTE and SUMMARY sections are skipped entirely: they contain paraphrased
+    # text produced by the LLM, not verbatim spoken words, which causes evidence
+    # to cite summaries rather than what the patient/doctor actually said.
+    sections = _parse_summary_sections(summary)
+    chapter_slices = []
+    for name, body in sections:
+        if name != 'CHAPTER':
+            continue
+        transcript_slice = _get_chapter_transcript(body, words)
+        if not transcript_slice:
+            print(f"  Skipping chapter (no words in range): {body[:60]}")
+            continue
+        chapter_slices.append((f"CHAPTER [{body[:50]}]", transcript_slice))
+
+    print(f"ICD pipeline: {len(sections)} sections parsed, {len(chapter_slices)} chapter(s) with transcript data")
+
+    # Two-pass extraction per chapter:
+    #   Pass 1 — extract verbatim medical phrases from spoken transcript only
+    #   Pass 2 — map locked-in phrases to ICD-10-CM codes
+    # This prevents motivated reasoning (code-first → hunt for evidence).
+    all_raw = []
+    for label, transcript_slice in chapter_slices:
+        print(f"  → Pass 1 (phrase extraction): [{label}]")
+        phrases = _extract_medical_phrases(transcript_slice)
+        print(f"    Extracted {len(phrases)} phrase(s): {phrases}")
+        if not phrases:
+            continue
+        print(f"  → Pass 2 (code mapping): [{label}]")
+        mappings = _map_phrases_to_codes(phrases, candidate_codes, feedback_items)
+        print(f"    Mapped {len(mappings)} code(s)")
+        # Convert to the format _merge_suggestions expects
+        for m in mappings:
+            all_raw.append({
+                'code': m['code'],
+                'evidence': [{'phrase': m['phrase']}],
+            })
+
+    # Merge duplicates, validate codes
+    merged = _merge_suggestions(all_raw, candidate_desc_map, validate_and_describe)
+    print(f"ICD pipeline: {len(merged)} unique code(s) after deduplication")
+
+    # Match evidence phrases to word indices for transcript highlighting
+    results = []
+    for s in merged[:max_suggestions]:
+        evidence_list = []
+        for ev in s['evidence']:
+            indices = _find_phrase_in_words(words, ev['phrase'])
+            evidence_list.append({'phrase': ev['phrase'], 'word_indices': indices})
+        results.append({
+            'code': s['code'],
+            'description': s['description'],
+            'evidence': evidence_list,
+        })
+
+    return results
 
 
 if __name__ == "__main__":

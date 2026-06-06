@@ -364,6 +364,239 @@
   background: #f5f5f5;
 }
 
+/* ===== ICD-10 Word Highlights ===== */
+.word-icd {
+  background: rgba(20, 184, 166, 0.12);
+  color: #0f766e;
+  padding: 0.1rem 0.2rem;
+  border-bottom: 2px solid #14b8a6;
+}
+
+.word-icd:hover {
+  background: rgba(20, 184, 166, 0.25);
+}
+
+.word-icd-focused {
+  background: rgba(20, 184, 166, 0.35);
+  color: #0f766e;
+  padding: 0.1rem 0.2rem;
+  border-bottom: 2px solid #0d9488;
+  outline: 1px solid #0d9488;
+  outline-offset: 1px;
+}
+
+/* ===== ICD Suggested Codes Panel ===== */
+.icd-panel {
+  margin-bottom: 1.5rem;
+  border: 1px solid #99f6e4;
+  background: #f0fdfa;
+}
+
+.icd-panel-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.625rem 1rem;
+  border-bottom: 1px solid #99f6e4;
+}
+
+.icd-panel-label {
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #0f766e;
+}
+
+.icd-nav-hint {
+  font-size: 0.72rem;
+  color: #5eead4;
+  font-style: italic;
+}
+
+.icd-codes-list {
+  display: flex;
+  flex-direction: column;
+}
+
+.icd-code-item {
+  border-bottom: 1px solid #ccfbf1;
+}
+
+.icd-code-item:last-child {
+  border-bottom: none;
+}
+
+.icd-code-btn {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.625rem 1rem;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  text-align: left;
+  transition: background 0.15s;
+}
+
+.icd-code-btn:hover {
+  background: rgba(20, 184, 166, 0.08);
+}
+
+.icd-code-item.open .icd-code-btn {
+  background: rgba(20, 184, 166, 0.1);
+}
+
+.icd-code {
+  font-size: 0.82rem;
+  font-weight: 700;
+  font-family: monospace;
+  color: #0d9488;
+  min-width: 60px;
+  flex-shrink: 0;
+}
+
+.icd-code-desc {
+  flex: 1;
+  font-size: 0.87rem;
+  color: #374151;
+}
+
+.icd-chevron {
+  font-size: 0.55rem;
+  color: #9ca3af;
+  flex-shrink: 0;
+}
+
+.icd-evidence-list {
+  padding: 0.5rem 1rem 0.75rem 1rem;
+  background: white;
+  border-top: 1px solid #ccfbf1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.icd-evidence-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.375rem 0.5rem;
+  transition: background 0.15s;
+  border-left: 2px solid transparent;
+}
+
+.icd-evidence-item:hover {
+  background: #f0fdfa;
+}
+
+.icd-evidence-item.active {
+  background: rgba(20, 184, 166, 0.08);
+  border-left-color: #14b8a6;
+}
+
+.icd-evidence-btn {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: none;
+  border: none;
+  cursor: pointer;
+  text-align: left;
+  padding: 0;
+}
+
+.icd-evidence-dot {
+  font-size: 0.45rem;
+  color: #14b8a6;
+  flex-shrink: 0;
+}
+
+.icd-evidence-phrase {
+  font-size: 0.85rem;
+  color: #374151;
+  font-style: italic;
+}
+
+.icd-no-match {
+  font-size: 0.72rem;
+  color: #9ca3af;
+}
+
+.icd-feedback-btns {
+  display: flex;
+  gap: 0.25rem;
+  flex-shrink: 0;
+}
+
+.icd-feedback-correct,
+.icd-feedback-incorrect {
+  width: 22px;
+  height: 22px;
+  border: 1px solid;
+  background: transparent;
+  font-size: 0.68rem;
+  font-weight: 700;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.15s;
+}
+
+.icd-feedback-correct {
+  border-color: #16a34a;
+  color: #16a34a;
+}
+
+.icd-feedback-correct:hover {
+  background: #16a34a;
+  color: white;
+}
+
+.icd-feedback-incorrect {
+  border-color: #dc2626;
+  color: #dc2626;
+}
+
+.icd-feedback-incorrect:hover {
+  background: #dc2626;
+  color: white;
+}
+
+.icd-nav-counter {
+  font-size: 0.72rem;
+  color: #9ca3af;
+  padding: 0.25rem 0.5rem 0;
+  text-align: right;
+  font-style: italic;
+}
+
+.icd-loading {
+  display: flex;
+  align-items: center;
+  gap: 0.625rem;
+  padding: 0.75rem 1rem;
+  margin-bottom: 1.5rem;
+  font-size: 0.82rem;
+  color: #0d9488;
+  background: #f0fdfa;
+  border: 1px solid #99f6e4;
+}
+
+.icd-loading::before {
+  content: '';
+  width: 12px;
+  height: 12px;
+  border: 2px solid #99f6e4;
+  border-top-color: #0d9488;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+  flex-shrink: 0;
+}
+
 /* ===== Spinner ===== */
 @keyframes spin {
   to { transform: rotate(360deg); }

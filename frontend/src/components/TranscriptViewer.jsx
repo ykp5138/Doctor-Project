@@ -1,6 +1,6 @@
 import { useState, useMemo, useRef, useEffect, useCallback } from 'react';
 
-export default function TranscriptViewer({ words, setWords, audioFile }) {
+export default function TranscriptViewer({ words, setWords, audioFile, icdHighlightedIndices, icdFocusedIndex }) {
   const [popup, setPopup] = useState(null);
   const audioCtxRef = useRef(null);
   const audioBufferRef = useRef(null);
@@ -18,6 +18,13 @@ export default function TranscriptViewer({ words, setWords, audioFile }) {
     document.addEventListener('mousedown', handler);
     return () => document.removeEventListener('mousedown', handler);
   }, [popup]);
+
+  // Scroll to ICD-focused word when navigation changes
+  useEffect(() => {
+    if (icdFocusedIndex == null) return;
+    const el = document.querySelector(`[data-word-index="${icdFocusedIndex}"]`);
+    el?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  }, [icdFocusedIndex]);
 
   // Lazy-load audio buffer
   const ensureAudio = useCallback(async () => {
@@ -160,16 +167,32 @@ export default function TranscriptViewer({ words, setWords, audioFile }) {
           <div key={bi} className="speaker-block">
             <div className="speaker-label">{block.speaker}</div>
             <div className="speaker-text">
-              {block.words.map((word) => (
-                <span
-                  key={word.globalIndex}
-                  className={`word ${word.flagged ? 'word-flagged' : word.fixed ? 'word-fixed' : ''}`}
-                  title={word.flagged ? `Low confidence · ${fmt(word.start || 0)} — click to review` : word.fixed ? `Reviewed · click to re-edit` : fmt(word.start || 0)}
-                  onClick={(word.flagged || word.fixed) ? (e) => handleWordClick(word, word.globalIndex, e) : undefined}
-                >
-                  {word.text}{' '}
-                </span>
-              ))}
+              {block.words.map((word) => {
+                const isIcdFocused = icdFocusedIndex === word.globalIndex;
+                const isIcdHighlighted = icdHighlightedIndices?.has(word.globalIndex);
+                let wordClass = 'word';
+                if (isIcdFocused) wordClass += ' word-icd-focused';
+                else if (isIcdHighlighted) wordClass += ' word-icd';
+                else if (word.flagged) wordClass += ' word-flagged';
+                else if (word.fixed) wordClass += ' word-fixed';
+
+                return (
+                  <span
+                    key={word.globalIndex}
+                    data-word-index={word.globalIndex}
+                    className={wordClass}
+                    title={
+                      isIcdHighlighted ? `ICD evidence · ${fmt(word.start || 0)}`
+                      : word.flagged ? `Low confidence · ${fmt(word.start || 0)} — click to review`
+                      : word.fixed ? `Reviewed · click to re-edit`
+                      : fmt(word.start || 0)
+                    }
+                    onClick={(word.flagged || word.fixed) ? (e) => handleWordClick(word, word.globalIndex, e) : undefined}
+                  >
+                    {word.text}{' '}
+                  </span>
+                );
+              })}
             </div>
           </div>
         ))}

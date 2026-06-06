@@ -1,0 +1,11 @@
+{
+  "concepts": {
+    "symptoms": [],
+    "diagnoses_mentioned": ["hypertension"],
+    "medications_discussed": ["lisinopril 20mg daily refill, 90 days"],
+    "procedures_ordered": [],
+    "history_relevant": ["stable on current dose for over 1 year"],
+    "vitals_exam_findings": []
+  },
+  "top_k": 10
+}

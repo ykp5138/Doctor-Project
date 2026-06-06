@@ -1,0 +1,11 @@
+{
+  "concepts": {
+    "symptoms": ["sore throat for 4 days", "headache", "occasional dizziness", "knee pain when climbing stairs"],
+    "diagnoses_mentioned": ["acute pharyngitis", "tension headache", "osteoarthritis of right knee"],
+    "medications_discussed": ["ibuprofen as needed", "throat lozenges"],
+    "procedures_ordered": ["rapid strep test", "knee x-ray for OA staging"],
+    "history_relevant": ["age 58", "known osteoarthritis bilateral knees"],
+    "vitals_exam_findings": ["erythematous posterior pharynx", "no cervical lymphadenopathy", "right knee crepitus, mild swelling"]
+  },
+  "top_k": 10
+}
