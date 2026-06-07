@@ -714,6 +714,85 @@ If nothing is appropriate: []
     return suggestions
 
 
+# ── E/M billing codes (teammate's feature) ─────────────────────────────────
+# E/M time thresholds — 2021 AMA guidelines, office/outpatient.
+_EM_NEW = [
+    (15, 29, "99202", "Straightforward"),
+    (30, 44, "99203", "Low complexity"),
+    (45, 59, "99204", "Moderate complexity"),
+    (60, 74, "99205", "High complexity"),
+]
+_EM_ESTABLISHED = [
+    (10, 19, "99212", "Straightforward"),
+    (20, 29, "99213", "Low complexity"),
+    (30, 39, "99214", "Moderate complexity"),
+    (40, 54, "99215", "High complexity"),
+]
+
+
+def _em_from_time(minutes: float, new_patient: bool) -> Optional[Dict[str, str]]:
+    table = _EM_NEW if new_patient else _EM_ESTABLISHED
+    for lo, hi, code, label in table:
+        if lo <= minutes <= hi:
+            return {"code": code, "label": label}
+    # Beyond the top bracket
+    if new_patient and minutes > 74:
+        return {"code": "99205", "label": "High complexity (>74 min)"}
+    if not new_patient and minutes > 54:
+        return {"code": "99215", "label": "High complexity (>54 min)"}
+    return None
+
+
+def _suggest_em(summary: str, duration_seconds: float) -> Dict[str, Any]:
+    duration_minutes = duration_seconds / 60.0 if duration_seconds > 0 else 0.0
+
+    # Time-based options (both patient types — doctor confirms which applies)
+    time_based: Dict[str, Any] = {}
+    if duration_minutes >= 10:
+        new_match = _em_from_time(duration_minutes, True)
+        est_match = _em_from_time(duration_minutes, False)
+        if new_match:
+            time_based["new_patient"] = new_match
+        if est_match:
+            time_based["established_patient"] = est_match
+
+    # MDM complexity assessment via LLM
+    mdm_prompt = (
+        "You are a medical billing specialist. Assess the Medical Decision Making (MDM) "
+        "complexity for E/M coding based on this clinical note.\n\n"
+        f"CLINICAL SUMMARY:\n{summary[:2000]}\n\n"
+        "MDM levels:\n"
+        "- straightforward: 1 minor/self-limited problem, minimal data, minimal risk (OTC meds)\n"
+        "- low: stable chronic illness or 2+ minor problems, limited data review, low risk\n"
+        "- moderate: chronic illness with exacerbation or new problem needing workup, "
+        "moderate data review, Rx drug management\n"
+        "- high: severe exacerbation, life-threatening condition, extensive data review, "
+        "or decision for hospitalization\n\n"
+        "Return ONLY valid JSON, no prose:\n"
+        '{"complexity":"moderate","code_new_patient":"99204",'
+        '"code_established_patient":"99214","reasoning":"brief 1-2 sentence explanation"}'
+    )
+    mdm: Dict[str, Any] = {}
+    try:
+        resp = requests.post(
+            OLLAMA_URL,
+            json={"model": OLLAMA_MODEL, "prompt": mdm_prompt, "stream": False},
+            timeout=60,
+        )
+        raw = resp.json().get("response", "{}").strip()
+        start, end = raw.find("{"), raw.rfind("}") + 1
+        if start != -1 and end > start:
+            mdm = json.loads(raw[start:end])
+    except Exception as exc:
+        print(f"[EM] MDM assessment error: {exc}")
+
+    return {
+        "duration_minutes": round(duration_minutes, 1),
+        "time_based": time_based,
+        "mdm_based": mdm,
+    }
+
+
 class SuggestRequest(BaseModel):
     word: str
     context: str
@@ -725,6 +804,7 @@ class SuggestCodesRequest(BaseModel):
     summary: str = ""
     code_range: Optional[str] = ""
     concepts: Optional[Dict[str, Any]] = None
+    duration_seconds: float = 0.0  # for E/M time-based coding; 0 skips time codes
 
 
 class FeedbackRequest(BaseModel):
@@ -748,10 +828,13 @@ def suggest_codes(req: SuggestCodesRequest) -> Dict[str, Any]:
 
     Stage 3 (retrieval-augmented selection) runs when `concepts` is provided and
     non-empty. Otherwise we fall back to the original kevin.suggest_icd_codes
-    extraction path for backward compatibility. Both paths return the same shape:
-    {"suggestions": [{"code", "description", "evidence": [{"phrase", "word_indices"}]}]}.
+    extraction path for backward compatibility. Returns ICD suggestions plus the
+    teammate's E/M billing codes:
+    {"suggestions": [{"code", "description", "evidence": [...]}], "em": {...}}.
     """
     words = req.words or []
+    # E/M billing codes (time-based + MDM); duration 0 simply skips time codes.
+    em = _suggest_em(req.summary or "", req.duration_seconds)
 
     # Use RAG only if concepts were actually sent (an all-empty concepts object
     # is still a valid "non-medical encounter" signal and should NOT fall back).
@@ -767,7 +850,7 @@ def suggest_codes(req: SuggestCodesRequest) -> Dict[str, Any]:
             traceback.print_exc()
             print(f"[suggest-codes] RAG path failed: {e}")
             suggestions = []
-        return {"suggestions": suggestions}
+        return {"suggestions": suggestions, "em": em}
 
     # Legacy fallback: no concepts in the request.
     from kevin import suggest_icd_codes
@@ -778,7 +861,7 @@ def suggest_codes(req: SuggestCodesRequest) -> Dict[str, Any]:
         code_range=req.code_range or "",
         feedback_path=feedback_path,
     )
-    return {"suggestions": suggestions}
+    return {"suggestions": suggestions, "em": em}
 
 
 @app.post("/feedback")

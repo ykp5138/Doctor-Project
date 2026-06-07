@@ -7,6 +7,7 @@ import { motion, AnimatePresence } from "motion/react";
 import TranscriptViewer from "./TranscriptViewer";
 import SummaryViewer from "./SummaryViewer";
 import SuggestedCodes from "./SuggestedCodes";
+import SuggestedEMCodes from "./SuggestedEMCodes";
 import { useNote } from "../NoteContext";
 
 const STEPS = [
@@ -47,6 +48,7 @@ export default function NewNote() {
 
   // ICD suggestion state
   const [icdLoading, setIcdLoading] = useState(false);
+  const [emSuggestion, setEmSuggestion] = useState(null);  // E/M billing codes (teammate's feature)
   const [icdActiveCodeIdx, setIcdActiveCodeIdx] = useState(null);
   const [icdActiveEvidenceIdx, setIcdActiveEvidenceIdx] = useState(0);
 
@@ -214,6 +216,7 @@ export default function NewNote() {
     setIcdSuggestions([]);
     setIcdActiveCodeIdx(null);
     setIcdActiveEvidenceIdx(0);
+    setEmSuggestion(null);
 
     stepTimer.current = setTimeout(() => setStep(2), 25000);
     const t2 = setTimeout(() => setStep(3), 55000);
@@ -240,14 +243,16 @@ export default function NewNote() {
       // Fire ICD suggestion asynchronously — doesn't block transcript display
       if (codeRange.trim() || true) {
         setIcdLoading(true);
+        // Recording duration (seconds) from the last word's end — drives E/M time-based codes.
+        const durationSeconds = data.words?.length ? (data.words[data.words.length - 1].end || 0) : 0;
         fetch('http://localhost:8000/suggest-codes', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ words: data.words, summary: data.summary || '', code_range: codeRange.trim(), concepts: data.concepts }),
+          body: JSON.stringify({ words: data.words, summary: data.summary || '', code_range: codeRange.trim(), concepts: data.concepts, duration_seconds: durationSeconds }),
         })
           .then(r => r.json())
-          .then(d => setIcdSuggestions(d.suggestions || []))
-          .catch(() => setIcdSuggestions([]))
+          .then(d => { setIcdSuggestions(d.suggestions || []); setEmSuggestion(d.em ?? null); })
+          .catch(() => { setIcdSuggestions([]); setEmSuggestion(null); })
           .finally(() => setIcdLoading(false));
       }
     } catch (err) {
@@ -577,6 +582,9 @@ export default function NewNote() {
                             onSelectEvidence={handleSelectEvidence}
                             onFeedback={handleFeedback}
                           />
+                        )}
+                        {(icdLoading || emSuggestion) && (
+                          <SuggestedEMCodes emData={emSuggestion} loading={icdLoading} />
                         )}
                         <TranscriptViewer
                           words={words}
