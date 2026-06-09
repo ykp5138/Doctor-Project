@@ -68,3 +68,5 @@ frontend/node_modules/
 # OS junk
 .DS_Store
 Thumbs.db
+
+leximd_context.md
