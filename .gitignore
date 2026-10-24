@@ -36,13 +36,15 @@ __pycache__/
 
 # Generated outputs
 outputs/
+test_results/
 *_transcription.html
 *_transcription.txt
 confidence_*.json
 reconciled_*.json
 
-# Patient source recordings are .MOV uploads — block PHI media so it can never
-# be committed. (The tracked .mp3 YouTube test files under audio/ are NOT ignored.)
+# Keep uploaded recordings out of new commits. Existing tracked public MP3
+# fixtures remain tracked; their changes/deletions still need explicit review.
+/audio/*
 *.mov
 *.MOV
 
@@ -54,6 +56,8 @@ indexes_sapbert/
 # Doctor feedback logs — may contain PHI (transcript phrases). Do not commit.
 feedback/
 feedback_store.json
+feedback.json
+*.jsonl
 
 # Claude Code local config
 .claude/
@@ -64,6 +68,9 @@ retrieval_output.json
 
 # Node / frontend
 frontend/node_modules/
+
+# Separate Sites-managed source repository for the cloud feedback collector.
+cloud-feedback/
 
 # OS junk
 .DS_Store

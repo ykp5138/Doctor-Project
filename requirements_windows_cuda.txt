@@ -41,6 +41,7 @@
 # RUN
 # ---
 #   Terminal 1: ollama serve
+#   Terminal 2: .\venv\Scripts\Activate.ps1
 #   Terminal 2: uvicorn main:app --reload
 #   Terminal 3: cd frontend && npm install && npm run dev
 # ============================================================

@@ -5,6 +5,7 @@ export default function SuggestedCodes({
   activeEvidenceIdx,
   onSelectEvidence,
   onFeedback,
+  feedbackStates = {},
 }) {
   if (loading) {
     return (
@@ -59,17 +60,26 @@ export default function SuggestedCodes({
                             <span className="icd-no-match">(not found in transcript)</span>
                           )}
                         </button>
-                        <div className="icd-feedback-btns">
+                        <div
+                          className="icd-feedback-btns"
+                          role="group"
+                          aria-label={`Feedback for ${sug.code}`}
+                          aria-busy={feedbackStates[sug.code]?.pending || undefined}
+                        >
                           <button
+                            type="button"
                             className="icd-feedback-correct"
                             title="Correct — this code applies"
+                            aria-pressed={feedbackStates[sug.code]?.value === true}
                             onClick={() => onFeedback(sug.code, ev.phrase, ev.word_indices ?? [], true)}
                           >
                             ✓
                           </button>
                           <button
+                            type="button"
                             className="icd-feedback-incorrect"
                             title="Incorrect — this code does not apply"
+                            aria-pressed={feedbackStates[sug.code]?.value === false}
                             onClick={() => onFeedback(sug.code, ev.phrase, ev.word_indices ?? [], false)}
                           >
                             ✗

@@ -9,6 +9,8 @@ import SummaryViewer from "./SummaryViewer";
 import SuggestedCodes from "./SuggestedCodes";
 import SuggestedEMCodes from "./SuggestedEMCodes";
 import { useNote } from "../NoteContext";
+import { apiFetch } from "../api";
+import { createFeedbackRecorder, feedbackKey, feedbackRecordingId } from "../feedback-recorder";
 
 const STEPS = [
   { id: 1, label: "WhisperX", desc: "Transcribing + diarizing audio" },
@@ -55,6 +57,39 @@ export default function NewNote() {
   // Transient confirmation after a feedback ✓/✗ click
   const [feedbackToast, setFeedbackToast] = useState(null);
   const feedbackToastTimer = useRef(null);
+  const [feedbackStates, setFeedbackStates] = useState({});
+  const recordingFeedbackId = feedbackRecordingId(result);
+
+  const showFeedbackToast = useCallback((notice) => {
+    setFeedbackToast(notice);
+    if (feedbackToastTimer.current) clearTimeout(feedbackToastTimer.current);
+    if (!notice.pending) {
+      feedbackToastTimer.current = setTimeout(() => setFeedbackToast(null), 1800);
+    }
+  }, []);
+
+  const feedbackRecorder = useMemo(() => createFeedbackRecorder({
+    save: async (payload) => {
+      const response = await apiFetch('/feedback', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+      });
+      return response.json();
+    },
+    onChoice: ({ key, value, pending }) => {
+      setFeedbackStates((previous) => ({ ...previous, [key]: { value, pending } }));
+    },
+    onNotice: showFeedbackToast,
+  }), [showFeedbackToast]);
+
+  useEffect(() => {
+    feedbackRecorder.setActive(true);
+    return () => {
+      feedbackRecorder.setActive(false);
+      clearTimeout(feedbackToastTimer.current);
+    };
+  }, [feedbackRecorder]);
 
   // Patient name warning
   const [nameWarning, setNameWarning] = useState(false);
@@ -135,35 +170,22 @@ export default function NewNote() {
   }, []);
 
   const handleFeedback = useCallback((code, phrase, wordIndices, isCorrect) => {
-    const showToast = (msg) => {
-      setFeedbackToast(msg);
-      if (feedbackToastTimer.current) clearTimeout(feedbackToastTimer.current);
-      feedbackToastTimer.current = setTimeout(() => setFeedbackToast(null), 1600);
-    };
-    // Optimistic confirmation — shown immediately, never blocks the doctor's flow.
-    showToast(`${isCorrect ? '✓ Correct' : '✗ Incorrect'} — ${code} recorded`);
-
+    if (!recordingFeedbackId) return;
     const sug = icdSuggestions.find((s) => s.code === code);
-    fetch('http://localhost:8000/feedback', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        code,
-        description: sug?.description ?? '',
-        evidence_phrase: phrase,
-        word_indices: wordIndices ?? [],
-        is_correct: isCorrect,
-        transcript_base: result?.meta?.base ?? null,
-        concepts: result?.concepts ?? null,
-      }),
-    })
-      // Surface a real write failure (non-2xx or network error) instead of the
-      // false "recorded" toast — e.g. a OneDrive file lock blocking the append.
-      .then((res) => {
-        if (!res.ok) throw new Error(`HTTP ${res.status}`);
-      })
-      .catch(() => showToast(`⚠ Failed to record ${code} — not saved`));
-  }, [icdSuggestions, result]);
+    feedbackRecorder.submit({
+      code,
+      description: sug?.description ?? '',
+      evidence_phrase: phrase,
+      word_indices: wordIndices ?? [],
+      is_correct: isCorrect,
+      transcript_base: recordingFeedbackId,
+      concepts: result?.concepts ?? null,
+    });
+  }, [feedbackRecorder, icdSuggestions, recordingFeedbackId, result]);
+
+  const currentFeedbackStates = useMemo(() => Object.fromEntries(
+    icdSuggestions.map(({ code }) => [code, feedbackStates[feedbackKey(recordingFeedbackId, code)]])
+  ), [feedbackStates, icdSuggestions, recordingFeedbackId]);
 
   // Derive which word indices to highlight and which single word to focus/scroll to
   const icdHighlightedIndices = useMemo(() => {
@@ -227,14 +249,10 @@ export default function NewNote() {
     if (patientName.trim()) formData.append("patient_name", patientName.trim());
 
     try {
-      const res = await fetch("http://localhost:8000/transcribe", {
+      const res = await apiFetch("/transcribe", {
         method: "POST",
         body: formData,
       });
-      if (!res.ok) {
-        const detail = await res.json().catch(() => ({}));
-        throw new Error(detail.detail || "Transcription failed");
-      }
       const data = await res.json();
       setResult(data);
       setWords(data.words || []);
@@ -245,7 +263,7 @@ export default function NewNote() {
         setIcdLoading(true);
         // Recording duration (seconds) from the last word's end — drives E/M time-based codes.
         const durationSeconds = data.words?.length ? (data.words[data.words.length - 1].end || 0) : 0;
-        fetch('http://localhost:8000/suggest-codes', {
+        apiFetch('/suggest-codes', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ words: data.words, summary: data.summary || '', code_range: codeRange.trim(), concepts: data.concepts, duration_seconds: durationSeconds }),
@@ -581,6 +599,7 @@ export default function NewNote() {
                             activeEvidenceIdx={icdActiveEvidenceIdx}
                             onSelectEvidence={handleSelectEvidence}
                             onFeedback={handleFeedback}
+                            feedbackStates={currentFeedbackStates}
                           />
                         )}
                         {(icdLoading || emSuggestion) && (
@@ -608,15 +627,18 @@ export default function NewNote() {
 
       {/* Feedback confirmation toast */}
       <AnimatePresence>
-        {feedbackToast && (
+        {feedbackToast?.recordingId === recordingFeedbackId && (
           <motion.div
             initial={{ opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: 12 }}
             transition={{ duration: 0.2 }}
-            className="fixed bottom-8 right-8 z-50 bg-slate-900 text-white text-sm px-5 py-3 shadow-lg"
+            role="status"
+            aria-live="polite"
+            aria-atomic="true"
+            className="fixed bottom-4 left-1/2 -translate-x-1/2 z-50 rounded-full bg-slate-900 text-white text-xs px-3 py-1.5 shadow-md pointer-events-none"
           >
-            {feedbackToast}
+            {feedbackToast.message}
           </motion.div>
         )}
       </AnimatePresence>

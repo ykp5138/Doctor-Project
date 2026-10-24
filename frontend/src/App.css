@@ -551,7 +551,8 @@
   color: #16a34a;
 }
 
-.icd-feedback-correct:hover {
+.icd-feedback-correct:hover,
+.icd-feedback-correct[aria-pressed="true"] {
   background: #16a34a;
   color: white;
 }
@@ -561,7 +562,8 @@
   color: #dc2626;
 }
 
-.icd-feedback-incorrect:hover {
+.icd-feedback-incorrect:hover,
+.icd-feedback-incorrect[aria-pressed="true"] {
   background: #dc2626;
   color: white;
 }

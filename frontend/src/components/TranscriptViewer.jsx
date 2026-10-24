@@ -1,4 +1,5 @@
 import { useState, useMemo, useRef, useEffect, useCallback } from 'react';
+import { apiFetch } from '../api';
 
 export default function TranscriptViewer({ words, setWords, audioFile, icdHighlightedIndices, icdFocusedIndex }) {
   const [popup, setPopup] = useState(null);
@@ -63,7 +64,7 @@ export default function TranscriptViewer({ words, setWords, audioFile, icdHighli
   const fetchSuggestions = useCallback(async (word, index) => {
     const ctx = words.slice(Math.max(0, index - 5), index + 6).map(w => w.text).join(' ');
     try {
-      const res = await fetch('http://localhost:8000/suggest', {
+      const res = await apiFetch('/suggest', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ word: word.text, context: ctx }),

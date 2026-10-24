@@ -9,9 +9,8 @@ import uuid
 import traceback
 import json
 import re
-import datetime
-import threading
 import requests
+from feedback_store import FeedbackRequest, append_feedback
 
 OLLAMA_URL = "http://localhost:11434/api/generate"
 OLLAMA_MODEL = "llama3"
@@ -56,7 +55,7 @@ def _run_downstream(whisper_out, assembly_out, keywords=None, patient_name=None)
         whisper_out, assembly_out, keywords=keywords, patient_name=patient_name
     )
 
-    print("🔎 Extracting clinical concepts...")
+    print("Extracting clinical concepts...")
     concepts = extract_clinical_concepts(final_words, keywords, patient_name)
 
     # Persist concepts JSON next to the other kevin outputs (_transcript.txt, _summary.txt)
@@ -90,34 +89,42 @@ async def transcribe(
     try:
         suffix = os.path.splitext(file.filename or "audio")[1] or ".mp3"
         base = f"{uuid.uuid4().hex}{suffix.replace('.', '_')}"
-        audio_path = os.path.join(BASE_DIR, "audio", f"{base}{suffix}")
+        audio_dir = os.path.join(BASE_DIR, "audio")
+        os.makedirs(audio_dir, exist_ok=True)
+        audio_path = os.path.join(audio_dir, f"{base}{suffix}")
 
         content = await file.read()
         with open(audio_path, "wb") as f:
             f.write(content)
 
         py = sys.executable
+        # Transcriber logs include Unicode; Windows redirected streams may use cp1252.
+        pipeline_env = os.environ.copy()
+        pipeline_env["PYTHONUTF8"] = "1"
+        pipeline_env["PYTHONIOENCODING"] = "utf-8"
 
         # Step 1: WhisperX
-        print("🎙️ Running WhisperX...")
+        print("Running WhisperX...")
         subprocess.run(
             [py, os.path.join(BASE_DIR, "transcriber_scripts", "whisperX_transcriber.py"), audio_path],
             check=True,
             cwd=BASE_DIR,
+            env=pipeline_env,
         )
         whisper_out = os.path.join(BASE_DIR, "outputs", "whisperx", f"{base}_full_output.json")
 
         # Step 2: AssemblyAI
-        print("🎙️ Running AssemblyAI...")
+        print("Running AssemblyAI...")
         subprocess.run(
             [py, os.path.join(BASE_DIR, "transcriber_scripts", "assemblyAI_transcriber.py"), audio_path],
             check=True,
             cwd=BASE_DIR,
+            env=pipeline_env,
         )
         assembly_out = os.path.join(BASE_DIR, "outputs", "assembly", f"{base}_confidence.json")
 
         # Step 3-4: Kevin merge + summary + structured concept extraction
-        print("🧠 Running Kevin merge...")
+        print("Running Kevin merge...")
         words, summary, concepts = _run_downstream(
             whisper_out, assembly_out, keywords=keywords, patient_name=patient_name
         )
@@ -178,7 +185,7 @@ def replay(req: ReplayRequest) -> Dict[str, Any]:
         )
 
     try:
-        print(f"♻️  Replaying base '{req.base}' (skipping transcription)...")
+        print(f"Replaying base '{req.base}' (skipping transcription)...")
         words, summary, concepts = _run_downstream(
             whisper_out, assembly_out, keywords=req.keywords, patient_name=req.patient_name
         )
@@ -807,20 +814,6 @@ class SuggestCodesRequest(BaseModel):
     duration_seconds: float = 0.0  # for E/M time-based coding; 0 skips time codes
 
 
-class FeedbackRequest(BaseModel):
-    code: str
-    description: Optional[str] = ""
-    evidence_phrase: Optional[str] = ""
-    word_indices: List[int] = []
-    is_correct: bool
-    transcript_base: Optional[str] = None
-    concepts: Optional[Dict[str, Any]] = None
-
-
-# Serializes concurrent appends to the feedback log (simultaneous ✓/✗ clicks).
-_feedback_lock = threading.Lock()
-
-
 @app.post("/suggest-codes")
 def suggest_codes(req: SuggestCodesRequest) -> Dict[str, Any]:
     """
@@ -867,36 +860,10 @@ def suggest_codes(req: SuggestCodesRequest) -> Dict[str, Any]:
 @app.post("/feedback")
 def store_feedback(req: FeedbackRequest) -> Dict[str, Any]:
     """
-    Log a clinician's correction on an ICD-10 suggestion to feedback/feedback.jsonl
-    (one JSON object per line). Every click is recorded with no deduplication —
-    a doctor toggling ✗/✓/✗ on the same code is itself signal for later analysis.
+    Save the latest choice for each recording/code in feedback.jsonl.
+    Previous choices are retained separately for audit and later analysis.
     """
-    logged_at = datetime.datetime.now().isoformat()
-    entry = {
-        "timestamp": logged_at,
-        "code": req.code,
-        "description": req.description or "",
-        "evidence_phrase": req.evidence_phrase or "",
-        "word_indices": req.word_indices,
-        "is_correct": req.is_correct,
-        "transcript_base": req.transcript_base,
-        "concepts": req.concepts,
-    }
-
-    # Stored OUTSIDE the OneDrive-synced project tree so editor/OneDrive saves can
-    # never race with or clobber the server's appends — this is irreplaceable PHI
-    # training data. Override with FEEDBACK_DIR if needed; default persists across reboots.
-    feedback_dir = os.getenv("FEEDBACK_DIR", r"C:\DoctorProjectData\feedback")
-    os.makedirs(feedback_dir, exist_ok=True)
-    feedback_path = os.path.join(feedback_dir, "feedback.jsonl")
-    line = json.dumps(entry, ensure_ascii=False) + "\n"
-
-    # Lock + single atomic append-write so concurrent clicks can't interleave a line.
-    with _feedback_lock:
-        with open(feedback_path, "a", encoding="utf-8") as f:
-            f.write(line)
-
-    return {"ok": True, "logged_at": logged_at}
+    return append_feedback(req)
 
 
 @app.post("/suggest")
