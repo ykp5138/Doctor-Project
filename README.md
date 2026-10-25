@@ -1,5 +1,9 @@
 # Doctor Project
 
+For the friend's Mac setup and shared-feedback submission, follow
+[FRIEND_SETUP.md](FRIEND_SETUP.md). The Windows owner's four-terminal feedback
+workflow is in [FEEDBACK_SETUP.md](FEEDBACK_SETUP.md).
+
 The React/Vite frontend uploads a recording to FastAPI. The backend runs WhisperX,
 AssemblyAI, transcript reconciliation, and Ollama summarization/concept extraction.
 The result supports transcript corrections, grounded ICD-10 suggestions, E/M
@@ -34,6 +38,9 @@ Open the address printed by Vite. Its `/api` proxy forwards requests to
 Transcription can take several minutes; the proxy has no request timeout.
 
 ## ICD-10 feedback
+
+For coding improvements, side-by-side index setup, evaluation results, diagnostics,
+and a switch back to the preserved selector, see [ICD_ACCURACY.md](ICD_ACCURACY.md).
 
 The checkmark and X buttons post correctness labels and their transcript context
 to `/feedback`. The last saved choice for each recording/code is the current

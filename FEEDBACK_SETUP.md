@@ -1,5 +1,13 @@
 # Central feedback collection
 
+For the friend's Mac commands and configuration, use
+[FRIEND_SETUP.md](FRIEND_SETUP.md). The Windows owner uses the four terminals below.
+
+If the site says **"Could not reach the API"**, first start Terminal 1 and check
+`http://127.0.0.1:8000/health`. It must return `{"ok":true}`. The feedback viewer
+(`watch_feedback.ps1`) only displays the file; it does not start the backend.
+If the backend exits during startup, its terminal output identifies the error.
+
 The cloud collector stores feedback in a persistent database while the owner's
 computer is off. Each app can keep transcription local and send only checkmark/X
 feedback to the collector. Configured apps do not create a local feedback copy
@@ -144,8 +152,9 @@ Git does not distribute private `.env.local` files.
    `frontend/.env.local`. The friend creates or updates their own
    `frontend/.env.local` using those two settings, as shown in the configuration
    section below. Do not overwrite other local settings if that file exists.
-2. The friend runs Terminal 1 and Terminal 2 above on their own computer. They
-   keep their own Ollama service running. Their clone folder can have a different
+2. The friend starts their own backend and frontend and keeps Ollama running.
+   On Mac, use the commands in [FRIEND_SETUP.md](FRIEND_SETUP.md); the `.ps1`
+   commands above are for Windows. Their clone folder can have a different
    absolute path; start commands from that project's root.
 3. They upload their test recording, wait for a code suggestion, expand it, and
    click checkmark/X. The popup must say `recorded`, not `Feedback not saved`.
@@ -173,7 +182,7 @@ sends feedback to the cloud rather than creating a local feedback copy.
   viewer or other program holding the file, then restart sync and use
   `.\watch_feedback.ps1`.
 - **No suggestions:** the feedback buttons need an existing code suggestion.
-  That is an ICD pipeline issue; backend `[icd-rag]` logs identify selection and
+  That is an ICD pipeline issue; backend `[icd-spans]` or `[icd-rag]` logs identify selection and
   evidence failures separately from feedback saves.
 - **Different rows for the same code:** compare their recording IDs. Different
   uploads are separate cases, even when their filenames or audio match.

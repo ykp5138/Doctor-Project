@@ -52,6 +52,7 @@ reconciled_*.json
 #   python build_icd_index.py  AND  python build_icd_index_sapbert.py
 indexes/
 indexes_sapbert/
+indexes_*/
 
 # Doctor feedback logs — may contain PHI (transcript phrases). Do not commit.
 feedback/

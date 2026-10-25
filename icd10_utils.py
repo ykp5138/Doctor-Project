@@ -4,6 +4,7 @@ Uses the simple_icd_10_cm package (bundles the full CMS ICD-10-CM dataset).
 Degrades gracefully if the package is not installed.
 """
 import re
+from functools import lru_cache
 from typing import Optional
 
 try:
@@ -15,6 +16,17 @@ except ImportError:
 
 # Cached sorted code list (loaded once on first use)
 _ALL_CODES: list[str] = []
+
+
+@lru_cache(maxsize=100000)
+def is_complete_code(code: str) -> bool:
+    """Exclude hierarchy/category items and incomplete encounter-code prefixes."""
+    if not _HAS_DB:
+        return False
+    try:
+        return bool(cm.is_valid_item(code.upper()) and cm.is_leaf(code.upper()))
+    except Exception:
+        return False
 
 
 def _get_all_codes() -> list[str]:

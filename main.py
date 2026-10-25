@@ -508,6 +508,27 @@ def _guardrail_reject(code: str, description: str, evidence_phrase: str, concept
 
 
 def _suggest_icd_rag(concepts: dict, transcript_text: str, words: list, code_range: str = None) -> list:
+    # Keep the pushed selector available for measured comparisons and rollback.
+    selector_mode = os.getenv("ICD_SELECTOR_MODE", "auto").strip().lower()
+    if selector_mode == "auto":
+        from icd10_retriever import get_retriever
+        loaded = get_retriever()
+        embedding = getattr(loaded, "sapbert", loaded).embedding_config
+        selector_mode = "enhanced" if embedding.get("pooling") == "cls" else "legacy"
+    if selector_mode == "legacy":
+        return _suggest_icd_rag_legacy(concepts, transcript_text, words, code_range)
+    if selector_mode != "enhanced":
+        raise ValueError("ICD_SELECTOR_MODE must be auto, enhanced, or legacy")
+    retrieval_mode = os.getenv("ICD_RETRIEVAL_MODE", "enhanced").strip().lower()
+    if retrieval_mode not in ("enhanced", "legacy"):
+        raise ValueError("ICD_RETRIEVAL_MODE must be enhanced or legacy")
+    from icd_selector import suggest_icd
+    return suggest_icd(concepts, transcript_text, words, code_range,
+                       retrieval_mode=retrieval_mode,
+                       guardrail=_guardrail_reject)
+
+
+def _suggest_icd_rag_legacy(concepts: dict, transcript_text: str, words: list, code_range: str = None) -> list:
     """
     Retrieval-augmented ICD-10 suggestion (Stage 3).
 

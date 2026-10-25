@@ -21,6 +21,7 @@ BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 ACTIVE_INDEX_DIR = "hybrid"
 MINILM_DIR = "indexes"
 SAPBERT_DIR = "indexes_sapbert"
+SAPBERT_CLS_DIR = "indexes_sapbert_cls"
 
 # Fallback embedding model for legacy list-shape metadata (the original MiniLM
 # index stored no model_name); newer indexes record their model in the metadata.
@@ -145,9 +146,9 @@ class ICD10Retriever:
         # Imported here so a missing faiss/sentence-transformers install surfaces
         # only when retrieval is actually used, not at module import time.
         import faiss
-        from sentence_transformers import SentenceTransformer
-
         self.embeddings = np.load(embeddings_path).astype("float32")
+        if self.embeddings.ndim != 2 or not self.embeddings.size:
+            raise RuntimeError("ICD index must contain a nonempty two-dimensional vector matrix")
         with open(metadata_path, "r", encoding="utf-8") as f:
             raw = json.load(f)
 
@@ -160,7 +161,14 @@ class ICD10Retriever:
             self.model_name = DEFAULT_MODEL_NAME
 
         # Load whichever embedding model matches the index (dim must agree).
-        self.model = SentenceTransformer(self.model_name)
+        from icd_embeddings import embedding_config_from_metadata, load_embedding_model
+        self.embedding_config = embedding_config_from_metadata(raw, self.embeddings.shape[1])
+        self.model = load_embedding_model(
+            self.embedding_config, device=os.getenv("ICD_EMBEDDING_DEVICE") or None,
+            local_files_only=os.getenv("ICD_LOCAL_MODELS_ONLY", "").lower() in ("1", "true"),
+        )
+        if len(self.metadata) != self.embeddings.shape[0] or not np.isfinite(self.embeddings).all():
+            raise RuntimeError("ICD index metadata and vectors do not match")
 
         # Inner product on L2-normalized vectors == cosine similarity.
         dim = self.embeddings.shape[1]
@@ -200,6 +208,9 @@ class ICD10Retriever:
                     }
 
         return sorted(best.values(), key=lambda d: d["score"], reverse=True)
+
+    def retrieve_for_concepts(self, concepts, top_k=8, max_candidates=25):
+        return _retrieve_concepts([("single", self)], concepts, top_k, max_candidates)
 
 
 class HybridRetriever:
@@ -255,15 +266,124 @@ class HybridRetriever:
 
         return sorted(merged, key=lambda d: d["rrf_score"], reverse=True)
 
+    def retrieve_for_concepts(self, concepts, top_k=8, max_candidates=25):
+        return _retrieve_concepts([("minilm", self.minilm), ("sapbert", self.sapbert)],
+                                  concepts, top_k, max_candidates)
+
+
+def _clinical_queries(concepts):
+    # Confirmed diagnosis concepts lead candidate budgeting. They remain model
+    # candidates only, not automatic diagnoses or automatic code suggestions.
+    keys = ("diagnoses_mentioned", "symptoms", "medications_discussed", "procedures_ordered",
+            "history_relevant", "vitals_exam_findings")
+    result = []
+    for key in keys:
+        for term in concepts.get(key, []) or []:
+            if isinstance(term, str) and term.strip():
+                query = expand_query_term(term) if key in ("medications_discussed", "procedures_ordered") else term
+                result.append((key, term.strip(), query))
+    return result
+
+
+def _description_key(text):
+    return " ".join(re.findall(r"\w+", text.casefold()))
+
+
+def _exact_diagnosis_map(metadata):
+    """Anchor names and inclusion terms from the installed ICD-10-CM data.
+
+    Parenthesized nonessential modifiers in inclusion terms can be omitted in
+    spoken names. These matches affect candidate priority only, never selection.
+    """
+    import simple_icd_10_cm as cm
+    from icd10_utils import is_complete_code
+    result = {}
+    for item in metadata:
+        if not is_complete_code(item["code"]):
+            continue
+        terms = [item["description"]]
+        terms.extend(cm.get_includes(item["code"]))
+        terms.extend(cm.get_inclusion_term(item["code"]))
+        seen = set()
+        for term in terms:
+            for spelling in (term, re.sub(r"\([^)]*\)", "", term)):
+                key = _description_key(spelling)
+                if key and key not in seen:
+                    result.setdefault(key, []).append({**item, "matched_alias": term})
+                    seen.add(key)
+    return result
+
+
+def _retrieve_concepts(models, concepts, top_k, max_candidates):
+    from icd10_utils import is_complete_code
+    queries = _clinical_queries(concepts)
+    metadata = models[0][1].metadata
+    owner = models[0][1]
+    if not hasattr(owner, "_exact_description_map"):
+        owner._exact_description_map = _exact_diagnosis_map(metadata)
+    exact = owner._exact_description_map
+    pools, details = [], {}
+    for category, term, query in queries:
+        scores, local = {}, {}
+        for source, retriever in models:
+            # Fuse ranks within each query instead of globally ranking unrelated
+            # symptom lists against each other and evicting diagnosis candidates.
+            for rank, item in enumerate(retriever.retrieve([query], top_k=top_k * 2), 1):
+                code = item["code"]
+                if not is_complete_code(code):
+                    continue
+                scores[code] = scores.get(code, 0) + 1 / (60 + rank)
+                entry = local.setdefault(code, {**item, "sources": [], "exact_diagnosis": False})
+                entry["sources"].append(source)
+        if category == "diagnoses_mentioned":
+            for item in exact.get(_description_key(term), []):
+                if is_complete_code(item["code"]):
+                    local[item["code"]] = {**item, "score": 1.0, "matched_query": term,
+                                            "sources": ["exact"], "exact_diagnosis": True}
+                    scores[item["code"]] = 1.0
+        ordered = sorted(local, key=lambda code: (-int(local[code]["exact_diagnosis"]), -scores[code], code))[:top_k]
+        pools.append(ordered)
+        for code in ordered:
+            context = {"category": category, "text": term}
+            if code not in details:
+                details[code] = {**local[code], "matched_concepts": [context], "rrf_score": scores[code]}
+            elif context not in details[code]["matched_concepts"]:
+                details[code]["matched_concepts"].append(context)
+    chosen = []
+    # Reserve first-round coverage for every concept before spending the budget
+    # on lower-ranked alternatives from one concept.
+    for rank in range(top_k):
+        for pool in pools:
+            if rank < len(pool) and pool[rank] not in chosen:
+                chosen.append(pool[rank])
+                if len(chosen) >= max_candidates:
+                    return [details[code] for code in chosen]
+    return [details[code] for code in chosen]
+
 
 _RETRIEVER = None
+
+
+def _sapbert_index_dir():
+    override = os.getenv("ICD_SAPBERT_INDEX_DIR")
+    if override:
+        return override
+    if os.getenv("ICD_SELECTOR_MODE", "enhanced").strip().lower() == "legacy" or os.getenv("ICD_RETRIEVAL_MODE", "enhanced").strip().lower() == "legacy":
+        return SAPBERT_DIR
+    new_index = os.path.join(BASE_DIR, SAPBERT_CLS_DIR)
+    if all(os.path.isfile(os.path.join(new_index, filename))
+           for filename in ("icd10_embeddings.npy", "icd10_metadata.json")):
+        return SAPBERT_CLS_DIR
+    return SAPBERT_DIR
 
 
 def get_retriever():
     global _RETRIEVER
     if _RETRIEVER is None:
         if ACTIVE_INDEX_DIR == "hybrid":
-            _RETRIEVER = HybridRetriever()
+            sapbert_dir = _sapbert_index_dir()
+            print(f"[icd-retrieval] SapBERT index: {sapbert_dir}")
+            _RETRIEVER = HybridRetriever(sapbert_dir=sapbert_dir)
         else:
             _RETRIEVER = ICD10Retriever(ACTIVE_INDEX_DIR)
     return _RETRIEVER
