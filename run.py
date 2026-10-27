@@ -29,7 +29,7 @@ def main():
     # Step 1: WhisperX
     print("Step 1/3 — WhisperX transcription + diarization...")
     subprocess.run(
-        [py, 'transcriber_scripts/whisperX_transcriber.py', audio_path],
+        [py, 'transcriber_scripts/whisperX_transcriber.py', audio_path, '--skip-summary'],
         check=True
     )
     whisper_out = os.path.join('outputs', 'whisperx', f'{base}_full_output.json')

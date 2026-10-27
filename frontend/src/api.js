@@ -14,10 +14,13 @@ export async function apiFetch(path, options) {
     const payload = await response.json().catch(() => null);
     const detail = payload?.detail;
     // Keep pipeline errors from FastAPI visible instead of hiding their cause.
-    if (detail) {
-      throw new Error(typeof detail === 'string' ? detail : JSON.stringify(detail));
-    }
-    throw new Error(`API request failed (HTTP ${response.status}). ${CONNECTION_HELP}`);
+    const message = detail
+      ? (typeof detail === 'string' ? detail : JSON.stringify(detail))
+      : `API request failed (HTTP ${response.status}). ${CONNECTION_HELP}`;
+    const error = new Error(message);
+    error.status = response.status;
+    if (payload?.progress) error.progress = payload.progress;
+    throw error;
   }
 
   return response;

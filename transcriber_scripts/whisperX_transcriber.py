@@ -1,3 +1,4 @@
+import argparse
 import os
 import sys
 import logging
@@ -119,7 +120,7 @@ class MeetingPipeline:
         except Exception as e:
             return f"⚠️ Could not connect to Ollama: {e}"
 
-    def run(self):
+    def run(self, skip_summary=False):
         result_raw, audio_data = self.transcribe_and_align()
         final_result = self.diarize(result_raw, audio_data)
         detailed_txt, clean_txt = self.format_output(final_result)
@@ -136,19 +137,28 @@ class MeetingPipeline:
             f.write(detailed_txt)
         logging.info(f"💾 Saved transcript: {txt_filename}")
 
-        # Save Summary
-        summary = self.summarize(clean_txt)
-        md_filename = os.path.join(self.out_dir, f"{self.base_name}_summary.md")
-        with open(md_filename, "w", encoding="utf-8") as f:
-            f.write(summary)
-        logging.info(f"💾 Saved summary: {md_filename}")
+        # The API/combined pipeline uses Kevin's summary instead of this optional one.
+        if skip_summary:
+            logging.info("Skipping standalone WhisperX summary (--skip-summary).")
+        else:
+            summary = self.summarize(clean_txt)
+            md_filename = os.path.join(self.out_dir, f"{self.base_name}_summary.md")
+            with open(md_filename, "w", encoding="utf-8") as f:
+                f.write(summary)
+            logging.info(f"💾 Saved summary: {md_filename}")
         
         logging.info("🎉 Processing Complete!")
 
+def main(argv=None):
+    parser = argparse.ArgumentParser(description="Transcribe audio with word timestamps and speaker labels.")
+    parser.add_argument("audio_path", help="Audio file to transcribe")
+    parser.add_argument("--skip-summary", action="store_true",
+                        help="Skip the optional standalone Ollama summary")
+    args = parser.parse_args(argv)
+
+    pipeline = MeetingPipeline(args.audio_path)
+    pipeline.run(skip_summary=args.skip_summary)
+
+
 if __name__ == "__main__":
-    if len(sys.argv) < 2:
-        print("Usage: python run_meeting.py <audio_file.mp3>")
-        sys.exit(1)
-    
-    pipeline = MeetingPipeline(sys.argv[1])
-    pipeline.run()
+    main()

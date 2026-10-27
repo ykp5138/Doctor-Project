@@ -1,9 +1,12 @@
 from fastapi import FastAPI, UploadFile, File, Form, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import JSONResponse
 from typing import Dict, Any, List, Optional
 from pydantic import BaseModel
 import os
 import sys
+import time
+import asyncio
 import subprocess
 import uuid
 import traceback
@@ -11,6 +14,7 @@ import json
 import re
 import requests
 from feedback_store import FeedbackRequest, append_feedback
+from pipeline_progress import PipelineProgressStore, DuplicateJobError, ProgressCapacityError
 
 OLLAMA_URL = "http://localhost:11434/api/generate"
 OLLAMA_MODEL = "llama3"
@@ -29,6 +33,7 @@ app.add_middleware(
 )
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+progress_store = PipelineProgressStore()
 
 
 @app.get("/health")
@@ -72,20 +77,75 @@ def _run_downstream(whisper_out, assembly_out, keywords=None, patient_name=None)
     return words, summary, concepts
 
 
+def _run_transcriber(script_name, audio_path, pipeline_env, expected_output):
+    print(time.perf_counter(), "START", script_name, flush=True)
+    command = [
+        sys.executable,
+        os.path.join(BASE_DIR, "transcriber_scripts", script_name),
+        audio_path,
+    ]
+    if script_name == "whisperX_transcriber.py":
+        command.append("--skip-summary")
+    subprocess.run(
+        command,
+        check=True,
+        cwd=BASE_DIR,
+        env=pipeline_env,
+    )
+    if not os.path.isfile(expected_output):
+        raise RuntimeError(f"{script_name} finished without producing its transcript JSON")
+    print(time.perf_counter(), "DONE", script_name, flush=True)
+
+
+async def _run_stage(job_id, stage, function, *args, **kwargs):
+    # Only the event loop updates progress; blocking work runs in a worker thread.
+    if job_id:
+        progress_store.start_stage(job_id, stage)
+    if stage == "kevin":
+        print(time.perf_counter(), "START", "Kevin", flush=True)
+    try:
+        result = await asyncio.to_thread(function, *args, **kwargs)
+    except BaseException:
+        if job_id:
+            progress_store.finish_stage(job_id, stage, failed=True)
+        raise
+    if stage == "kevin":
+        print(time.perf_counter(), "DONE", "Kevin", flush=True)
+    if job_id:
+        progress_store.finish_stage(job_id, stage)
+    return result
+
+
+@app.get("/transcribe/progress/{job_id}")
+async def transcription_progress(job_id: uuid.UUID) -> Dict[str, Any]:
+    snapshot = progress_store.snapshot(job_id.hex)
+    if snapshot is None:
+        raise HTTPException(status_code=404, detail="Progress job not found")
+    return snapshot
+
+
 @app.post("/transcribe")
 async def transcribe(
     file: UploadFile = File(...),
     keywords: Optional[str] = Form(None),
     patient_name: Optional[str] = Form(None),
+    job_id: Optional[uuid.UUID] = Form(None),
 ) -> Dict[str, Any]:
     """
     Pipeline:
       1) Save uploaded audio with a UUID-prefixed name
-      2) Run WhisperX  -> outputs/whisperx/{base}_full_output.json
-      3) Run AssemblyAI -> outputs/assembly/{base}_confidence.json
+      2-3) Run WhisperX and AssemblyAI concurrently, tracking each independently
       4) Merge with Kevin -> words list + summary text
       5) Return both to frontend
     """
+    tracking_id = job_id.hex if job_id else None
+    if tracking_id:
+        try:
+            progress_store.create(tracking_id)
+        except DuplicateJobError as exc:
+            raise HTTPException(status_code=409, detail=str(exc)) from exc
+        except ProgressCapacityError as exc:
+            raise HTTPException(status_code=503, detail=str(exc)) from exc
     try:
         suffix = os.path.splitext(file.filename or "audio")[1] or ".mp3"
         base = f"{uuid.uuid4().hex}{suffix.replace('.', '_')}"
@@ -97,36 +157,33 @@ async def transcribe(
         with open(audio_path, "wb") as f:
             f.write(content)
 
-        py = sys.executable
         # Transcriber logs include Unicode; Windows redirected streams may use cp1252.
         pipeline_env = os.environ.copy()
         pipeline_env["PYTHONUTF8"] = "1"
         pipeline_env["PYTHONIOENCODING"] = "utf-8"
 
-        # Step 1: WhisperX
-        print("Running WhisperX...")
-        subprocess.run(
-            [py, os.path.join(BASE_DIR, "transcriber_scripts", "whisperX_transcriber.py"), audio_path],
-            check=True,
-            cwd=BASE_DIR,
-            env=pipeline_env,
-        )
-        whisper_out = os.path.join(BASE_DIR, "outputs", "whisperx", f"{base}_full_output.json")
+        #steps 1-2: WhisperX + AssemblyAI (concurrently)
+        print("Running WhisperX and AssemblyAI concurrently...")
 
-        # Step 2: AssemblyAI
-        print("Running AssemblyAI...")
-        subprocess.run(
-            [py, os.path.join(BASE_DIR, "transcriber_scripts", "assemblyAI_transcriber.py"), audio_path],
-            check=True,
-            cwd=BASE_DIR,
-            env=pipeline_env,
-        )
+        whisper_out = os.path.join(BASE_DIR, "outputs", "whisperx", f"{base}_full_output.json")
         assembly_out = os.path.join(BASE_DIR, "outputs", "assembly", f"{base}_confidence.json")
+        results = await asyncio.gather(
+            _run_stage(tracking_id, "whisperx", _run_transcriber,
+                       "whisperX_transcriber.py", audio_path, pipeline_env, whisper_out),
+            _run_stage(tracking_id, "assemblyai", _run_transcriber,
+                       "assemblyAI_transcriber.py", audio_path, pipeline_env, assembly_out),
+            return_exceptions=True,
+        )
+
+        for result in results:
+            if isinstance(result, Exception):
+                raise result
 
         # Step 3-4: Kevin merge + summary + structured concept extraction
         print("Running Kevin merge...")
-        words, summary, concepts = _run_downstream(
-            whisper_out, assembly_out, keywords=keywords, patient_name=patient_name
+        words, summary, concepts = await _run_stage(
+            tracking_id, "kevin", _run_downstream,
+            whisper_out, assembly_out, keywords=keywords, patient_name=patient_name,
         )
 
         # Keep the audio by default so replay/snippet-playback works while developing.
@@ -137,7 +194,9 @@ async def transcribe(
             except Exception:
                 pass
 
-        return {
+        if tracking_id:
+            progress_store.finish_job(tracking_id)
+        response = {
             "words": words,
             "summary": summary,
             "concepts": concepts,
@@ -147,14 +206,31 @@ async def transcribe(
                 "base": base,  # so feedback records can trace back to this recording
             },
         }
+        if tracking_id:
+            response["progress"] = progress_store.snapshot(tracking_id)
+        return response
 
     except subprocess.CalledProcessError as e:
+        if tracking_id:
+            progress_store.finish_job(tracking_id, failed=True)
         traceback.print_exc()
-        raise HTTPException(status_code=500, detail=f"Pipeline step failed: {e}")
+        error = {"detail": f"Pipeline step failed: {e}"}
+        if tracking_id:
+            error["progress"] = progress_store.snapshot(tracking_id)
+        return JSONResponse(status_code=500, content=error)
 
     except Exception as e:
+        if tracking_id:
+            progress_store.finish_job(tracking_id, failed=True)
         traceback.print_exc()
-        raise HTTPException(status_code=500, detail=str(e))
+        error = {"detail": str(e)}
+        if tracking_id:
+            error["progress"] = progress_store.snapshot(tracking_id)
+        return JSONResponse(status_code=500, content=error)
+    except asyncio.CancelledError:
+        if tracking_id:
+            progress_store.finish_job(tracking_id, failed=True)
+        raise
 
 
 class ReplayRequest(BaseModel):

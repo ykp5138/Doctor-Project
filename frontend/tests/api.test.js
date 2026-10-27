@@ -49,3 +49,27 @@ test('rejects a failed feedback write rather than treating it as saved', async (
     message: 'Could not append feedback.',
   });
 });
+
+test('exposes an initial progress 404 while preserving its message', async () => {
+  mock.method(globalThis, 'fetch', async () => Response.json(
+    { detail: 'Transcription progress not found.' }, { status: 404 },
+  ));
+
+  await assert.rejects(apiFetch('/transcribe/progress/not-registered'), {
+    message: 'Transcription progress not found.',
+    status: 404,
+  });
+});
+
+test('preserves final progress on a failed transcription response', async () => {
+  const progress = { job_id: 'job-a', status: 'failed', stages: {} };
+  mock.method(globalThis, 'fetch', async () => Response.json({
+    detail: 'Pipeline step failed: WhisperX exited.', progress,
+  }, { status: 500 }));
+
+  await assert.rejects(apiFetch('/transcribe'), {
+    message: 'Pipeline step failed: WhisperX exited.',
+    status: 500,
+    progress,
+  });
+});

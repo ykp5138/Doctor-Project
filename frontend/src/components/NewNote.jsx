@@ -11,12 +11,21 @@ import SuggestedEMCodes from "./SuggestedEMCodes";
 import { useNote } from "../NoteContext";
 import { apiFetch } from "../api";
 import { createFeedbackRecorder, feedbackKey, feedbackRecordingId } from "../feedback-recorder";
+import { createPipelineJobId, startPipelineProgress } from "../pipeline-progress";
 
 const STEPS = [
-  { id: 1, label: "WhisperX", desc: "Transcribing + diarizing audio" },
-  { id: 2, label: "AssemblyAI", desc: "Cloud transcription" },
-  { id: 3, label: "Kevin", desc: "Merging + generating summary" },
+  { id: "whisperx", label: "WhisperX", desc: "Transcription + speaker labels" },
+  { id: "assemblyai", label: "AssemblyAI", desc: "Cloud transcription" },
+  { id: "kevin", label: "Kevin", desc: "Merging + generating clinical summary" },
 ];
+
+const STAGE_LABELS = {
+  pending: "Waiting",
+  running: "Running",
+  completed: "Complete",
+  failed: "Failed",
+  skipped: "Skipped",
+};
 
 export default function NewNote() {
   // Persistent state (survives navigation)
@@ -44,9 +53,14 @@ export default function NewNote() {
 
   // Pipeline state
   const [loading, setLoading] = useState(false);
-  const [step, setStep] = useState(0);
+  const [pipelineProgress, setPipelineProgress] = useState(null);
+  const [progressUnavailable, setProgressUnavailable] = useState(false);
   const [error, setError] = useState(null);
-  const stepTimer = useRef(null);
+  const progressSessionRef = useRef(null);
+
+  useEffect(() => () => {
+    progressSessionRef.current?.stop();
+  }, []);
 
   // ICD suggestion state
   const [icdLoading, setIcdLoading] = useState(false);
@@ -102,11 +116,11 @@ export default function NewNote() {
     e.preventDefault();
     setIsDragging(false);
     const f = e.dataTransfer.files?.[0];
-    if (f && (f.type.startsWith("audio/") || f.type === "video/quicktime" || f.name.toLowerCase().endsWith(".mov"))) { setFile(f); setResult(null); setWords([]); setError(null); setIcdSuggestions([]); setIcdActiveCodeIdx(null); }
+    if (f && (f.type.startsWith("audio/") || f.type === "video/quicktime" || f.name.toLowerCase().endsWith(".mov"))) { setFile(f); setResult(null); setWords([]); setError(null); setIcdSuggestions([]); setIcdActiveCodeIdx(null); setPipelineProgress(null); }
   };
   const handleFileChange = (e) => {
     const f = e.target.files?.[0];
-    if (f) { setFile(f); setResult(null); setWords([]); setError(null); setIcdSuggestions([]); setIcdActiveCodeIdx(null); }
+    if (f) { setFile(f); setResult(null); setWords([]); setError(null); setIcdSuggestions([]); setIcdActiveCodeIdx(null); setPipelineProgress(null); }
   };
   const formatFileSize = (bytes) => {
     if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`;
@@ -124,6 +138,7 @@ export default function NewNote() {
       mediaRecorder.onstop = () => {
         const blob = new Blob(chunksRef.current, { type: "audio/webm" });
         setFile(new File([blob], "recording.webm", { type: "audio/webm" }));
+        setPipelineProgress(null);
         stream.getTracks().forEach((t) => t.stop());
         setIsRecording(false);
         setIsPaused(false);
@@ -220,7 +235,7 @@ export default function NewNote() {
 
   // ── Transcribe ──
   const handleTranscribe = async () => {
-    if (!file) return;
+    if (!file || progressSessionRef.current) return;
 
     // Name validation: flash warning on first attempt, proceed on second
     if (!patientName.trim() && !nameWarningShown.current) {
@@ -230,8 +245,17 @@ export default function NewNote() {
       return;
     }
 
+    let jobId;
+    try {
+      jobId = createPipelineJobId();
+    } catch {
+      setError("Could not start this recording request. Reload the page and try again.");
+      return;
+    }
+
     setLoading(true);
-    setStep(1);
+    setPipelineProgress(null);
+    setProgressUnavailable(false);
     setError(null);
     setResult(null);
     setWords([]);
@@ -240,13 +264,27 @@ export default function NewNote() {
     setIcdActiveEvidenceIdx(0);
     setEmSuggestion(null);
 
-    stepTimer.current = setTimeout(() => setStep(2), 25000);
-    const t2 = setTimeout(() => setStep(3), 55000);
-
     const formData = new FormData();
     formData.append("file", file);
+    formData.append("job_id", jobId);
     if (keywords.trim()) formData.append("keywords", keywords.trim());
     if (patientName.trim()) formData.append("patient_name", patientName.trim());
+
+    const session = { stop: () => {} };
+    progressSessionRef.current = session;
+    session.stop = startPipelineProgress({
+      jobId,
+      fetchProgress: async (id, options) => {
+        const response = await apiFetch(`/transcribe/progress/${id}`, options);
+        return response.json();
+      },
+      onProgress: (progress) => {
+        if (progressSessionRef.current === session) setPipelineProgress(progress);
+      },
+      onUnavailable: (unavailable) => {
+        if (progressSessionRef.current === session) setProgressUnavailable(unavailable);
+      },
+    });
 
     try {
       const res = await apiFetch("/transcribe", {
@@ -254,6 +292,8 @@ export default function NewNote() {
         body: formData,
       });
       const data = await res.json();
+      if (progressSessionRef.current !== session) return;
+      if (data.progress?.job_id === jobId) setPipelineProgress(data.progress);
       setResult(data);
       setWords(data.words || []);
       setResultTab("transcript");
@@ -274,12 +314,17 @@ export default function NewNote() {
           .finally(() => setIcdLoading(false));
       }
     } catch (err) {
-      setError(err.message || "An error occurred");
+      if (progressSessionRef.current === session) {
+        if (err.progress?.job_id === jobId) setPipelineProgress(err.progress);
+        setError(err.message || "An error occurred");
+      }
     } finally {
-      clearTimeout(stepTimer.current);
-      clearTimeout(t2);
-      setLoading(false);
-      setStep(0);
+      session.stop();
+      if (progressSessionRef.current === session) {
+        progressSessionRef.current = null;
+        setLoading(false);
+        setProgressUnavailable(false);
+      }
     }
   };
 
@@ -411,7 +456,7 @@ export default function NewNote() {
                         <p className="text-xs text-slate-500 mt-0.5">{formatFileSize(file.size)}</p>
                       </div>
                       <button
-                        onClick={() => { setFile(null); setResult(null); setWords([]); setError(null); }}
+                        onClick={() => { setFile(null); setResult(null); setWords([]); setError(null); setPipelineProgress(null); }}
                         className="text-slate-400 hover:text-slate-900 transition-colors"
                       >
                         <X className="w-4 h-4" />
@@ -485,32 +530,47 @@ export default function NewNote() {
             )}
 
             {/* Pipeline progress */}
-            {loading && (
+            {(loading || pipelineProgress?.status === "completed" || pipelineProgress?.status === "failed") && (
               <div className="mt-8 space-y-2">
-                <p className="text-xs text-slate-400 mb-4">This may take several minutes on CPU.</p>
-                {STEPS.map((s) => (
-                  <div
-                    key={s.id}
-                    className="flex items-center gap-4 px-4 py-3 transition-all"
-                    style={step === s.id ? { background: "#f5f5f5" } : { opacity: step > s.id ? 0.5 : 0.3 }}
-                  >
+                <p className="text-xs text-slate-500 mb-4">WhisperX and AssemblyAI run together. Kevin follows both.</p>
+                {loading && progressUnavailable && (
+                  <p role="status" className="text-xs text-amber-700 mb-4">Live progress is temporarily unavailable. Waiting for the upload result.</p>
+                )}
+                {STEPS.map((s) => {
+                  const stage = pipelineProgress?.stages?.[s.id];
+                  const status = stage?.status;
+                  const running = status === "running";
+                  const completed = status === "completed";
+                  const failed = status === "failed";
+                  const elapsed = stage?.elapsed_seconds;
+                  return (
                     <div
-                      className="w-6 h-6 flex items-center justify-center text-xs font-medium shrink-0"
-                      style={step > s.id
-                        ? { background: "#1a1a1a", color: "white" }
-                        : step === s.id
-                        ? { background: "#1a1a1a", color: "white" }
-                        : { background: "#e5e5e5", color: "#737373" }
-                      }
+                      key={s.id}
+                      className="flex items-center gap-4 px-4 py-3 transition-all"
+                      style={running ? { background: "#f5f5f5" } : { opacity: status === "pending" || !status ? 0.5 : 1 }}
                     >
-                      {step === s.id ? <span className="spinner-sm" /> : step > s.id ? "✓" : s.id}
+                      <div
+                        className="w-6 h-6 flex items-center justify-center text-xs font-medium shrink-0"
+                        style={failed
+                          ? { background: "#fee2e2", color: "#b91c1c" }
+                          : running || completed
+                          ? { background: "#1a1a1a", color: "white" }
+                          : { background: "#e5e5e5", color: "#737373" }
+                        }
+                      >
+                        {running ? <span className="spinner-sm" /> : completed ? "✓" : failed ? "×" : "–"}
+                      </div>
+                      <div>
+                        <p className="text-sm font-medium text-slate-900">{s.label}</p>
+                        <p className="text-xs text-slate-500">{s.desc}</p>
+                      </div>
+                      <div className={`ml-auto text-right text-xs ${failed ? "text-red-700" : "text-slate-500"}`}>
+                        <p>{STAGE_LABELS[status] || "Waiting for update"}</p>
+                        {Number.isFinite(elapsed) && <p className="mt-1 font-mono">{elapsed.toFixed(1)}s</p>}
+                      </div>
                     </div>
-                    <div>
-                      <p className="text-sm font-medium text-slate-900">{s.label}</p>
-                      <p className="text-xs text-slate-500">{s.desc}</p>
-                    </div>
-                  </div>
-                ))}
+                  );
+                })}
               </div>
             )}
 
